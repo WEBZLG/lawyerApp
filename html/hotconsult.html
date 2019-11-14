@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="hotconsult">
+			<ul class="mui-table-view">
+					<li class="mui-table-view-cell" typeid="2" title="婚姻家庭">
+						<a class="mui-navigate-right">
+							婚姻家庭
+						</a>
+					</li>
+					<li class="mui-table-view-cell" typeid="1" title="劳动人事">
+						<a class="mui-navigate-right">
+							 劳动用工
+						</a>
+					</li>
+					<li class="mui-table-view-cell" typeid="10" title="合同纠纷">
+						<a class="mui-navigate-right">
+							 合同纠纷
+						</a>
+					</li>
+					<li class="mui-table-view-cell" typeid="7" title='交通事故'>
+						<a class="mui-navigate-right">
+							 交通事故
+						</a>
+					</li>
+					<li class="mui-table-view-cell" typeid="4" title='房产土地'>
+						<a class="mui-navigate-right">
+							 房产纠纷
+						</a>
+					</li>
+					<li class="mui-table-view-cell" typeid="3" title="债权债务">
+						<a class="mui-navigate-right">
+							 债权债务
+						</a>
+					</li>
+				</ul>
+		</div>
+		
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			// 热门咨询
+			mui(".hotconsult").on("tap", "li", function() {
+				var type = this.getAttribute('typeid');
+				var title =  this.getAttribute('title');
+				mui.openWindowWithTitle({
+					url: "hotzx.html",
+					id: "hotzx.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						type: type,
+						title:title
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					// backgroundColor: "#267CFB",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "热门咨询",
+						// styles:{
+						// 	color:"#fffff"
+						// }
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

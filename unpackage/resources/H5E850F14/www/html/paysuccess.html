@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>发布成功</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="paysuccess">
+			<div class="successtext">
+				<div class="nick-icon"><img src="../images/published.png" ></div>
+				<h4>支付成功</h4>
+				<p>别忘记填写邮寄信息哦</p>
+			</div>
+			<div class="dbbtn">
+				<button type="button" class="mui-btn addems">填写邮寄信息</button>
+				<button type="button" class="mui-btn vieworder">查看订单</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			// 返回首页
+			mui(".paysuccess").on("tap", ".addems", function() {
+				
+			})
+			mui("body").on("tap", ".addems", function() {
+				mui.openWindowWithTitle({
+					url: "mailinginfor.html",
+					id: "mailinginfor.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "邮寄信息",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+</html>

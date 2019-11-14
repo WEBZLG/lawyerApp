@@ -1,0 +1,1873 @@
+/* 重置 */
+body,
+ol,
+ul,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+th,
+td,
+dl,
+dd,
+form,
+fieldset,
+legend,
+input,
+textarea,
+select {
+	margin: 0;
+	padding: 0
+}
+
+body {
+	font: 12px"宋体", "Arial Narrow", HELVETICA;
+	background: #F8F8F8;
+	-webkit-text-size-adjust: 100%;
+	color: #333333;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none
+}
+
+em {
+	font-style: normal
+}
+
+li {
+	list-style: none
+}
+
+img {
+	border: 0;
+	vertical-align: middle;
+	max-width: 100%;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0
+}
+
+p {
+	word-wrap: break-word
+}
+
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden
+}
+
+.clearfix {
+	*+height: 1%;
+}
+
+.none {
+	display: none;
+}
+
+.body-con {
+	position: absolute;
+	top: 44px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.logintitle {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.nodata {
+	text-align: center;
+}
+
+.wlogo {
+	height: 48px;
+	width: 48px;
+	margin: 42px auto 12px;
+}
+
+.phonenum input[type='text'] {
+	padding: 22px 15px;
+	border: none;
+	border-bottom: 1px solid #E1E1E1;
+	outline: none;
+	margin-bottom: 0;
+}
+
+.usercode {
+	position: relative;
+}
+
+#getcode {
+	position: absolute;
+	right: 0;
+	top: 1px;
+	border: none;
+	color: #2E82FF;
+	font-size: 14px;
+	padding: 12px 15px;
+	z-index: 9;
+}
+
+.phonenum .other {
+	margin: 50px auto 40px;
+}
+
+.three {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.three .l-line {
+	margin: 0 15px;
+	width: 30%;
+	display: block;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.weixinicon {
+	height: 32px;
+	width: 32px;
+	margin: 25px auto 0;
+}
+
+/* 轮播 */
+.mui-content {
+	padding: 15px;
+	background-color: #FFFFFF;
+}
+
+.mui-slider {
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+/* 公共小标题 */
+.pub-sm-title {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	border-left: 4px solid #fba222;
+	font-size: 16px;
+	color: #2e82ff;
+	text-indent: 6px;
+	margin: 15px 0;
+}
+
+.vertical-line {
+	font-weight: bold;
+}
+
+.view-more {
+	font-size: 14px;
+	color: #333333;
+}
+
+/* 首页咨询律师 */
+.type-list ul {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.type-list ul li {
+	flex: 1;
+}
+
+.type-list ul .type-icon {
+	height: 50px;
+	width: 50px;
+	margin: 0 auto;
+}
+
+.type-title {
+	font-size: 14px;
+	text-align: center;
+	font-weight: 500;
+	margin: 10px 0;
+	color: #333333;
+}
+
+/* 首页热门咨询 */
+.type-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.type-box a {
+	display: block;
+	margin: 2px;
+}
+
+.recom-tab {
+	position: relative;
+}
+
+.mui-segmented-control.mui-scroll-wrapper .mui-control-item {
+	padding: 0;
+	margin-right: 16px;
+	font-size: 14px;
+	color: #666666;
+}
+
+.mui-segmented-control.mui-scroll-wrapper .mui-control-item:last-child {
+	margin-right: 0;
+}
+
+.mui-segmented-control .mui-control-item {
+	line-height: inherit;
+}
+
+.mui-segmented-control .mui-control-item.mui-active {
+	font-weight: bold;
+	color: #333333 !important;
+}
+
+.recom-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.head-img {
+	height: 84px;
+	width: 84px;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.infor {
+	margin-left: 15px;
+	flex: 1;
+}
+
+.intro-name {
+	font-size: 16px;
+	color: #333333;
+	font-weight: bold;
+}
+
+.tag {
+	font-size: 10px;
+	color: #2E82FF;
+	display: inline-block;
+	vertical-align: middle;
+	border: 1px solid #2E82FF;
+	border-radius: 8px;
+	text-align: center;
+	padding: 0 6px;
+	height: 14px;
+	line-height: 14px;
+	margin-right: 2px;
+}
+
+.mui-slider .mui-segmented-control.mui-segmented-control-inverted~.mui-slider-group .mui-slider-item {
+	border: none;
+}
+
+#slider {
+	border-radius: 0;
+}
+
+
+.mui-scroll-wrapper {
+	overflow: auto;
+}
+
+/* 资讯 */
+.news-nav ul {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	align-content: center;
+	font-size: 14px;
+	color: #2E82FF;
+	border-bottom: 1px solid #e1e1e1;
+	padding: 20px 15px;
+	background-color: #FFFFff;
+	margin-top: 15px;
+}
+
+.grey-line {
+	display: block;
+	border-left: 1px solid #dcdcdc;
+	height: 14px;
+}
+
+.n-iocn {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 5px;
+	height: 14px;
+	width: 14px;
+}
+
+.news-type {
+	position: absolute;
+	top: 72px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.news-type #sliderSegmentedControl {
+	height: 50px;
+	line-height: 50px;
+}
+
+.news-type .mui-slider-group {
+	top: 65px !important;
+}
+
+.scroll-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	background-color: #ffffff;
+}
+
+.scroll-box {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+	margin: 0 15px;
+}
+
+.news-title {
+	font-size: 14px;
+	font-weight: bold;
+	color: #333333;
+	line-height: 18px;
+}
+
+.news-title em {
+	color: #2E82FF;
+	margin-right: 4px;
+}
+
+.news-type .mui-slider-item {
+	background-color: #FFFFFF;
+}
+
+.news-item {
+	margin: 15px;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.news-item:last-child {
+	border: none;
+	padding-bottom: 60px;
+}
+
+.news-show {
+	display: flex;
+	align-items: center;
+	margin: 20px 0;
+}
+
+.news-img {
+	height: 112px;
+	width: 112px;
+	border-radius: 8px;
+	overflow: hidden;
+	margin: 0 2px;
+}
+
+.news-content {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+.one-img .news-img {
+	width: 229px;
+	height: 129px;
+}
+
+.user-info {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	line-height: 24px;
+}
+
+.user-box {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.user-head {
+	height: 25px;
+	width: 25px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.user-type {
+	height: 14px;
+	width: 28px;
+	line-height: 14px;
+	text-align: center;
+	border-radius: 3px;
+	margin: 0 8px;
+	color: #FFFFFF;
+	font-size: 12px;
+	background-color: #2E82FF;
+}
+
+.user-type-laywer {
+	background-color: #FB8322;
+}
+
+.hot-box {
+	display: flex;
+	align-content: center;
+	align-items: baseline;
+}
+
+.news-icon {
+	height: 17px;
+	width: 13px;
+	margin: 0 6px;
+}
+
+.hot-num {
+	font-size: 14px;
+	color: #666666;
+}
+
+
+/* 发布 */
+#popover {
+	background-color: #F8F8F8;
+	position: relative;
+}
+
+#bghover {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 999;
+}
+
+.pub-nav li {
+	display: flex;
+	align-content: space-between;
+	justify-content: space-between;
+	line-height: 32px;
+	background-color: #ffffff;
+	padding: 15px 15px 5px;
+	margin: 15px;
+	border-radius: 10px;
+}
+
+.pub-icon {
+	height: 13px;
+	width: 8px;
+}
+
+.pub-title {
+	text-align: center;
+	font-size: 16px;
+	margin: 28px 0;
+}
+
+.pub-nav h5 {
+	font-size: 16px;
+	font-weight: bold;
+	color: #2E82FF;
+}
+
+.pub-nav p {
+	font-size: 14px;
+	font-weight: bold;
+	color: #333333;
+}
+
+.mui-popover {
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+}
+
+.pub-close {
+	height: 32px;
+	width: 32px;
+	border-radius: 50%;
+	overflow: hidden;
+	position: absolute;
+	left: 50%;
+	margin-left: -16px;
+	bottom: 80px;
+}
+
+/* 消息 */
+.mes-img {
+	height: 60px;
+	width: 60px;
+	text-align: center;
+	line-height: 60px;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: #2E82FF;
+	position: relative;
+}
+
+.mes-head {
+	flex: 1;
+	position: relative;
+}
+
+.systerm-message img {
+	width: 50%;
+}
+
+.mes-list li,
+.systerm-message {
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid #DCDCDC;
+	margin-bottom: 15px;
+	padding-bottom: 15px;
+}
+
+/* .mes-list li:last-child{
+	border: none;
+} */
+
+.name-time {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.mes-des {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
+}
+
+.mes-name {
+	font-size: 14px;
+	font-weight: bold;
+	color: #333333;
+}
+
+.mes-list {
+	margin-top: 15px;
+}
+
+
+.mes-item {
+	flex: 4;
+	line-height: 24px;
+	padding-left: 15px;
+}
+
+.mes-head {
+	position: relative;
+}
+
+.mui-badge {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+}
+
+.user-message {
+	position: absolute;
+	top: 120px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+/* 我的 */
+.my-bg {
+	background-color: #FFFFFF;
+}
+
+.my-info {
+	position: absolute;
+	top: 20px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 16px;
+}
+
+.circle-big {
+	display: inline-block;
+	height: 85px;
+	width: 85px;
+	border-radius: 50%;
+	border: 4px solid #93BFFD;
+	margin-bottom: 20px;
+}
+
+.circle-sm {
+	height: 77px;
+	width: 77px;
+	border-radius: 50%;
+	border: 4px solid #ffffff;
+	overflow: hidden;
+}
+
+.mui-table-view {
+	border: none !important;
+}
+
+.mui-table-view:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	height: 0px;
+
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+
+	background-color: #c8c7cc;
+}
+
+.mui-table-view:before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+
+	height: 0px;
+
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+
+	background-color: #c8c7cc;
+}
+
+.my-nav {
+	margin-top: 15px;
+}
+
+.mui-table-view-cell {
+	padding: 15px;
+}
+
+.mui-table-view-cell a {
+	font-size: 14px;
+}
+
+.my-icon {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 10px;
+	height: 16px;
+	width: 16px;
+}
+
+/* 推荐律师 */
+
+/* 下拉菜单 */
+.topmenu {
+	width: 100%;
+}
+
+.topmenu dt {
+	width: 33.3%;
+	float: left;
+}
+
+.selectlist {
+	width: 100%;
+	height: auto;
+	box-sizing: border-box;
+}
+
+.select_textdiv {
+	width: 100%;
+	text-align: center;
+	position: relative;
+	margin: 15px 0;
+	padding: 20px 0;
+	background-color: #FFFFFF;
+	border-left: 2px solid -webkit-linear-gradient(red, blue);
+}
+
+.s_text {
+	font-size: 14px;
+	color: #2E82FF;
+}
+
+.select_textul {
+	width: 100%;
+	line-height: 3rem;
+	box-sizing: border-box;
+	display: none;
+	overflow-y: scroll;
+}
+
+.select_first_ul {
+	width: 100%;
+	position: absolute;
+	box-sizing: border-box;
+	left: 0;
+	top: 71px;
+	height: 400px;
+	overflow: auto;
+	z-index: 99;
+	background-color: #FFFFFF;
+}
+
+.select_first_ul>li {
+	padding: 0 0.5rem;
+	box-sizing: border-box;
+}
+
+.select_first_ul>li>p {
+	width: 50%;
+	padding: 0 1rem;
+	box-sizing: border-box;
+	border-bottom: 1px #b1b1b1 solid;
+}
+
+.focus>p {
+	border-bottom: 1px #2E82FF solid !important;
+	color: #2E82FF;
+}
+
+.select_second_ul {
+	width: 50%;
+	position: fixed;
+	right: 0px;
+	top: 71px;
+	height: 400px;
+	overflow: auto;
+	background: #fff;
+	display: none;
+	box-sizing: border-box;
+	padding-left: 0.5rem;
+	z-index: 999;
+}
+
+.down {
+	display: inline-block;
+	width: 1rem;
+	height: 100%;
+	margin-left: 10px;
+}
+
+.divfocus::after {
+	position: absolute;
+	bottom: 0;
+	left: 46%;
+	border-bottom: 0.5rem solid #2E82FF;
+	border-left: 0.5rem solid transparent;
+	border-right: 0.5rem solid transparent;
+	content: "";
+}
+
+.focusli {
+	background: #2E82FF;
+	color: #FFFFFF;
+}
+
+.select_second_ul>li {
+	padding: 0 0.5rem;
+	box-sizing: border-box;
+	border-bottom: 1px solid #eaeaea;
+}
+
+.s_addr {
+	width: 60%;
+	display: inline-block;
+	vertical-align: middle;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.filtrate-con {
+	position: absolute;
+	top: 87px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+}
+
+
+.filtrate-con .mui-scroll {
+	width: initial;
+}
+
+/* 资讯详情 */
+.news-con p,
+.news-con img {
+	margin-top: 15px;
+}
+
+.details-con {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 60px;
+	top: 87px;
+	overflow: auto;
+}
+
+.br {
+	text-align: center;
+	font-size: 14px;
+	color: #999999;
+	margin: 15px 0;
+}
+
+.promulgator {
+	background-color: #FFFFFF;
+}
+
+.ans-action,
+.ans-action>div {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	color: #666666;
+}
+
+.ans-action {
+	border-top: 1px solid #E1E1E1;
+	margin-top: 15px;
+	padding-top: 15px;
+}
+
+.zan-icon {
+	height: 15px;
+	width: 15px;
+	margin-right: 6px;
+	background: url(../images/like1.png) no-repeat;
+	background-size: cover;
+}
+
+.zan-icon.active {
+	background: url(../images/like2.png) no-repeat;
+	background-size: cover;
+}
+
+.low-icon {
+	height: 15px;
+	width: 15px;
+	margin-right: 6px;
+	background: url(../images/hate1.png) no-repeat;
+	background-size: cover;
+}
+
+.low-icon.active {
+	background: url(../images/hate2.png) no-repeat;
+	background-size: cover;
+}
+
+.talk-icon {
+	height: 15px;
+	width: 15px;
+	margin-right: 6px;
+	background: url(../images/reply1.png) no-repeat;
+	background-size: cover;
+}
+
+.talk-icon.active {
+	background: url(../images/reply2.png) no-repeat;
+	background-size: cover;
+}
+
+.answer-item {
+	margin-bottom: 15px;
+	background-color: #FFFFFF;
+}
+
+.add-answer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 20px;
+	background-color: #FFFFFF;
+}
+
+.exit-btn {
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+	font-weight: bold;
+	color: #2E82FF;
+}
+
+.exit-icon {
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
+}
+
+.star-icon {
+	height: 17.5px;
+	width: 17.5px;
+	margin-right: 5px;
+}
+
+.star-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* 关于我们 */
+.about-box {
+	margin-top: 15px;
+	background-color: #FFFFFF;
+}
+
+.logo-bo {
+	padding: 60px 0 40px;
+}
+
+.now-v {
+	display: flex;
+	width: 100%;
+	font-size: 14px;
+	padding: 18px 15px;
+	align-content: center;
+	justify-content: space-between;
+}
+
+.logo-box {
+	padding: 40px 0 15px;
+	background-color: #FFFFFF;
+}
+
+.logo {
+	margin: 0 auto 15px;
+	height: 60px;
+	width: 60px;
+}
+
+/* 个人信息 */
+.personal {
+	margin-top: 15px;
+}
+
+.personal li>div {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-between;
+	color: #2E82FF;
+	font-size: 14px;
+}
+
+.s-head {
+	height: 25px;
+	width: 25px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 20px;
+}
+
+.per-text {
+	color: #666666;
+	margin-right: 20px;
+}
+
+.btn-blue {
+	position: absolute;
+	bottom: 20px;
+	width: 90%;
+	left: 5%;
+	color: #FFFFFF;
+	background-color: #2E82FF;
+	border-radius: 40px;
+	padding: 10px 0;
+}
+
+.contact-box {
+	margin-top: 15px;
+}
+
+.contact-box li {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	color: #2E82FF;
+	font-size: 14px;
+}
+
+.con-text {
+	color: #666666;
+}
+
+.mytalk,
+.hotconsult,
+.myorder {
+	margin-top: 15px;
+	color: #2E82FF;
+	font-size: 14px;
+}
+
+.mui-table-view-cell {
+	/*    margin-right: 15px !important;
+	padding-right: 0 !important; */
+}
+
+/* .mui-bar-nav {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+} */
+.mui-bar-nav {
+	top: 0;
+
+	-webkit-box-shadow: 0 1px 0px #267CFB;
+	box-shadow: 0 1px 0px #267CFB;
+}
+
+.search-box {
+	margin-top: 15px;
+	background-color: #FFFFFF;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.search-box .mui-search {
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.search-box .mui-scroll-wrapper {
+	top: 80px;
+	/* left: 15px; */
+}
+
+.sedcode {
+	padding: 20px 15px;
+	text-align: right;
+	color: #2E82FF;
+	font-size: 14px;
+}
+
+#changephone .mui-input-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #FFFFFF;
+	padding: 15px 0;
+}
+
+#changephone .mui-input-row:first-child {
+	border-bottom: 1px solid #E1E1E1;
+}
+
+#changephone input {
+	text-align: right;
+}
+
+#changephone .dbbtn {
+	position: absolute;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+	z-index: -1;
+}
+
+/* .发布话题 */
+.publishtalk {
+	font-size: 14px;
+}
+
+.publishtalk .dbbtn {
+	position: fixed;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+}
+
+.choosetalk {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #FFFFFF;
+	padding: 20px 15px;
+	margin: 15px 0;
+}
+
+.talktype {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-around;
+	color: #999999;
+}
+
+label {
+	font-size: 14px;
+	color: #2E82FF;
+}
+
+.talktitle,
+.talktextarea {
+	background-color: #FFFFFF;
+	padding: 20px 15px;
+	margin-bottom: 15px;
+}
+
+.talktitle label,
+.talktextarea label {
+	display: block;
+	color: #2E82FF;
+	padding-bottom: 15px;
+}
+
+.talktitle input,
+.talktextarea textarea {
+	border: none;
+	outline: none;
+	padding-left: 0;
+	font-size: 14px;
+}
+
+.upimg {
+	padding: 0px 15px 15px 15px;
+}
+
+.upimg li {
+	height: 60px;
+	width: 60px;
+	margin-right: 15px;
+	float: left;
+	margin-bottom: 15px;
+}
+
+.upimg li:last-child {
+	margin-right: 0;
+}
+
+.upimg li img {
+	height: 100%;
+}
+
+.dbbtn {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.dbbtn button {
+	flex: 1;
+	margin: 0 15px;
+	border: none;
+	outline: none;
+	border-radius: 40px;
+	padding: 10px 0;
+	background-color: #2E82FF;
+	color: #FFFFFF;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.dbbtn button:first-child {
+	background-color: #FFFFFF;
+	color: #2E82FF;
+	border: 1px solid #2E82FF;
+}
+
+/* 我的回答 */
+.myanswers {
+	margin-top: 15px;
+}
+
+.myanswers .answer-item {
+	margin-bottom: 15px;
+}
+
+.myanswers h4 {
+	margin-bottom: 20px;
+}
+
+.anstext {
+	background-color: #FFFFFF;
+	padding: 20px 15px;
+}
+
+.anstext label {
+	font-size: 14px;
+	color: #2E82FF;
+	display: block;
+	margin-bottom: 15px;
+}
+
+.anstext textarea {
+	border: none;
+	outline: none;
+	font-size: 14px;
+}
+
+.addanswer .dbbtn {
+	position: absolute;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+}
+
+/* 咨询列表 */
+.orderlistitem {
+	padding: 20px 15px;
+	margin-bottom: 15px;
+	background-color: #FFFFFF;
+}
+
+.orderreference {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 13px;
+	color: #666666;
+}
+
+.orderquestion {
+	font-size: 14px;
+	color: #333333;
+	margin: 20px 0;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.orderquestion label {
+	display: block;
+	color: #2E82FF;
+	margin-bottom: 15px;
+}
+
+.orderchange {
+	font-size: 13px;
+	color: #666666;
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.orderchange button {
+	border: 1px solid #2E82FF;
+	color: #2E82FF;
+	border-radius: 30px;
+	margin-left: 5px;
+	padding: 4px 8px;
+}
+
+.ordercontent {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.orangecolor {
+	color: #FBA222;
+}
+
+.bluecolor {
+	color: #2E82FF;
+}
+
+.redcolor {
+	color: #D00000;
+}
+
+.greencolor {
+	color: #17A300;
+}
+
+.myorderlist {
+	margin-top: 15px;
+}
+
+
+/* .律师详情 */
+.lawyerdetails .my-info {
+	position: initial;
+	padding-top: 15px;
+	background: linear-gradient(180deg, rgba(38, 124, 251, 1), rgba(47, 172, 252, 1));
+}
+
+.infornum {
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-around;
+	padding: 20px 0;
+}
+
+.infornum div {
+	flex: 1;
+}
+
+.infornum div:first-child {
+	border-right: 1px dashed #FFFFFF;
+}
+
+.infornum div p {
+	font-size: 14px;
+	color: #FFFFFF;
+}
+
+.pubtitle-box {
+	display: flex;
+	font-size: 14px;
+	font-weight: bold;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.pub-title {
+	color: #2E82FF;
+	text-align: left;
+	padding-left: 5px;
+	border-left: 4px solid #FBA222;
+	margin: 16px 15px;
+}
+
+.goodat .tags {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+	background-color: #FFFFFF;
+}
+
+.goodat .tag {
+	margin: 0 6px 10px;
+}
+
+.detailsitem {
+	margin-bottom: 15px;
+	background-color: #FFFFFF;
+}
+
+.detailservice .mui-slider-item {
+	height: 90px !important;
+	width: 90px !important;
+	margin: 0 auto;
+	background-color: #2E82FF;
+	text-align: center;
+}
+
+.serviceicon {
+	display: inline-block;
+	height: 27px;
+	width: 27px;
+	margin: 13px 0 5px;
+}
+
+.detailservice .mui-slider-item p {
+	color: #FFFFFF;
+}
+
+.evaluatetext {
+	font-size: 14px;
+	color: #666666;
+	margin-bottom: 15px;
+}
+
+.evaluateitem {
+	border-bottom: 1px solid #E1E1E1;
+	margin-bottom: 15px;
+	padding-bottom: 15px;
+}
+
+.evaluateitem:last-child {
+	border: none;
+}
+
+.orangecircle {
+	display: inline-block;
+	vertical-align: top;
+	height: 13px;
+	width: 13px;
+	margin-right: 10px;
+}
+
+.personmessage h5 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.mescontent {
+	border-left: 1px dotted #FBA222;
+	margin-left: 6px;
+	font-size: 13px;
+	color: #666666;
+	line-height: 18px;
+	padding: 5px 0 10px;
+}
+
+.mescontent:last-child {
+	border: none;
+}
+
+.mescontent p {
+	margin-left: 15px;
+}
+
+.other {
+	padding: 10px 0;
+	background-color: #FFFFFF;
+}
+
+.otherbtn {
+	display: block;
+	color: #FFFFFF;
+	border-radius: 25px;
+	width: 90%;
+	margin: 0 auto;
+	padding: 10px 0;
+	background-color: #2E82FF;
+}
+
+/* 免费咨询发布 */
+.zxprogress {
+	padding: 20px 15px;
+}
+
+.progressimg {
+	margin: 5px 6px;
+}
+
+.zxprogress li {
+	float: left;
+	width: 25%;
+	color: #333333;
+	text-align: center;
+}
+
+.zxprogress li:first-child {
+	text-align: left;
+}
+
+.zxprogress li:last-child {
+	text-align: right;
+}
+
+.zxprogress li:nth-child(2) {
+	padding-right: 18px;
+}
+
+.zxprogress li:nth-child(3) {
+	padding-left: 18px;
+}
+
+.switchtitle {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	font-size: 14px;
+}
+
+.mui-switch {
+	height: 20px;
+	width: 32px;
+}
+
+.mui-switch .mui-switch-handle {
+	height: 18px;
+	width: 18px;
+}
+
+.btn-box {
+	margin: 15px 0;
+}
+
+/* 专业咨询 */
+.pricelist li {
+	float: left;
+	height: 30px;
+	width: 20%;
+	text-align: center;
+	line-height: 30px;
+	margin: 2.5%;
+	border-radius: 5px;
+	border: 1px solid #999999;
+}
+
+.pricelist li.active {
+	border: 1px solid #2E82FF;
+	color: #2E82FF;
+}
+
+.exitprice {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+}
+
+input[type='text'] {
+	font-size: 14px !important;
+}
+
+.xsprice input[type='text'] {
+	width: 60%;
+	border: none;
+	outline: none;
+	height: 20px;
+	font-size: 14px;
+	padding: 0;
+}
+
+.exitprice label {
+	display: block;
+	margin-bottom: 15px;
+}
+
+.dbbtn .allprice {
+	flex: 1;
+	font-size: 14px;
+	color: #2E82FF;
+	font-weight: bold;
+	margin-left: 15px;
+}
+
+.publishlsh .mui-input-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #FFFFFF;
+	margin-bottom: 15px;
+	padding: 10px 0;
+}
+
+.mui-input-row input {
+	text-align: right;
+}
+
+.publishlsh .choosels {
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	color: #2E82FF;
+}
+
+/* 选择律师 */
+.nameprice {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.m-radio input {
+	vertical-align: text-bottom;
+}
+
+.publishlsh .recom-item {
+	padding-bottom: 15px;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+/* 发布成功 */
+.successtext {
+	text-align: center;
+	line-height: 24px;
+	margin-top: 30%;
+}
+
+.nick-icon {
+	height: 87px;
+	width: 87px;
+	margin-bottom: 14px;
+	display: inline-block;
+}
+
+.paysuccess .dbbtn {
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	right: 0;
+	z-index: -1;
+}
+
+/* 免费咨询详情 */
+.myorderlistdetials {
+	margin-top: 15px;
+}
+
+.numbox {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	padding: 22px 15px;
+	background-color: #FFFFFF;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.ordertype {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+}
+
+.descitem label {
+	display: block;
+	margin: 20px 0 15px;
+}
+
+.answersecond {
+	padding: 20px 15px;
+	background-color: #F8F8F8;
+	margin: 18px 0 20px 0;
+}
+
+.answeritme {
+	margin-bottom: 20px;
+}
+
+.answeritme:last-child {
+	margin-bottom: 0;
+}
+
+.databox,
+.dataaction {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+}
+
+.dataicon {
+	height: 13px;
+	width: 13px;
+	margin-right: 6px;
+}
+
+.dataaction {
+	padding: 20px 0;
+	border-top: 1px solid #E1E1E1;
+}
+
+/* 律师函件详情 */
+.myorderlistdetialslsh .numbox {
+	background: linear-gradient(180deg, rgba(38, 124, 251, 1), rgba(47, 172, 252, 1));
+	color: #FFFFFF;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.myorderlistdetialslsh .recom-item {
+	justify-content: space-between;
+	margin: 15px 0;
+}
+
+.myorderlistdetialslsh .infor {
+	flex: 1;
+}
+
+.namebtn,
+.myorderlistdetialslsh .smdbbtn {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+}
+
+.myorderlistdetialslsh .smdbbtn button {
+	padding: 0 5px;
+	font-size: 13px;
+	margin: auto 5px;
+	color: #2E82FF;
+	border-radius: 30px;
+	border: 1px solid #2E82FF;
+}
+
+.myorderlistdetialslsh .orderchange {
+	padding: 0 15px 20px;
+}
+
+.lawyerdetailsds .btn-box {
+	position: absolute;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+	z-index: -1;
+}
+
+.lawyerdetailsds .mui-input-row {
+	background-color: #FFFFFF;
+	margin: 15px 0;
+	padding: 10px 0;
+}
+
+.mailingfinfor .mui-input-row {
+	background-color: #FFFFFF;
+	margin: 15px 0;
+	padding: 15px 0;
+}
+
+/* 系统通知 */
+.sysmessagelist {
+	margin-top: 15px;
+	padding: 0 15px 15px;
+	background-color: #FFFFFF;
+}
+
+.sysmessagelist li {
+	padding: 15px 0;
+	line-height: 24px;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.sysdesc {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+
+.dot {
+	display: inline-block;
+	vertical-align: middle;
+	height: 5px;
+	width: 5px;
+	margin-right: 3px;
+	border-radius: 50%;
+	background-color: #DC4F51;
+}
+
+.nickname input[type='text'] {
+	margin-top: 15px;
+	border: none;
+}
+
+.useransitem {
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #E1E1E1;
+}
+
+.useransitem:last-child {
+	border: none;
+	margin-bottom: 60px;
+}
+
+.pubbox {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.pubbox .iptbox {
+	flex: 1;
+	margin-right: 10px;
+}
+
+.pubbox button[type='button'] {
+	height: 40px;
+}
+
+.filtrate {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	padding: 18.5px;
+	background-color: #ffffff;
+	margin-top: 15px;
+}
+
+.filtrate label {
+	display: inline-block;
+	width: 70px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.anscontent {
+	padding-bottom: 15px;
+}
+
+.lawyeransitem {
+	margin-bottom: 15px;
+	padding: 15px;
+	background-color: #FFFFFF;
+}
+.mui-content-gbg{
+	padding: 15px;
+}
+.myorderlistdetials .likebtn {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	border-top: 1px solid #e1e1e1;
+	font-size: 14px;
+	font-weight: bold;
+	color: #2E82FF;
+}
+
+.myorderlistdetials .likebtn div {
+	flex: 1;
+	text-align: center;
+	padding: 15px 0;
+}
+
+.myorderlistdetials .savebtn {
+	border-left: 1px solid #E1E1E1;
+}
+
+textarea{
+	border: none;
+	outline: none;
+}

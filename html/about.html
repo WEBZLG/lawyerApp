@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>关于我们</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="about-box">
+			<div class="mui-text-center logo-bo">
+				<div class="logo"><img src="../images/logo2.png"></div>
+				<h4>慕法法律咨询</h4>
+			</div>
+			<div class="">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell now-v">
+						<span>当前版本</span>
+						<span>v1.0.0</span>
+					</li>
+					<li class="mui-table-view-cell checkversion">
+						<a class="mui-navigate-right">
+							<span>检查新版本</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui("body").on("tap", ".checkversion", function() {
+				var btnArray = ['关闭', '更新'];
+				mui.confirm('v1.0.9', '发现新版本', btnArray, function(e) {
+					console.log(e.index)
+					if(e.index){
+						// mui.openWindow({
+						//     url: 'www.baidu.com', 
+						//     show:{
+						//       autoShow:false
+						//     }
+						//   });
+					}
+				}, 'div')
+			})
+		</script>
+	</body>
+
+</html>

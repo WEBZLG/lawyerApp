@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="login">
+			<div class="loginbg">
+				<img src="../images/denglu_bg.png">
+				<div class="logintitle">
+					<div class="wlogo"><img src="../images/logo1.png"></div>
+					<h4>慕法法律咨询</h4>
+				</div>
+			</div>
+			<div class="phonenum">
+				<div class="usernum">
+					<input type="text" id="zhvalue" placeholder="请输入手机号码">
+				</div>
+				<div class="usercode">
+					<input type="text" id="yzinfo" placeholder="请输入验证码">
+					<input type="button" id="getcode" value="获取验证码" />
+				</div>
+				<div class="other">
+					<button type="button" class="mui-btn otherbtn" id="zhuce">登 录</button>
+				</div>
+				<div class="three">
+					<span class="l-line"></span>
+					<span>第三方登录</span>
+					<span class="l-line"></span>
+				</div>
+				<div>
+					<div class="weixinicon"><img src="../images/wechat.png"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			// 获取验证码
+			function GetCode(tels) {
+				console.log(tels)
+				var yzm;
+				mui.ajax({
+					type: 'post',
+					contentType: "application/json",
+					url: baseurl+"mffl/sendSms", //此处填服务器url，
+					dataType: "json",
+					async: false,
+					data: {
+						phone: tels
+					},
+					success: function(data) { //成功的data函数
+						// var json = eval('(' + data.d + ")");
+						// yzm = json.code;
+						console.log("返回的验证：" + data);
+					}
+				});
+				// return yzm;
+			}
+
+			// 倒计时
+			var countdown = 60;
+
+			function settime(obj) {
+				if (countdown == 0) {
+					obj.removeAttribute("disabled");
+					obj.value = "获取验证码";
+					countdown = 60;
+					return;
+				} else {
+					obj.setAttribute("disabled", true);
+					obj.value = "重新发送(" + countdown + ")";
+					countdown--;
+				}
+				setTimeout(function() {
+					settime(obj)
+				}, 1000)
+			}
+
+			// /检验手机号
+			var byzm;
+			document.getElementById('getcode').addEventListener('tap', function() {
+				var zhuceBox = document.getElementById('zhvalue').value;
+				if (zhuceBox == '') {
+					mui.toast('手机号不能为空');
+					return false;
+				} else if (!(/^(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[8-9])[0-9]{8}$/.test(zhuceBox))) {
+					mui.toast("手机号不正确");
+					return false;
+				} else if (zhuceBox.length != 11) {
+					mui.toast("手机号不正确");
+					return false;
+				} else {
+					settime(this);
+					byzm = GetCode(zhuceBox);
+				}
+			});
+
+			// 登录注册
+			document.getElementById('zhuce').addEventListener('tap', function() {
+				var zhuceBox = document.getElementById('zhvalue').value;
+				var yzinfoBox = document.getElementById('yzinfo').value;
+				if (zhuceBox == '') {
+					mui.toast('手机号不能为空');
+					return false;
+				} else if (zhuceBox.length != 11) {
+					mui.toast('手机号不正确');
+					return false;
+				} else if (yzinfoBox == '') {
+					mui.toast('请填写验证码');
+					return false;
+				} else {
+					if (yzinfoBox == byzm) {
+						console.log("注册成功");
+						adduse(zhuceBox, yzinfoBox,0);
+						mui.toast('注册成功！！')
+						setTimeout(function() {
+							mui.back();
+						}, 1000)
+					} else {
+						mui.toast('验证码输入不对')
+					}
+				};
+			});
+
+			// 注册登录接口
+			function adduse(zh, mm,type) {
+				mui.ajax({
+					type: 'post',
+					contentType: "application/json",
+					url: baseurl+"mffl/login", //此处填写自己的服务器url地址；
+					dataType: "json",
+					data: { //data携带的参数，根据自己的服务器参数写就ok；
+						phone: zh,
+						code: mm,
+						identity : type
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data.d));
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

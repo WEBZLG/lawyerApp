@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>专业咨询列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlist" id="app">
+			<div class="mui-scroll-wrapper" id="pullrefresh">
+				<div class="mui-scroll">
+					<div class="orderlistitem" v-for="item in datalist" :key="item.id">
+						<div class="orderreference" :id="item.id">
+							<div class="ordernum">
+								<p>订单编号：</p>
+								<p>{{item.payMerchantNumber}}</p>
+							</div>
+							<em class="orangecolor">悬赏{{item.money}}元</em>
+							<div class="orderstatus orangecolor" v-if="item.state==0">待支付</div>
+							<div class="orderstatus bluecolor" v-if="item.state==1">正常</div>
+							<div class="orderstatus " v-if="item.state==2">完结</div>
+						</div>
+						<div class="orderquestion">
+							<label>问题内容</label>
+							<p class="ordercontent">{{item.content}}</p>
+							<div class="news-show" v-if="item.imageUrl!=''">
+								<div class="news-img" v-for="imgitem in item.imageUrl.split(';')" :key="imgitem">
+									<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+								</div>
+							</div>
+						</div>
+						<div class="orderchange">
+							<div class="ordertime">{{item.updateTime}}</div>
+							<div class="orderaction">
+								<button type="button" class="mui-btn changebtn" :id='item.id'>修改内容</button>
+								<button type="button" class="mui-btn cancelbtn" :id='item.id'>取消发布</button>
+							</div>
+						</div>
+					</div>
+					<!-- 			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<div class="orderstatus">已取消</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">修改内容</button>
+						<button type="button" class="mui-btn">取消发布</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">悬赏20元</em>
+					<div class="orderstatus bluecolor">已完成</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+				</div>
+			</div> -->
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				longtap: true,
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log('下')
+				setTimeout(function() {
+					datalist(options.token, 0, 10)
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				console.log('上')
+				options.limit = options.limit * 1 + 10;
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					datalist(options.token, options.offset, options.limit)
+				}, 1500);
+			}
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: '',
+					token: '',
+					uid: '',
+					infor: '',
+					offset: '0',
+					limit: '10'
+				},
+				methods: {
+
+				}
+			});
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				datalist(token, 0, 10);
+				mui('body').on('tap', '.cancelbtn', function() {
+					var btnArray = ['是', '否'];
+					mui.confirm('确定取消发布?', '', btnArray, function(e) {
+						var id = this.getAttribute('id');
+						cancel(token, id);
+					})
+				})
+			})
+			// 取消发布
+			function cancel(token, id) {
+				mui.ajax({
+					type: 'DELETE',
+					url: baseurl + "client/mfflConsultations/" + id,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('取消成功！')
+							datalist(options.token);
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 获取列表
+			function datalist(token, offset, limit) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'freeOrPaid': '1',
+						'offset': offset,
+						'limit': limit
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas.data;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			mui("body").on("tap", ".orderreference", function() {
+				var yid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "myorderlistdetailszy.html",
+					id: "myorderlistdetailszy.html",
+					styles: {
+						top: "-44px",
+						bottom: "0",
+						titleNView: {
+							buttons: [{
+								color: '',
+								colorPressed: '',
+								float: '',
+								fontWeight: 'bold',
+								fontSize: '14px',
+								fontSrc: 'fonts/iconfont.ttf',
+								onclick: function() {
+									alert("需要微信公众平台支持")
+								},
+								text: '\ue618'
+							}]
+						}
+					},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						yid: yid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "专业咨询详情",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			mui('body').on('tap', '.changebtn', function() {
+				var yid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "mychangezyzx.html",
+					id: "mychangezyzx.html",
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						yid: yid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "专业咨询修改",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

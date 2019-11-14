@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>合同审核发布</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="publishlsh" id="app">
+			<div class="zxprogress">
+				<div class="progressimg"><img src="../images/rate.png"></div>
+				<ul>
+					<li>发布需求</li>
+					<li>选择律师</li>
+					<li>律师服务</li>
+					<li>完成服务</li>
+				</ul>
+			</div>
+			<div class="choosetalk">
+				<label>服务类型</label>
+				<div class="talktype">
+					<div>合同审核</div>
+				</div>
+			</div>
+			<div class="choosetalk">
+				<label>合同类别</label>
+				<div class="talktype">
+					<select name="httype" onchange="typeselected();">
+						<option value ="">请选择合同类别</option>
+						<option :value="item.id" v-for="item in httypelist" :key='item.id'>{{item.name}}</option>
+					</select>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+			</div>
+			<div class="mui-input-row">
+				<label>收件邮箱</label>
+				<input type="text" id="email" placeholder="请输入电子邮箱">
+			</div>
+			<div class="questioncontent">
+				<div class="talktextarea">
+					<label>备注</label>
+					<div class="">
+						<textarea rows="6" placeholder="请输入备注内容" maxlength="1000" id="bzdesc"></textarea>
+					</div>
+				</div>
+				<div class="upimg clearfix">
+					<ul id="ulelem" class="clearfix">
+						<li class="addimg imageup" id="addimg"><img src="../images/addpic.png"></li>
+					</ul>
+				</div>
+			</div>
+			<div class="mui-content">
+<!-- 				<div class="recom-item">
+					<div class="head-img">
+						<img src="../images/touxiang.png">
+					</div>
+					<div class="infor">
+						<div class="intro">
+							<div class="nameprice">
+								<p class="intro-name">王律师1</p>
+								<div class="m-radio">
+									<label class="orangecolor">398元</label>
+								</div>
+							</div>
+							<p class="intro-city">北京市</p>
+							<p class="intro-company">xxx律师事务所</p>
+						</div>
+						<div class="tags">
+							<span class="tag">婚姻家庭</span>
+							<span class="tag">婚姻家庭</span>
+							<span class="tag">婚姻家庭</span>
+							<span class="tag">婚姻家庭</span>
+						</div>
+					</div>
+				</div> -->
+				<div class="choosels">
+					选择律师
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="dbbtn">
+					<div class="allprice">应付金额（元）：<em class="pricenum" id="pricenum">0</em></div>
+					<button type="button" class="mui-btn" id="gobuy">去支付</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function () {
+			    var token = plus.storage.getItem('token');
+			    options.token=token
+			    var self = plus.webview.currentWebview();
+			    var id = self.id;
+			    // getnewtype(token)
+				gethttype(token)
+			    mui("body").on("tap", "#gobuy", function() {
+			    	publish(token)
+			    });
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
+			})
+			// 获取子页面值
+			window.addEventListener("chooselawyer", function(e) {
+				document.getElementById("pricenum").innerHTML = e.detail.price;
+				options.yid = e.detail.yid;
+			});
+			// 合同审核发布
+			function publish(token) {
+				var email = document.getElementById('email').value;
+				var bzdesc = document.getElementById('bzdesc').value;
+				var money = document.getElementsByClassName('pricenum')[0].innerText;
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflContracts",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'email': email,
+						'typeId': options.httype,
+						'content': bzdesc,
+						'serviceId':0,
+						'imageUrl':imgstr,
+						'serviceLawyerId': options.yid
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							// mui.toast('发布成功！');
+							// mui.back();
+							payfor(token, data.datas)
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+			// 支付
+			function payfor(token, num) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflContracts/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'paymerchantnumber': num,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							console.log(channel)
+							plus.payment.request(channel,data.datas, function(result) {
+								mui.openWindow({
+									url: 'publishsuccess.html',
+									id: 'publishsuccess.html',
+									extras: {
+										//自定义扩展参数，可以用来处理页面间传值  
+									}
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+							
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+			mui("body").on("tap", ".choosels", function() {
+				mui.openWindowWithTitle({
+					url: "chooselawyerlist.html",
+					id: "chooselawyerlist.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						typeid: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "选择律师",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			// 弹出系统选择按钮框
+			function plusReady() {
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".imageup", function() {
+					console.log(this.getAttribute("id"))
+					var id = this.getAttribute("id");
+					page.imgUp(id);
+				});
+				mui(".pricelist").on("tap", "li", function() {
+					for (var i = 0; i < this.parentNode.children.length; i++) {
+						this.parentNode.children[i].classList.remove("active");
+					}
+					this.classList.add("active");
+					var id = this.getAttribute("id");
+					var price = this.innerText;
+					document.getElementsByClassName("pricenum")[0].innerHTML = price;
+					if (id == 8) {
+						document.getElementsByClassName("xspricenum")[0].classList.remove("mui-hidden");
+					} else {
+						document.getElementsByClassName("xspricenum")[0].classList.add("mui-hidden");
+					}
+				})
+
+			}
+			var channel=null;
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: [],
+					typelist:[],
+					httypelist:[],
+					type:"",
+					yid:'',
+					token:'',
+					httype:""
+				},
+				methods: {
+					gohome: function() {
+			
+					}
+				}
+			});
+			
+			// 选类型
+			function selected() {
+				var type = document.getElementsByName("writ")[0];
+				console.log(type.value)
+				options.type = type.value;
+			}
+			function typeselected() {
+				var type = document.getElementsByName("httype")[0];
+				console.log(type.value)
+				options.httype = type.value;
+			}
+			// 获取服务类型
+			function getnewtype(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getserviceidtype",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'serviceid':4
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.typelist = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+			
+			// 获取合同类型
+			function gethttype(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getserviceidtype",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'serviceid':4
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.httypelist = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+			var page = null;
+			var imgArray = [];
+			var imgstr;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						console.log(path)
+						var addli = document.getElementById("addimg");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path + '">';
+						document.getElementById("ulelem").insertBefore(li, addli);
+						upload(path)
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					var addli = document.getElementById("addimg");
+					var li = document.createElement("li");
+					li.innerHTML = '<img src="' + path + '">';
+					document.getElementById("ulelem").insertBefore(li, addli);
+					console.log(path)
+					upload(path)
+				});
+			}
+			//服务端接口路径
+			var server = baseurl + "mffl/uploadimagefile";
+			// 上传文件
+			function upload(files) {
+				var files = [{
+					path: files
+				}];
+				if (files.length <= 0) {
+					plus.nativeUI.alert('没有添加上传文件！');
+					return;
+				}
+				mui.toast('开始上传');
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: 'POST'
+					},
+					function(t, status) { //上传完成
+						plus.nativeUI.closeWaiting();
+						if (status == 200) {
+							mui.toast('上传成功');
+								var imgUrl = JSON.parse(t.responseText).datas.max
+								plus.storage.setItem('uploader', t.responseText); imgArray.push(imgUrl); console.log(imgArray.join(
+									';')); imgstr = imgArray.join(';');
+							}
+							else {
+								mui.toast('上传失败');
+								wt.close();
+							}
+						}
+					); task.setRequestHeader('token', options.token);
+					for (var i = 0; i < files.length; i++) {
+						var f = files[i];
+						task.addFile(f.path, {
+							key: 'file'
+						});
+					}
+					task.start();
+				}
+				if (window.plus) {
+					plusReady();
+				} else {
+					document.addEventListener("plusready", plusReady, false);
+				}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>个人资料</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="personal">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="headimg">
+					<div class="mui-navigate-right">
+						<div>头像</div>
+						<div class="s-head"><img id="head-img" src="../images/touxiang.png"></div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-navigate-right changename">
+						<div>昵称</div>
+						<div class="per-text" id="myname"></div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell changephone">
+					<div class="mui-navigate-right">
+						<div>手机号码</div>
+						<div class="per-text" id="phonenum"></div>
+					</div>
+				</li>
+			</ul>
+			<button type="button" class="btn-blue" id="getout">退出登录</button>
+		</div>
+	</body>
+	<script src="../js/mui.js"></script>
+	<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init();
+		// 监听ffn
+		window.addEventListener('ffn', function(event) {
+			console.log(event)
+			// 数据都在event.detail里面  
+			var val = event.detail.name;
+			var phone = event.detail.phone;
+			document.getElementById('myname').innerHTML=val;
+			document.getElementById('phonenum').innerHTML=phone;
+		})
+
+		mui.plusReady(function() {
+			var token = plus.storage.getItem('token');
+			var userinfo = plus.storage.getItem('userinfo');
+			var message = JSON.parse(userinfo);
+			// alert(userinfo)
+			
+			document.getElementById('head-img').src = imgurl+message.headImgUrl;
+			document.getElementById('myname').innerText = message.nickname;
+			document.getElementById('phonenum').innerText = message.phone;
+
+			// 上传头像
+			mui("body").on("tap", "#headimg", function() {
+				page.imgUp();
+			})
+
+			var page = null;
+			var imgArray = [];
+			var imgstr = "";
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						document.getElementById('head-img').src = path;
+						upload(path)
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					document.getElementById('head-img').src = path;
+					upload(path)
+				});
+			}
+			//服务端接口路径
+			var server = baseurl + "mffl/uploadimagefile";
+			// 上传文件
+			function upload(files) {
+				var files = [{
+					path: files
+				}];
+				if (files.length <= 0) {
+					plus.nativeUI.alert('没有添加上传文件！');
+					return;
+				}
+				mui.toast('开始上传');
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: 'POST'
+					},
+					function(t, status) { //上传完成
+						plus.nativeUI.closeWaiting();
+						if (status == 200) {
+							mui.toast('上传成功');
+							console.log(t.responseText)
+							var imgUrl = JSON.parse(t.responseText).datas.max
+							plus.storage.setItem('uploader', t.responseText);
+							imgArray.push(imgUrl);
+							imgstr = imgArray.join(';');
+							changeinfo(token, imgstr, '', '', '','')
+						} else {
+							mui.toast('上传失败');
+							wt.close();
+						}
+					}
+				);
+				task.setRequestHeader('token', token);
+				for (var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: 'file'
+					});
+				}
+				task.start();
+			}
+		})
+		mui("body").on('tap', '#getout', function() {
+			plus.storage.removeItem('token');
+			plus.storage.removeItem('userinfo');
+			var btnArray = ['是', '否'];
+			mui.confirm('您确定退出?', '', btnArray, function(e) {
+				if (e.index == 0) {
+					//							在ios的手机端执行这个操作
+					if (mui.os.ios || mui.os.ipad || mui.os.iphone) {
+						// 获取所有Webview窗口
+						var curr = plus.webview.currentWebview();
+						var wvs = plus.webview.all();
+						for (var i = 0, len = wvs.length; i < len; i++) {
+							//关闭除主页页面外的其他页面
+							if (wvs[i].getURL() == curr.getURL())
+								continue;
+							plus.webview.close(wvs[i]);
+						}
+						//打开login页面后再关闭主页面
+						plus.webview.open('login.html');
+						curr.close();
+					} else {
+						//	在android执行退出整个应用	
+						plus.runtime.quit();
+					}
+				}
+			})
+		})
+
+		// 修改号码
+		mui("body").on("tap", ".changephone", function() {
+			mui.openWindowWithTitle({
+				url: "changephone.html",
+				id: "changephone.html",
+				styles: {},
+				extras: {
+					// 打开页面的同时，向新页面传递数据。
+					newsId: "0"
+				}
+			}, {
+				//标题栏的背景色和底边线配置
+				backgroundColor: "#ffffff",
+				//bottomBorderColor:"#00ff00",
+				title: {
+					//标题文字的内容和样式配置
+					text: "修改手机号"
+				},
+				back: {
+					image: {
+						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+						imgSrc: "../images/left-icon.png"
+					}
+				}
+			})
+		});
+		// 修改名字
+		mui("body").on("tap", ".changename", function() {
+			var nick = document.getElementsByClassName("per-text")[0].innerHTML
+			mui.openWindowWithTitle({
+				url: "changename.html",
+				id: "changename.html",
+				styles: {},
+				extras: {
+					// 打开页面的同时，向新页面传递数据。
+					newsId: nick
+				}
+			}, {
+				//标题栏的背景色和底边线配置
+				backgroundColor: "#ffffff",
+				//bottomBorderColor:"#00ff00",
+				title: {
+					//标题文字的内容和样式配置
+					text: "修改昵称"
+				},
+				back: {
+					image: {
+						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+						imgSrc: "../images/left-icon.png"
+					}
+				}
+			})
+		});
+	</script>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>评价</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+			.box {
+				display: flex;
+				align-content: center;
+				align-items: center;
+				justify-content: space-around;
+				padding: 15px;
+				text-align: center;
+			}
+
+			.icon-icon {
+				height: 40px;
+				width: 40px;
+				margin-bottom: 15px;
+			}
+
+			.con-box {
+				padding: 15px;
+			}
+
+			.content {
+				border: none;
+				outline: none;
+			}
+
+			.icon-icon1 {
+				background: url(../images/haoping2.png) no-repeat center;
+				background-size: cover;
+			}
+
+			.icon-icon1.active {
+				background: url(../images/haoping1.png) no-repeat center;
+				background-size: cover;
+			}
+
+			.icon-icon2 {
+				background: url(../images/zhongping2.png) no-repeat center;
+				background-size: cover;
+			}
+
+			.icon-icon2.active {
+				background: url(../images/zhongping1.png) no-repeat center;
+				background-size: cover;
+			}
+
+			.icon-icon3 {
+				background: url(../images/chaping2.png) no-repeat center;
+				background-size: cover;
+			}
+
+			.icon-icon3.active {
+				background: url(../images/chaping1.png) no-repeat center;
+				background-size: cover;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="paysuccess">
+			<div class="successtext">
+				<h4>订单已完成，请对此次服务作出评价</h4>
+			</div>
+			<div class="box">
+				<div class="box-item" id="1">
+					<div class="icon-icon icon-icon1"></div>
+					<p>好</p>
+				</div>
+				<div class="box-item" id="2">
+					<div class="icon-icon icon-icon2"></div>
+					<p>中</p>
+				</div>
+				<div class="box-item" id="3">
+					<div class="icon-icon  icon-icon3"></div>
+					<p>差</p>
+				</div>
+
+			</div>
+			<div class="con-box">
+				<label>评价</label>
+				<textarea id="content" rows="6" cols="" placeholder="请输入您对本次服务的评价"></textarea>
+			</div>
+			<div class="dbbtn">
+				<button type="button" class="mui-btn" id="submit">提交</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			var rank;
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var id = self.lshid;
+				var token = plus.storage.getItem('token');
+				mui('body').on('tap', '#submit', function() {
+					var con = document.getElementById('content').value;
+					evalute(token, id, rank, con)
+				})
+
+			})
+
+			$(function() {
+				$(".box").find(".box-item").on("click", function() {
+					var rankid = $(this).attr('id');
+					console.log(rank)
+					rank = rankid;
+					$(this).find('.icon-icon').addClass("active");
+					$(this).siblings('.box-item').find('.icon-icon').removeClass('active');
+				})
+			})
+
+			function evalute(token, lyid, rank, content) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflTypes/saveLawyerComment",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerId': lyid,
+						'rank': rank,
+						'type': 2,
+						'content': content
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.openWindow('evaluatesuccess.html', 'evaluatesuccess.html', {})
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

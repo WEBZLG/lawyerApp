@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>资讯搜索</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="search-box mui-content" id="app">
+			<div class="mui-input-row mui-search">
+				<input id="searchtext" type="search" class="mui-input-clear" placeholder="搜索资讯">
+			</div>
+			<div class="mui-scroll-wrapper" id="pullrefresh">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-chevron">
+						<!-- 	<li class="news-item">
+							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
+							<div class="news-show">
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+							</div>
+							<div class="user-info">
+								<div class="user-box">
+									<div class="user-head"><img src="../images/touxiang.png"></div>
+									<div class="user-type user-type-laywer ">用户</div>
+									<div class="user-name">北京大兴张律师</div>
+								</div>
+								<div class="hot-box">
+									<div class="news-icon"><img src="../images/hot.png"></div>
+									<div class="hot-num">66666</div>
+								</div>
+							</div>
+						</li>
+						<li class=" news-item">
+							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
+							<div class="news-show">
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+							</div>
+							<div class="user-info">
+								<div class="user-box">
+									<div class="user-head"><img src="../images/touxiang.png"></div>
+									<div class="user-type">用户</div>
+									<div class="user-name">北京大兴张律师</div>
+								</div>
+								<div class="hot-box">
+									<div class="news-icon"><img src="../images/hot.png"></div>
+									<div class="hot-num">66666</div>
+								</div>
+							</div>
+						</li>
+						<li class=" news-item one-img">
+							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
+							<div class="news-show">
+								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
+							</div>
+							<div class="user-info">
+								<div class="user-box">
+									<div class="user-head"><img src="../images/touxiang.png"></div>
+									<div class="user-type">用户</div>
+									<div class="user-name">北京大兴张律师</div>
+								</div>
+								<div class="hot-box">
+									<div class="news-icon"><img src="../images/hot.png"></div>
+									<div class="hot-num">66666</div>
+								</div>
+							</div>
+						</li> -->
+						<li class=" news-item" v-for="item in datadetails" :key="item.id">
+							<h4 class="news-title" :id="item.id"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+							<div class="news-show">
+								<p class="news-content">{{item.content}}</p>
+							</div>
+							<div class="news-show" v-if="item.imageUrl!=''">
+								<div class="news-img"><img :src=imgurl+item.imageUrl data-preview-src="" data-preview-group="1"></div>
+							</div>
+							<div class="user-info">
+								<div class="user-box">
+									<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+									<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+									<div class="user-name">{{item.nickname}}</div>
+								</div>
+								<div class="hot-box">
+									<div class="news-icon"><img src="../images/hot.png"></div>
+									<div class="hot-num">{{item.hot}}</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/mui.js"></script>
+		<script src="../js/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: false, //启用右滑关闭功能
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style:'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+					console.log('下')
+				setTimeout(function() {
+					getdatalist(options.token,options.keyword,0,10)
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				console.log('上')
+				options.limit = options.limit*1+10;
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					getdatalist(options.token,options.keyword,options.offset,options.limit)
+				}, 1500);
+			}
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token=token;
+				getdatalist(token,'',options.offset,options.limit)
+				document.getElementById("searchtext").addEventListener("keypress",function(event) {
+				    if(event.keyCode == "13") {
+				        document.activeElement.blur();//收起虚拟键盘
+				        console.log(event.target.value)
+				        event.preventDefault(); // 阻止默认事件---阻止页面刷新
+						options.keyword = event.target.value;
+						getdatalist(token,options.keyword,options.offset,options.limit)
+				    }
+				});
+				
+			});
+
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: [],
+					token:'',
+					title:'',
+					offset:'0',
+					limit:'10',
+					keyword:''
+					
+				},
+				methods: {
+					gohome: function() {
+
+					}
+				}
+			});
+			mui("body").on("tap", "li h4", function() {
+				var infoid = this.getAttribute("id");
+				mui.openWindowWithTitle({
+					url: "newsdetails.html",
+					id: "newsdetails.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						infoid: infoid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "资讯详情"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			function getdatalist(token,title,offset,limit) {
+				// 获取列表
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflInformations/informationList",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'offset': offset,
+						'limit': limit,
+						'title': title
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.datadetails = data.datas.data;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

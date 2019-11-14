@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>我的</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div id="app">
+			<div class="my-bg">
+				<img src="../images/my_bg.png">
+				<div class="my-info">
+					<div class="circle-big" :id="token==null?'login':''">
+						<div class="circle-sm">
+							<div><img :src=imgurl+userinfo.headImgUrl></div>
+						</div>
+					</div>
+					<h4 v-if="token!=null">{{userinfo.nickname}}</h4>
+					<h4 v-if="token==null">点击头像登录</h4>
+				</div>
+			</div>
+			<div class="my-act">
+				<ul class="mui-table-view" id="my-acts">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/grzl.png"></i>个人资料</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/wddd.png"></i>我的订单</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/wdsc.png"></i>我的收藏</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/talk-icon.png"></i>我的话题</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view my-nav" id="ours">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/gywm.png"></i>关于我们</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right"><i class="my-icon"><img src="../images/lxwm.png"></i>联系我们</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				preloadPages: [{
+					url: 'myself.html',
+					id: 'myself.html'
+				}]
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+					otherdetails: [],
+					userinfo: '',
+					token: ''
+				},
+				mounted() {
+
+				}
+			});
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var userinfo = plus.storage.getItem('userinfo');
+				options.userinfo = JSON.parse(userinfo);
+				options.token = token;
+				console.log(options.userinfo)
+				var self = plus.webview.currentWebview();
+				var id = self.id;
+			})
+			var oList = document.getElementById("my-acts");
+			var aLi = oList.children;
+			for (var i = 0; i < aLi.length; i++) {
+				aLi[i].index = i;
+				aLi[i].onclick = function() {
+					console.log(this.index);
+					if (this.index == 0) {
+						mui.openWindowWithTitle({
+							url: "personal.html",
+							id: "personal.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								newsId: "0"
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "个人资料"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					} else if (this.index == 1) {
+						mui.openWindowWithTitle({
+							url: "myorder.html",
+							id: "myorder.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								newsId: "0"
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "我的订单"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					} else if (this.index == 2) {
+						mui.openWindowWithTitle({
+							url: "mycollect.html",
+							id: "mycollect.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								newsId: "0"
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "我的收藏"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					} else {
+						{
+							mui.openWindowWithTitle({
+								url: "mytalk.html",
+								id: "mytalk.html",
+								styles: {},
+								extras: {
+									// 打开页面的同时，向新页面传递数据。
+									newsId: "0"
+								}
+							}, {
+								//标题栏的背景色和底边线配置
+								backgroundColor: "#ffffff",
+								//bottomBorderColor:"#00ff00",
+								title: {
+									//标题文字的内容和样式配置
+									text: "我的话题"
+								},
+								back: {
+									image: {
+										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+										imgSrc: "../images/left-icon.png"
+									}
+								}
+							})
+						}
+					}
+
+				}
+			}
+
+
+			var ourList = document.getElementById("ours");
+			var aboutLi = ourList.children;
+			for (var i = 0; i < aboutLi.length; i++) {
+				aboutLi[i].index = i;
+				aboutLi[i].onclick = function() {
+					console.log(this.index);
+					if (this.index == 0) {
+						mui.openWindowWithTitle({
+							url: "about.html",
+							id: "about.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								newsId: "0"
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "关于我们"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					} else if (this.index == 1) {
+						mui.openWindowWithTitle({
+							url: "contact.html",
+							id: "contact.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								newsId: "0"
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "联系我们"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					}
+				}
+			}
+
+			// 登录
+			mui("body").on('tap', '#login', function() {
+				mui.openWindowWithTitle({
+					url: "login.html",
+					id: "login.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor: "#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "登录",
+						styles: {
+							color: "#ffffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+</html>

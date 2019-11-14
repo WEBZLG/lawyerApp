@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>咨询详情打赏</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="lawyerdetailsds lawyerdetails">
+			<div class="my-info">
+				<div class="circle-big">
+					<div class="circle-sm">
+						<div><img src="../images/touxiang_bg.png"></div>
+					</div>
+				</div>
+				<h4>蹦沙卡拉卡_李乐乐</h4>
+				<h4>XXX律师事务所</h4>
+				<div class="infornum">
+					<div class="">
+						<p>146</p>
+						<p>服务人次</p>
+					</div>
+					<div class="">
+						<p>100%</p>
+						<p>好评率</p>
+					</div>
+				</div>
+			</div>
+			<div class="xsprice mui-content">
+				<div class="pub-sm-title">
+					<div class="vertical-line">热门咨询</div>
+				</div>
+				<div class="pricelist">
+					<ul class="clearfix">
+						<li>20</li>
+						<li>30</li>
+						<li>50</li>
+						<li>68</li>
+						<li>88</li>
+						<li>99</li>
+						<li>168</li>
+						<li class="otherprice" id="8">其他</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="mui-input-row xspricenum mui-hidden">
+				<label>打赏金额</label>
+				<input type="text" id="pricenum" placeholder="请输入打赏金额(元)">
+			</div>
+			<div class="btn-box">
+				<div class="dbbtn">
+					<div class="allprice">应付金额（元）：<em class="pricenum">0</em></div>
+					<button type="button" class="mui-btn" id="payfor">去支付</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui("body").on("tap", ".choosels", function() {
+				mui.openWindowWithTitle({
+					url: "chooselawyerlist.html",
+					id: "chooselawyerlist.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "选择律师",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			mui(".pricelist").on("tap", "li", function() {
+				for (var i = 0; i < this.parentNode.children.length; i++) {
+					this.parentNode.children[i].classList.remove("active");
+				}
+				this.classList.add("active");
+				var id = this.getAttribute("id");
+				var price = this.innerText;
+				document.getElementsByClassName("pricenum")[0].innerHTML = price;
+				if (id == 8) {
+					document.getElementsByClassName("xspricenum")[0].classList.remove("mui-hidden");
+					document.getElementById('pricenum').value="";
+				} else {
+					document.getElementsByClassName("xspricenum")[0].classList.add("mui-hidden");
+				}
+			});
+			var pricenum = document.getElementById('pricenum');
+			pricenum.addEventListener('input',function () {
+			    document.getElementsByClassName("pricenum")[0].innerHTML = pricenum.value;
+			});
+			mui("body").on("tap", "#payfor", function() {
+				mui.openWindow({
+					url: "paysuccess.html"
+				})
+			});
+			
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>律师搜索</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="search-box mui-content" id="app">
+			<form action="" method="">
+				<div class="mui-input-row mui-search">
+					<input type="search" class="mui-input-clear" placeholder="搜索律师" id="search">
+				</div>
+			</form>
+			<div class="mui-scroll-wrapper mui-content">
+				<div class="mui-scroll">
+					<div class="recom-item" v-for="item in lawyerlist" :key="item.id" :id="item.id">
+						<div class="head-img">
+							<img :src=imgurl+item.headImgUrl>
+						</div>
+						<div class="infor">
+							<div class="intro">
+								<p class="intro-name">{{item.nickname}}</p>
+								<p class="intro-city">{{item.areaName}}</p>
+								<p class="intro-company">{{item.lawfirm}}</p>
+							</div>
+							<div class="tags">
+								<span class="tag" v-for="tag in item.fieldList" :key="tag">{{tag}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function () {
+				var token = plus.storage.getItem('token');
+				console.log(token)
+				document.getElementById("search").addEventListener("keypress",function(event) {
+				    if(event.keyCode == "13") {
+				        document.activeElement.blur();//收起虚拟键盘
+				        console.log(event.target.value)
+				        event.preventDefault(); // 阻止默认事件---阻止页面刷新
+						lawyerlist(token,event.target.value)
+				    }
+				});
+				// 律师详情
+				mui("body").on("tap", ".recom-item", function() {
+					var lawyerid = this.getAttribute('id');
+					mui.openWindowWithTitle({
+						url: "lawyerdetails.html",
+						id: "lawyerdetails.html",
+						styles: {},
+						extras: {
+							// 打开页面的同时，向新页面传递数据。
+							lawyerid: lawyerid
+						}
+					}, {
+						//标题栏的背景色和底边线配置
+						backgroundColor: "#267CFB",
+						bottomBorderColor:"#267CFB",
+						title: {
+							//标题文字的内容和样式配置
+							text: "律师详情",
+							styles:{
+								color:"#fffff"
+							}
+						},
+						back: {
+							image: {
+								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+								imgSrc: "../images/wleft-icon.png"
+							}
+						}
+					})
+				});
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					lawyerlist: []
+				},
+				methods: {
+			
+				}
+			});
+			// 律师列表
+			function lawyerlist(token,keyword) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflTypes/getLawyerList",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'keyword': keyword,
+						'offset':0,
+						'limit':100,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.lawyerlist = data.datas.data;
+							//初始化轮播组件
+							gallery = mui('.mui-slider');  
+							gallery.slider();   
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

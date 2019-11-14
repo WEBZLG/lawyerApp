@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>律师详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item{
+				    background-color: #ACCDFE;
+				    height: 90px;
+				    width: 90px;
+				    margin: 0;
+				    margin-right: 27px;
+			}
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item p{
+					color: #FFFFFF;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+				border: none;
+				color: #FFFFFF;
+				background-color: #2E82FF;
+			}
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item:last-child{
+				margin-right: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="lawyerdetails" id="app">
+			<div class="my-info">
+				<div class="circle-big">
+					<div class="circle-sm">
+						<div><img :src=imgurl+datalist.lawyer.headImgUrl></div>
+					</div>
+				</div>
+				<h4>{{datalist.lawyer.nickname}}</h4>
+				<h4>{{datalist.lawyer.lawfirm}}</h4>
+				<div class="infornum">
+					<div class="">
+						<p>{{datalist.lawyer.serverNumber}}</p>
+						<p>服务人次</p>
+					</div>
+					<div class="">
+						<p>{{datalist.lawyer.rating}}%</p>
+						<p>好评率</p>
+					</div>
+				</div>
+			</div>
+			<div class="goodat detailsitem">
+				<div class="pubtitle-box">
+					<div class="pub-title">擅长领域</div>
+				</div>
+				<div class="tags mui-content">
+					<span class="tag" v-for="tag in datalist.lawyer.fieldList" :key="tag">{{tag}}</span>
+				</div>
+			</div>
+			<div class="detailservice detailsitem">
+				<div class="pubtitle-box">
+					<div class="pub-title">律师服务</div>
+				</div>
+				<div class="mui-content" style="overflow: auto;">
+					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height:90px">
+						<div class="mui-scroll"  style="height:90px">
+							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id'>
+								<div class="serviceicon"><img src="../images/twzx.png"></div>
+								<p>{{item.serviceName}}</p>
+								<p v-if="item.serviceName=='图文咨询'">{{item.money}}元/12小时</p>
+								<p v-else>{{item.money}}元/份</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="detailsitem">
+				<div class="pubtitle-box">
+					<div class="pub-title">用户评价</div>
+					<div class="pjmore">更多（0）</div>
+				</div>
+				<div class="mui-content">
+					<div class="evaluateitem" v-for="item in datalist.comment" :key='item.id'>
+						<div class="user-info">
+							<div class="user-box">
+								<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+								<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+								<div class="user-name">{{item.nickname}}</div>
+							</div>
+							<div class="hot-box">
+								<div class="hot-num">{{item.updateTime}}</div>
+							</div>
+						</div>
+						<div class="evaluate">
+							<p class="evaluatetext">{{item.content}}</p>
+							<div class="tags">
+								<span class="tag">{{item.fieldName}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="nodata">暂无评价</div>
+				</div>
+			</div>
+			<div class="detailsitem">
+				<div class="pubtitle-box">
+					<div class="pub-title">个人介绍</div>
+				</div>
+				<div class="personmessage">
+					<div class="mui-content">
+						<h5><span class="orangecircle"><img src="../images/yuan.png"></span>律师寄语</h5>
+						<div class="mescontent">
+							<p>{{datalist.lawyer.content}}</p>
+						</div>
+						<h5><span class="orangecircle"><img src="../images/yuan.png"></span>教育背景</h5>
+						<div class="mescontent">
+							<p>{{datalist.lawyer.education}}</p>
+						</div>
+						<h5><span class="orangecircle"><img src="../images/yuan.png"></span>认证资质</h5>
+						<div class="mescontent">
+							<p>{{datalist.lawyer.thirdlevel}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 		<div class="other">
+				<button type="button" class="mui-btn otherbtn">其他服务</button>
+			</div> -->
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: {},
+					token: '',
+				},
+				methods: {
+
+				}
+			});
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				var self = plus.webview.currentWebview();
+				var lawyerid = self.lawyerid;
+				lawyerdetails(token, lawyerid);
+			})
+
+			// 律师详情
+			function lawyerdetails(token, lawyerid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflTypes/getLawyerDetails",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerId': lawyerid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

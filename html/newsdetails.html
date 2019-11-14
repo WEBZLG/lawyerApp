@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>资讯详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+			.mui-popover .mui-popover-arrow:after {
+				width: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="news-nav">
+				<ul>
+					<li class="gohome"><i class="n-iocn"><img src="../images/hdsy.png"></i>回到首页</li>
+					<li class="grey-line"></li>
+					<li class="publishtalk"><i class="n-iocn"><img src="../images/edit.png"></i>发布话题</li>
+					<li class="grey-line"></li>
+					<li class="newssearch"><i class="n-iocn"><img src="../images/search.png"></i>搜索</li>
+					<li class="grey-line"></li>
+					<li class="mytalks"><i class="n-iocn"><img src="../images/wdht.png"></i>我的话题</li>
+				</ul>
+			</div>
+			<div class="details-con">
+				<div class="mui-content promulgator">
+					<div class="user-info">
+						<div class="user-box">
+							<div class="user-head"><img :src=imgurl+datadetails.headImgUrl></div>
+							<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
+							<div class="user-name">{{datadetails.nickname}}</div>
+						</div>
+						<div class="hot-box">
+							<div class="hot-num">{{datadetails.updateTime}}</div>
+						</div>
+					</div>
+					<h4 class="news-title"><em>#{{datadetails.typeName}}#</em>{{datadetails.title}}</h4>
+					<div class="news-con">
+						<div class="news-text" dir="newcontent" v-html="datadetails.content"></div>
+					</div>
+					<div class="news-show" v-if="datadetails.imageUrl">
+						<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						</div>
+					</div>
+				</div>
+				<div class="br">—— 用户回答 ——</div>
+				<div class="answer">
+					<div class="mui-content answer-item" v-for="(item,index) in otherdetails" :key="item.id">
+						<div class="user-info">
+							<div class="user-box">
+								<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+								<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+								<div class="user-name">{{item.nickname}}</div>
+							</div>
+							<div class="hot-box">
+								<div class="hot-num">{{item.updateTime}}</div>
+							</div>
+						</div>
+						<p class="answer-con" v-html="item.content"></p>
+						<div class="ans-action">
+							<div class="likebtn" :uid="item.id" :idx="index">
+								<div class="zan-icon" :class="[item.praiseType==1?'active':'']"></div>
+								<div class="hot-num">{{item.praise}}</div>
+							</div>
+							<div class="dislikebtn" :uid="item.id"  :idx="index">
+								<div class="low-icon" :class="[item.treadType==1?'active':'']"></div>
+								<div class="hot-num">{{item.tread}}</div>
+							</div>
+							<div class="addtalk" :uid="item.id"  :idx="index">
+								<div class="talk-icon"></div>
+								<div class="hot-num">{{item.number}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="nodata" v-if="otherdetails.length==0">
+						<p>暂无用户回答</p>
+					</div>
+				</div>
+			</div>
+			<div class="add-answer">
+				<div class="hot-box">
+					<div class="news-icon"><img src="../images/hot.png"></div>
+					<div class="hot-num">{{datadetails.hot}}</div>
+				</div>
+				<div class="star-box">
+					<div class="star-icon stars1" v-if="datadetails.collect==0"><img src="../images/star1.png"></div>
+					<div class="star-icon stars2" v-if="datadetails.collect==1"><img src="../images/star2.png"></div>
+					<div class="star-text" id="collect">添加收藏</div>
+				</div>
+				<div class="exit-btn">
+					<div class="exit-icon"><img src="../images/edit.png"></div>
+					<div class="exit-text">添加回答</div>
+				</div>
+			</div>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+			});
+			// 获取传参
+			window.onload = function() {
+				mui.plusReady(function() {
+					var token = plus.storage.getItem('token');
+					var self = plus.webview.currentWebview();
+					var infoid = self.infoid;
+					console.log(infoid);
+					// 获取详情
+					options.infoid = infoid;
+					options.token = token;
+					getdetails(token, infoid);
+					//关闭等待框
+					plus.nativeUI.closeWaiting();
+					//显示当前页面
+					mui.currentWebview.show();
+					mui("body").on("tap", "#collect", function() {
+						collect(token, infoid)
+					})
+					// 点赞
+					mui("body").on("tap", ".likebtn", function() {
+						var uid = this.getAttribute("uid");
+						var idx = this.getAttribute("idx");
+						like(token, uid ,idx)
+					})
+					//踩
+					mui("body").on("tap", ".dislikebtn", function() {
+						var uid = this.getAttribute("uid");
+						var idx = this.getAttribute("idx");
+						dislike(token, uid ,idx)
+					})
+					mui("body").on('tap', '.addtalk', function() {
+						console.log("评论")
+						var uid = this.getAttribute("uid");
+						var idx = this.getAttribute("idx");
+						mui.openWindowWithTitle({
+							url: "useranswer.html",
+							id: "useranswer.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								uid: uid
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: "用户回答"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+
+					})
+				});
+			}
+
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+					otherdetails: [],
+					infoid: '',
+					token: ''
+				},
+				methods: {
+					gohome: function() {
+
+					}
+				}
+			});
+
+
+			// 返回首页
+
+			// 添加回答
+			mui(".add-answer").on("tap", ".exit-btn", function() {
+				mui.openWindowWithTitle({
+					url: "addanswer.html",
+					id: "addanswer.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						informationId: options.infoid,
+						typeName:options.datadetails.typeName,
+						title:options.datadetails.title
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "添加回答"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+
+			// 获取详情
+			function getdetails(token, infoid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflInformations/getInformation",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'informationId': infoid,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datadetails = data.datas.issuer;
+							options.otherdetails = data.datas.reply;
+
+						}else{
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 收藏
+			function collect(token, infoid) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflInformations/addCollect",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'informationId': infoid,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							if(data.datas==1){
+								options.datadetails.collect=1;
+								mui.toast('收藏成功!')
+							}else{
+								options.datadetails.collect=0;
+								mui.toast('取消收藏!')
+							}
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 点赞
+			function like(token,uid,idx) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflInformations/addCommend",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'replyId': uid,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							if(data.datas==1){
+								options.otherdetails[idx].praise = options.otherdetails[idx].praise +1;
+								options.otherdetails[idx].praiseType = 1;
+							}else{
+								options.otherdetails[idx].praise = options.otherdetails[idx].praise -1;
+								options.otherdetails[idx].praiseType = 0;
+							}
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 踩
+			function dislike(token,uid,idx) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflInformations/addTread",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'replyId': uid,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							if(data.datas==1){
+								options.otherdetails[idx].tread = options.otherdetails[idx].tread +1;
+								options.otherdetails[idx].treadType = 1;
+							}else{
+								options.otherdetails[idx].tread = options.otherdetails[idx].tread -1;
+								options.otherdetails[idx].treadType = 0;
+							}
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 返回首页
+			mui(".news-nav").on("tap", ".gohome", function() {
+				var home = plus.webview.getLaunchWebview().getURL();
+				plus.webview.open(home)
+			})
+			mui(".news-nav").on("tap", ".newssearch", function() {
+				mui.openWindowWithTitle({
+					url: "newssearch.html",
+					id: "newssearch.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "资讯搜索"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			// 发布话题
+			mui(".news-nav").on("tap", ".publishtalk", function() {
+				mui.openWindowWithTitle({
+					url: "publishtalk.html",
+					id: "publishtalk.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "发布话题"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			// 我的话题
+			mui(".news-nav").on("tap", ".mytalks", function() {
+				mui.openWindowWithTitle({
+					url: "mytalk.html",
+					id: "mytalk.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "我的话题"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+
+
+			window.addEventListener('refresh', function(e) { //执行刷新
+				location.reload();
+			});
+		</script>
+	</body>
+</html>

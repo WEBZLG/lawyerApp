@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>专业咨询详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!-- <link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" /> -->
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlistdetials" id="app">
+			<div class="numbox">
+				<div class="ordernumber">订单编号：{{datadetails.payMerchantNumber}}</div>
+				<div class="bluecolor">复制</div>
+			</div>
+			<div class="myorderdesc  mui-content">
+				<div class="user-info">
+					<div class="user-box">
+						<div class="user-head"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
+						<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
+						<div class="user-name">{{datadetails.nickname}}</div>
+					</div>
+					<div class="hot-box">
+						<div class="hot-num">{{datadetails.updateTime}}</div>
+					</div>
+				</div>
+				<div class="ordertype">
+					<div class="tags">
+						<!-- <span class="tag" v-for="tag in item.datadetails.userinfo.fieldList" :key="tag">{{tag}}</span> -->
+					</div>
+
+					<div class="orderstatus orangecolor"><em class="orangecolor">悬赏{{datadetails.money}}元</em>
+						{{datadetails.state==0?"未完成":"已完成"}}</div>
+				</div>
+				<div class="descitem">
+					<label>问题内容</label>
+					<div>
+						<p>{{datadetails.content}}</p>
+					</div>
+				</div>
+				<div class="descitem">
+					<label>对方态度</label>
+					<div>
+						<p>{{datadetails.defendantAttitude}}</p>
+					</div>
+				</div>
+				<div class="descitem">
+					<label>我的诉求</label>
+					<div>
+						<p>{{datadetails.myAppeal}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="br">—— 律师解答 ——</div>
+			<div class="mui-content">
+				<div class="lawyeransitem" v-for="item in  datadetails.replyList" :key="item.id">
+					<div class="user-info">
+						<div class="user-box">
+							<div class="user-head"><img :src=imgurl+item.userinfo.headImgUrl></div>
+							<div class="user-type">{{item.userinfo.identity==0?"用户":"律师"}}</div>
+							<div class="user-name">{{item.userinfo.nickname}}</div>
+						</div>
+						<div class="hot-box">
+							<div class="hot-num">{{item.userinfo.updateTime}}</div>
+						</div>
+					</div>
+					<div class="">
+						<p class="anscontent">{{item.reply}}</p>
+						<div class="answersecond" v-for="second in item.consultationReplyList" :key="second.id">
+							<div class="answeritme">
+								<div class="user-info">
+									<div class="user-name bluecolor">{{second.userinfo.nickname}}</div>
+									<div class="hot-num">{{second.updateTime}}</div>
+								</div>
+								<div class="">
+									<p>回复<em>{{item.userinfo.nickname}}：</em>{{second.reply}}</p>
+								</div>
+							</div>
+							<!-- 							<div class="answeritme">
+								<div class="user-info">
+									<div class="user-name bluecolor">北京大兴张律师</div>
+									<div class="hot-num">10-16 14:14</div>
+								</div>
+								<div class="">
+									<p>回复<em>大成法律宋律师：</em>谢谢你宋律师，我已经联系物业了并没有什么实际效果。</p>
+								</div>
+							</div> -->
+						</div>
+						<div class="dataaction">
+							<div class="databox ask" :ansid="datadetails.id" :appendid="item.id">
+								<div class="dataicon"><img src="../images/ask.png"></div>
+								<div>追问<i>2</i></div>
+							</div>
+							<div class="databox">
+								<div class="dataicon"><img src="../images/pay.png"></div>
+								<div>打赏<i>12</i></div>
+							</div>
+							<div class="databox">
+								<div class="dataicon"><img src="../images/Consultation1.png"></div>
+								<div>咨询</div>
+							</div>
+							<div class="databox cainabtn" :ansid="datadetails.id" :bestid="item.id">
+								<div class="dataicon" v-if="!item.best_answer_id"><img src="../images/caina1.png"></div>
+								<div class="dataicon" v-if="item.best_answer_id"><img src="../images/caina.png"></div>
+								<div>采纳ta</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-content pubbox mui-hidden" id="pubipt">
+				<div class="iptbox">
+					<input type="text" placeholder="说点什么" id="saytext">
+				</div>
+				<div class="pubbtnbox">
+					<button type="button" class="mui-btn mui-btn-blue" id="pubtalk">发布</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var infoid = self.yid;
+				options.token = token;
+				options.infoid = infoid;
+				getdetails(token, infoid)
+				mui('body').on('tap', '.cainabtn', function() {
+					var ansid = this.getAttribute('asnid');
+					var bestid = this.getAttribute('bestid');
+					setbestans(token, ansid, bestid);
+					getdetails(token, infoid);
+				});
+				mui('body').on('tap', '.ask', function() {
+					document.getElementById("pubipt").classList.remove('mui-hidden');	
+					var ansid = this.getAttribute('asnid');
+					var appendid = this.getAttribute('appendid');
+					options.ansid = ansid;
+					options.appendid = appendid;
+				});
+			})
+				mui('body').on('tap', '#pubtalk', function() {
+					console.log("追评")
+					var text = document.getElementById('saytext').value;
+					addans(options.token, options.ansid, options.appendid,text)
+				});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+					otherdetails: [],
+					infoid: '',
+					token: '',
+					ansid:'',
+					appendid:''	
+				},
+				methods: {
+					gohome: function() {
+
+					}
+				}
+			});
+			// 获取详情
+			function getdetails(token, infoid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations/" + infoid,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datadetails = data.datas;
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 设置最佳答案
+			function setbestans(token, ansid, bestid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations/setbestanswer",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': ansid,
+						'bestanswerid': bestid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast("设置成功！");
+							getdetails(options.token, options.infoid)
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 追评text
+			function addans(token, ansid, appendid,text) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflConsultations/replyconsultation",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'consultationid': ansid,
+						'appendid': appendid,
+						'reply':text
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast("评论成功！");
+							getdetails(options.token, options.infoid)
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			
+			mui("body").on("tap", ".dsbtn", function() {
+				mui.openWindowWithTitle({
+					url: "myorderdetailsds.html",
+					id: "myorderdetailsds.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "打赏",
+						styles:{
+							color:"#fffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

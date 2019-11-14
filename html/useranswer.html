@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>用户回答</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myanswers" id="app">
+			<div class="mui-content answer-item">
+				<div class="user-info">
+					<div class="user-box">
+						<div class="user-head"><img :src=imgurl+infor.headImgUrl></div>
+						<div class="user-type">{{infor.identity==0?"用户":"律师"}}</div>
+						<div class="user-name">{{infor.nickname}}</div>
+					</div>
+					<div class="hot-box">
+						<div class="hot-num">{{infor.updateTime}}</div>
+					</div>
+				</div>
+				<p class="answer-con">{{infor.content}}</p>
+				<div class="ans-action">
+					<div class="">
+						<div class="zan-icon" :class="[infor.praiseType==1?'active':'']"></div>
+						<div class="hot-num">{{infor.praise}}</div>
+					</div>
+					<div class="">
+						<div class="low-icon" :class="[infor.treadType==1?'active':'']"></div>
+						<div class="hot-num">{{infor.tread}}</div>
+					</div>
+					<div class="">
+						<div class="talk-icon"></div>
+						<div class="hot-num">{{infor.number}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="useranswer mui-content">
+				<div class="useransitem" v-for="item in datalistans" :key="item.id">
+					<div class="user-info">
+						<div class="user-box">
+							<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+							<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+							<div class="user-name">{{item.nickname}}</div>
+						</div>
+						<div class="hot-box">
+							<div class="hot-num">{{item.updateTime}}</div>
+						</div>
+					</div>
+					<p class="answer-con">{{item.content}}</p>
+				</div>
+			</div>
+		</div>
+		<div class="mui-content pubbox">
+			<div class="iptbox">
+				<input type="text" placeholder="说点什么" id="saytext">
+			</div>
+			<div class="pubbtnbox">
+				<button type="button" class="mui-btn mui-btn-blue" id="pubtalk">发布</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var uid = self.uid;
+				console.log(uid)
+				options.token = token;
+				options.uid = uid;
+				getuserans(token,uid)
+				// //评论
+				mui("body").on("tap", "#pubtalk", function() {
+					console.log("确定")
+					var con = document.getElementById("saytext").value;
+					comment(token, uid, con)
+				})
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalistans: '',
+					token:'',
+					uid:'',
+					infor:''
+				},
+				methods: {
+
+				}
+			});
+
+			// 获取用户评论详情
+			function getuserans(token,uid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflInformations/getReply",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						"replyId":uid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.infor = data.datas.reply;
+							options.datalistans = data.datas.comment;
+						} else {
+							mui.toast(data.message);
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
+			// 回答的用户添加评论
+			function comment(token, uid, content) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflInformations/addReplyComment",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'replyId': uid,
+						'content': content
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							getuserans(options.token,options.uid);
+							document.activeElement.blur(); 
+							document.getElementById("saytext").value="";
+						} else {
+							mui.toast(data.message);
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
+		</script>
+	</body>
+
+</html>

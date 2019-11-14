@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>发布话题</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="publishtalk">
+			<div class="choosetalk">
+				<label>话题类别</label>
+				<div class="talktype">
+					<select name="type">
+						<option value="">请选择类别</option>
+						<option value="">1</option>
+						<option value="">2</option>
+					</select>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+			</div>
+			<div class="talktitle">
+				<label>标题</label>
+				<div class="">
+					<input type="text" placeholder="请输入标题">
+				</div>
+			</div>
+			<div class="talktextarea">
+				<label>正文</label>
+				<div class="">
+					<textarea rows="6" placeholder="请输入正文"></textarea>
+				</div>
+			</div>
+			<div class="upimg clearfix">
+				<ul id="ulelem" class="clearfix">
+					<li class="addimg imageup" id="addimg"><img src="../images/addpic.png"></li>
+				</ul>
+			</div>
+			<div class="dbbtn">
+				<button type="button" class="mui-btn ">取消</button>
+				<button type="button" class="mui-btn ">发布</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			// 弹出系统选择按钮框  
+			function plusReady() {
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".imageup", function() {
+					page.imgUp();
+				})
+
+			}
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						// document.getElementById("headimg").src = path;
+						//就是这里www.bcty365.com 
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path){
+					var addli = document.getElementById("addimg");
+					var li = document.createElement("li");
+					li.innerHTML = '<img src="' + path + '">';
+					document.getElementById("ulelem").insertBefore(li,addli);
+				});
+			}
+			//服务端接口路径
+			var server = "http://www.test.cn/aaa.php";
+			//获取图片元素
+			var files = document.getElementById('headimg');
+			// 上传文件
+			function upload() {
+				console.log(files.src);
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: "POST"
+					},
+					function(t, status) { //上传完成
+						if (status == 200) {
+							alert("上传成功：" + t.responseText);
+							wt.close(); //关闭等待提示按钮
+						} else {
+							alert("上传失败：" + status);
+							wt.close(); //关闭等待提示按钮
+						}
+					}
+				);
+				//添加其他参数
+				task.addData("name", "test");
+				task.addFile(files.src, {
+					key: "dddd"
+				});
+				task.start();
+			}
+			if (window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+		</script>
+	</body>
+
+</html>

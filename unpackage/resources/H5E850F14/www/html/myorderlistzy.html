@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>专业咨询列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlist">
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">悬赏20元</em>
+					<div class="orderstatus orangecolor">咨询中</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">修改内容</button>
+						<button type="button" class="mui-btn">取消发布</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<div class="orderstatus">已取消</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">修改内容</button>
+						<button type="button" class="mui-btn">取消发布</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">悬赏20元</em>
+					<div class="orderstatus bluecolor">已完成</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui("body").on("tap", ".orderlistitem", function() {
+				mui.openWindowWithTitle({
+					url: "myorderlistdetailszy.html",
+					id: "myorderlistdetailszy.html",
+					styles: {
+						top:"-44px",
+						bottom:"0",
+						titleNView: { //WebviewTitleNViewStyles类型,定义窗口的标题栏控件样式.设置此属性值则表明创建Webview窗口的标题栏控件,并可通过其属性值设置背景颜色、文本内容、文本颜色等.通过Webview窗口的getTitleNView()方法可获取标题栏控件对象.http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewTitleNViewStyles
+							buttons: [ //Array[ WebviewCustomButtonStyles ]类型,标题栏上的自定义按钮.建的自定义按钮数目不限制,实际应用中建议最多设置4个按钮(包括左侧返回按钮).
+								{
+									color: '', //String类型,按钮上文字颜色.可取值:"#RRGGBB"格式字符串,"rgba(R,G,B,A)".默认值为窗口标题栏控件的标题文字颜色.
+									colorPressed: '', //String类型,按下状态按钮文字颜色.String类型,按钮上文字颜色.可取值:"#RRGGBB"格式字符串,"rgba(R,G,B,A)".默认值为color属性值自动调整透明度为0.3.
+									float: '', //String类型,按钮在标题栏上的显示位置.right:在标题栏中靠右排列显示.left:在标题栏中靠左侧排列显示(在返回键后). 默认:right.
+									fontWeight: 'bold', //String类型,按钮上文字的粗细.normal:标准字体.bold:加粗字体.默认:normal.
+									fontSize: '14px', //String类型,按钮上文字大小.可取值:字体高度像素值,数字加"px"格式字符串.
+									fontSrc: 'fonts/iconfont.ttf', //String类型,按钮上文字使用的字体文件路径.相对路径:相对于当前页面的host位置,如"a.jpg",注意当前页面为网络地址则不支持.绝对路径:如Android平台"/sdcard/logo.png",此类路径通常通过其它5+ API获取的.扩展相对路径URL(RelativeURL):以"_"开头的相对路径,如"_www/a.jpg".本地路径URL:以"file://"开头,后面跟随系统绝对路径.
+									onclick: function(){
+										alert("需要微信公众平台支持")
+									}, //WebviewCustomButtonCallback类型,按钮点击后触发的回调函数.回调函数中将返回此JSON对象
+									text: '\ue618' //String类型,按钮上显示的文字.推荐使用一个字符,超过一个字符可能无法正常显示,使用字体图标时unicode字符表示必须'\u'开头,如"\ue123"(注意不能写成"\e123").
+								}
+							]
+						}
+					},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "专业咨询详情",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,472 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>合同定制详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!-- <link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" /> -->
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlistdetialslsh" id="app">
+			<div class="numbox">
+				<div class="ordernumber">订单状态：
+					<em v-if="datadetails.state==0">发布成功</em>
+					<em v-if="datadetails.state==1">已接单</em>
+					<em v-if="datadetails.state==2">拒绝接单</em>
+					<em v-if="datadetails.state==3">已发货</em>
+					<em v-if="datadetails.state==4">完成交易</em>
+					<em v-if="datadetails.state==5">已撤销订单</em>
+					<em v-if="datadetails.state==6">超时接单撤销，自动退款</em>
+					<em v-if="datadetails.state==7">已退款</em>
+				</div>
+				<div class="">{{datadetails.money}}元</div>
+			</div>
+			<div class="myorderdesc">
+				<div class="recom-item mui-content">
+					<div class="head-img">
+						<img :src=imgurl+laywerinfo.headImgUrl>
+					</div>
+					<div class="infor">
+						<div class="intro">
+							<div class="namebtn">
+								<p class="intro-name">{{laywerinfo.nickname}}</p>
+								<div class="smdbbtn">
+									<button type="button" class="mui-btn dialog"  :sendId="laywerinfo.id" :name="laywerinfo.nickname">联系律师</button>
+									<button type="button" class="mui-btn telephone" :phone="laywerinfo.phone" :id="datadetails.id">拨打电话</button>
+								</div>
+							</div>
+							<p class="intro-city">{{laywerinfo.areaName}}</p>
+							<p class="intro-company">{{laywerinfo.lawfirm}}</p>
+						</div>
+					</div>
+				</div>
+				<div class="choosetalk">
+					<label>合同类别</label>
+					<div class="wsype">{{datadetails.typeName}}</div>
+				</div>
+				<div class="choosetalk">
+					<label>收件邮箱</label>
+					<div class="wsype">{{datadetails.email}}</div>
+				</div>
+				<div class="talktextarea">
+					<label>备注</label>
+					<div class="" v-html="datadetails.content"></div>
+					<div class="news-show" v-if="datadetails.imageUrl!=''">
+						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
+							<img :src=imgurl+imgitem  data-preview-src="" data-preview-group="1">
+						</div>
+					</div>
+				</div>
+				<div class="talktextarea">
+					<div class="ordernum">
+						<span class="ordernumber">订单编号：{{datadetails.payMerchantNumber}}</span>
+						<span class="bluecolor" :num="datadetails.payMerchantNumber" id="copy">复制</span>
+					</div>
+					<p>下单时间：{{datadetails.createTime}}</p>
+					<p>支付时间：{{datadetails.paymentTime}}</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime"></div>
+					<div class="orderaction" v-if="datadetails.state==1">
+						<button type="button" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<!-- <button type="button" class="mui-btn">修改邮寄地址</button> -->
+					</div>
+					<div class="orderaction" v-if="datadetails.state==4">
+						<button type="button" class="mui-btn pjia" :id="datadetails.id">评价</button>
+					</div>
+					<div class="orderaction mui-hidden" v-if="datadetails.state==2">
+						<button type="button" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
+						<button type="button" class="mui-btn"  :id="datadetails.id">查看物流</button>
+					</div>
+					<div class="orderaction mui-hidden" v-if="datadetails.state==3">
+						<button type="button" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<button type="button" class="mui-btn wuliu" :num="datadetails.courierServicesOrder[0].courierNumber" :id="datadetails.id">查看物流</button>
+						<button type="button" class="mui-btn receipt" :id="datadetails.id">确认收到</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var id = self.lshid;
+				options.lshid = id;
+				options.token = token;
+				getdetails(token, id)
+				// mui("body").on('tap', '.refund', function() {
+				// 	refund(token, id)
+				// })
+
+				mui("body").on('tap', '.disrefund', function() {
+					disrefund(token, id)
+				});
+
+				mui("body").on('tap', '.receipt', function() {
+					var id = this.getAttribute("id");
+					receipt(token, id)
+				});
+				
+				mui("body").on('tap', '.wuliu', function() {
+					var num = this.getAttribute("num");
+					receipt(token, num)
+				});
+				// 拨打电话
+				mui("body").on('tap', '.telephone', function() {
+					var phone = this.getAttribute("phone");
+					var htid = this.getAttribute("id");
+					var btnArray = ['拨打', '取消'];
+					mui.confirm('是否拨打' + phone + '?', '提示', btnArray, function(e) {
+						if (e.index == 0) {
+							plus.device.dial(phone, false);
+							phone(options.token, options.htid)
+						}
+					});
+				})
+				
+				// 复制
+				mui("body").on('tap', '#copy', function() {
+					var num = this.getAttribute("num");
+					copy_fun(num)
+				});
+				// 联系律师
+				mui(".smdbbtn").on("tap", ".dialog", function() {
+					var sendId = this.getAttribute("sendId");
+					var newname = this.getAttribute("name");
+					mui.ajax({
+						type: 'post',
+						url: baseurl + "client/mfflChatContents/setStartTime",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", options.token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': options.token
+						},
+						data: {
+							'receiveId': sendId,
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								mui.openWindowWithTitle({
+									url: "dialog.html",
+									id: "dialog.html",
+									styles: {},
+									extras: {
+										// 打开页面的同时，向新页面传递数据。
+										sendId: sendId
+									}
+								}, {
+									//标题栏的背景色和底边线配置
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										//标题文字的内容和样式配置
+										text: newname + "("+data.datas.timeRemaining+")",
+										whiteSpace: "normal"
+									},
+									back: {
+										image: {
+											/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								})
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				});
+			})
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+					laywerinfo:{},
+					otherdetails: [],
+					infoid: '',
+					token: '',
+					lshid: ""
+				},
+				methods: {
+					gohome: function() {
+			
+					}
+				}
+			});
+
+			// 评价
+			mui("body").on("tap", ".pjia", function() {
+				mui.openWindowWithTitle({
+					url: "evaluate.html",
+					id: "evaluate.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						lshId: options.lshid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "打赏",
+						styles:{
+							color:"#fffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+			
+
+			// 申请退款
+			mui("body").on("tap", ".refund", function() {
+				var hid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "drawback.html",
+					id: "drawback.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						id: hid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "申请退款",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+			//获取详情
+			function getdetails(token, id) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/" + id,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.datadetails = data.datas;
+							options.laywerinfo =data.datas.laywerinfo
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+			//申请退款
+			function refund(token, id) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/refund",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': id
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast("申请成功！")
+							getdetails(options.token, options.lshid)
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+			//取消申请退款
+			function disrefund(token, id) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/cancelRefund",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': id
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast("申请成功！")
+							getdetails(options.token, options.lshid)
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+			//确认收货
+			function receipt(token, htid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/ConfirmCompletion",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': htid
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast("申请成功！")
+							getdetails(options.token, options.lshid)
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			//查看快递
+			function ems(token, id) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflLawyerletters/showCourier",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': id
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			//拨打电话
+			function phone(token, htid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/Phone",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': htid
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+		</script>
+	</body>
+
+</html>

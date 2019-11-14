@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>评价成功</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="paysuccess">
+			<div class="successtext">
+				<div class="nick-icon"><img src="../images/published.png" ></div>
+				<h4>评价成功</h4>
+				<p>感谢您对本次服务进行评价!</p>
+			</div>
+			<div class="dbbtn">
+				<button type="button" class="mui-btn">查看订单</button>
+				<button type="button" class="mui-btn gohome">返回首页</button>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			// 返回首页
+			mui(".paysuccess").on("tap", ".gohome", function() {
+				var home = plus.webview.getLaunchWebview().getURL();
+				plus.webview.open(home)
+			})
+		</script>
+	</body>
+</html>

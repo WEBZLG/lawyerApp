@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>邮寄信息</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="mailingfinfor">
+			<div class="mui-input-row">
+				<label>收件人</label>
+				<input type="text" id="name" placeholder="请输入收件人姓名">
+			</div>
+			<div class="mui-input-row">
+				<label>联系方式</label>
+				<input type="text" id="phone" placeholder="请输入联系电话">
+			</div>
+			<div class="talktextarea">
+				<label>备注</label>
+				<div class="">
+					<textarea rows="6" id="address" placeholder="请输入备注内容" maxlength="1000"></textarea>
+				</div>
+			</div>
+			<div class="paysuccess">
+				<div class="dbbtn">
+					<button type="button" class="mui-btn" onclick="mui.back();">取消</button>
+					<button type="button" class="mui-btn" id="savebtn">保存</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var id = self.id;
+				mui('body').on('tap', '#savebtn', function() {
+					var id = this.getAttribute('id');
+					submit(token, id);
+				})
+			})
+
+			function submit(token, id) {
+				var name = document.getElementById('name').value;
+				var phone = document.getElementById('phone').value;
+				var address = document.getElementById('address').value;
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflLawyerletters/writeemailinfo",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id':id,
+						'addRessee':name,
+						'recipientPhoneNumber':phone,
+						'address':address
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('保存成功！')
+							mui.back();
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的评论</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myanswers" id="app">
+			<div class="mui-content answer-item" v-if="datalistans.length!=0" v-for="item in datalistans" :key="item.id">
+				<h4 class="news-title"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+				<div class="hot-num">{{item.updateTime}}</div>
+				<p class="answer-con" v-html="item.content"></p>
+			</div>
+			<div class="mui-text-center" v-if="datalistans.length==0">
+				<p>暂无数据</p>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				getans(token);
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: '',
+					datalistans: ''
+				},
+				methods: {
+
+				}
+			});
+			// 获取我的回答
+			function getans(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflInformations/getComment",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalistans = data.datas;
+						} else {
+							mui.toast(data.message);
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

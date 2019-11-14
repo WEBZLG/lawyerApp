@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>修改昵称</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="nickname">
+			<input type="text" id="nickname" value="" />
+		</div>
+		<div class="other">
+			<button type="button" class="mui-btn otherbtn" id="back">确定</button>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var token = plus.storage.getItem('token');
+				var newsId = self.newsId;
+				console.log(newsId);
+				document.getElementById('nickname').value = newsId
+				//关闭等待框
+				plus.nativeUI.closeWaiting();
+				//显示当前页面
+				mui.currentWebview.show();
+				mui("body").on('tap', '#back', function() {
+					var name = document.getElementById('nickname').value;
+					changeinfo(token, '', name, '', '', function() {
+						// 要发送数据的目标页面id  
+						var fid = plus.webview.getWebviewById("html/personal.html")
+						mui.fire(fid, 'ffn', {
+							name: name
+						});
+						mui.back();
+					})
+				})
+			});
+		</script>
+	</body>
+
+</html>

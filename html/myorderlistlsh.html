@@ -1,0 +1,365 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>律师函列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!-- <link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" /> -->
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlist" id="app">
+			<div class="mui-scroll-wrapper" id="pullrefresh">
+				<div class="mui-scroll">
+					<div class="orderlistitem" v-for="item in datalist" :key="item.id">
+						<div class="orderreference" :id="item.id">
+							<div class="ordernum">订单编号：{{item.payMerchantNumber}}</div>
+							<em class="orangecolor">{{item.money}}元</em>
+							<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
+							<div class="orderstatus bluecolor" v-if="item.payState==1">已支付</div>
+							<div class="orderstatus redcolor" v-if="item.payState==2">退款中</div>
+							<div class="orderstatus" v-if="item.payState==3">已经退款</div>
+						</div>
+						<div class="orderquestion">
+							<label>问题内容</label>
+							<div class="ordercontent">{{item.describe}}</div>
+							<div class="news-show" v-if="item.imageUrl!=''">
+								<div class="news-img" v-for="imgitem in item.imageUrl.split(';')" :key="imgitem">
+									<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+								</div>
+							</div>
+						</div>
+						<div class="orderchange">
+							<div class="ordertime">{{item.updateTime}}</div>
+							<div class="orderaction" v-if="item.payState==0">
+								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
+								<button type="button" class="mui-btn gobuy" :num="item.payMerchantNumber">去支付</button>
+							</div>
+							<!-- 					<div class="orderaction">
+						<button type="button" class="mui-btn">取消退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+					</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn drawback">申请退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+						<button type="button" class="mui-btn">确认收到</button>
+					</div> -->
+						</div>
+					</div>
+					<!-- 			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">298元</em>
+					<div class="orderstatus redcolor">退款中</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">取消退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">298元</em>
+					<div class="orderstatus greencolor">已寄出</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn drawback">申请退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+						<button type="button" class="mui-btn">确认收到</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">398元</em>
+					<div class="orderstatus bluecolor">已完成</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+				</div>
+			</div> -->
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				longtap: true,
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log('下')
+				setTimeout(function() {
+					letterlist(options.token, 0, 10)
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				console.log('上')
+				options.limit = options.limit * 1 + 10;
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					letterlist(options.token, options.offset, options.limit)
+				}, 1500);
+			}
+			var channel = null;
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				letterlist(token,0,10);
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
+
+				// 取消发布
+				mui("body").on("tap", ".cancel", function() {
+					var id = this.getAttribute('yid');
+					console.log(id)
+					var btnArray = ['是', '否'];
+					mui.confirm('确定取消发布?', '', btnArray, function(e) {
+						cancel(token, id);
+					})
+				});
+			})
+
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: [],
+					receiveid: '',
+					token: "",
+					offset:0,
+					limit:10
+				},
+				methods: {
+					gohome: function() {
+
+					}
+				}
+			});
+			// 律师函列表
+			function letterlist(token,offset,limit) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflLawyerletters",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'offset': offset,
+						'limit': limit
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas.data;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 查看详情
+			mui("body").on("tap", ".orderlistitem .orderreference", function() {
+				var lshid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "myorderlistdetailslsh.html",
+					id: "myorderlistdetailslsh.html",
+					styles: {
+						top: "0",
+						bottom: "0",
+					},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						lshid: lshid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor: "#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "律师函详情",
+						styles: {
+							color: "#ffffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+			// 申请退款
+			mui("body").on("tap", ".drawback", function() {
+				mui.openWindowWithTitle({
+					url: "drawback.html",
+					id: "drawback.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "申请退款",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+
+			// 取消发布
+			function cancel(token, id) {
+				mui.ajax({
+					type: 'DELETE',
+					url: baseurl + "client/mfflLawyerletters/" + id,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('取消成功！')
+							letterlist(options.token);
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 支付
+			mui("body").on("tap", ".gobuy", function() {
+				var num = this.getAttribute("num");
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflLawyerletters/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", options.token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': options.token
+					},
+					data: {
+						'paymerchantnumber': num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								mui.openWindow({
+									url: 'paysuccess.html',
+									id: 'paysuccess.html',
+									extras: {
+										//自定义扩展参数，可以用来处理页面间传值  
+									}
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

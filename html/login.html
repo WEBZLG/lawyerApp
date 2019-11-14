@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="login">
+			<div class="loginbg">
+				<img src="../images/denglu_bg.png">
+				<div class="logintitle">
+					<div class="wlogo"><img src="../images/logo1.png"></div>
+					<h4>慕法法律咨询</h4>
+				</div>
+			</div>
+			<div class="phonenum">
+				<div class="usernum">
+					<input type="text" id="zhvalue" placeholder="请输入手机号码">
+				</div>
+				<div class="usercode">
+					<input type="text" id="yzinfo" placeholder="请输入验证码">
+					<input type="button" id="getcode" value="获取验证码" />
+				</div>
+				<div class="other">
+					<button type="button" class="mui-btn otherbtn" id="zhuce">登 录</button>
+				</div>
+				<div class="three">
+					<span class="l-line"></span>
+					<span>第三方登录</span>
+					<span class="l-line"></span>
+				</div>
+				<div>
+					<div class="weixinicon" id="wxBind"><img src="../images/wechat.png"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jpush.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				beforeback: function() {
+					//获得列表界面的webview
+					var list = plus.webview.currentWebview().opener();
+					mui.fire(list, 'refresh');
+					//返回true，继续页面关闭逻辑
+					return true;
+				}
+			});
+			mui.plusReady(function() {
+				// 获取验证码
+				function GetCode(tels) {
+					var yzm;
+					mui.ajax({
+						type: 'post',
+						contentType: "application/x-www-form-urlencoded",
+						url: baseurl + "mffl/sendSms", //此处填服务器url，
+						dataType: "json",
+						async: false,
+						data: {
+							'phone': tels
+						},
+						success: function(data) { //成功的data函数
+							console.log(data);
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+					// return yzm;
+				}
+
+				// 倒计时
+				var countdown = 60;
+
+				function settime(obj) {
+					if (countdown == 0) {
+						obj.removeAttribute("disabled");
+						obj.value = "获取验证码";
+						countdown = 60;
+						return;
+					} else {
+						obj.setAttribute("disabled", true);
+						obj.value = "重新发送(" + countdown + ")";
+						countdown--;
+					}
+					setTimeout(function() {
+						settime(obj)
+					}, 1000)
+				}
+
+				// /检验手机号
+				// var byzm;
+				document.getElementById('getcode').addEventListener('tap', function() {
+					var zhuceBox = document.getElementById('zhvalue').value;
+					if (zhuceBox == '') {
+						mui.toast('手机号不能为空');
+						return false;
+					} else if (!(/^(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[8-9])[0-9]{8}$/.test(zhuceBox))) {
+						mui.toast("手机号不正确");
+						return false;
+					} else if (zhuceBox.length != 11) {
+						mui.toast("手机号不正确");
+						return false;
+					} else {
+						settime(this);
+						// byzm = GetCode(zhuceBox);
+						GetCode(zhuceBox);
+					}
+				});
+
+				// 登录注册
+				document.getElementById('zhuce').addEventListener('tap', function() {
+					var zhuceBox = document.getElementById('zhvalue').value;
+					var yzinfoBox = document.getElementById('yzinfo').value;
+					if (zhuceBox == '') {
+						mui.toast('手机号不能为空');
+						return false;
+					} else if (zhuceBox.length != 11) {
+						mui.toast('手机号不正确');
+						return false;
+					} else if (yzinfoBox == '') {
+						mui.toast('请填写验证码');
+						return false;
+					} else {
+						adduse(zhuceBox, yzinfoBox, 0);
+					};
+				});
+
+				// 注册登录接口
+				function adduse(zh, mm, type) {
+					mui.ajax({
+						type: 'post',
+						contentType: "application/x-www-form-urlencoded",
+						url: baseurl + "mffl/login", //此处填写自己的服务器url地址；
+						dataType: "json",
+						data: { //data携带的参数，根据自己的服务器参数写就ok；
+							phone: zh,
+							code: mm,
+							identity: type
+						},
+						success: function(data) {
+							console.log(data);
+							if (data.errCode == 200) {
+								mui.toast('登录成功!')
+								plus.storage.setItem('token', data.datas.token);
+								var userinfo = JSON.stringify(data.datas.userInfo)
+								plus.storage.setItem('userinfo', userinfo);
+								plus.Push.getRegistrationID(function(res) {
+									if (res.length != 0) {
+										console.log(res)
+										mui.ajax({
+											type: 'post',
+											contentType: "application/x-www-form-urlencoded",
+											url: baseurl + "mffl/updateJPush", //此处填写自己的服务器url地址；
+											dataType: "json",
+											beforeSend: function(XMLHttpRequest) {
+												XMLHttpRequest.setRequestHeader(
+													"token", data.datas.token
+												);
+											},
+											headers: {
+												'contentType': "application/x-www-form-urlencoded",
+												'token': data.datas.token
+											},
+											data: { //data携带的参数，根据自己的服务器参数写就ok；
+												'jpush': res
+											},
+											success: function(res) {
+												if (res.errCode == 200) {
+													setTimeout(function() {
+														mui.back();
+													}, 1000)
+												}
+											},
+											error: function() {}
+										})
+									}
+								})
+
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+				}
+				// 微信授权登录对象
+				// 调用plus.oauth.getServices获取保存
+				var aweixin = null;
+				// 当前环境支持的所有授权登录对象
+				var auths = {};
+
+				// 获取鉴权服务
+				// getService()
+
+				//wx绑定
+				function weixinBind() {
+					plus.nativeUI.showWaiting("正在绑定中...", {
+						padlock: true
+					});
+					if (!aweixin.authResult) {
+						authorize().then(res => {
+							wxBind(1, aweixin.authResult.openid)
+						}).catch(res => {
+							plus.nativeUI.closeWaiting();
+						})
+					} else {
+						wxBind(1, aweixin.authResult.openid)
+					}
+				};
+
+				//wx解绑
+				function weixinUnBind() {
+					plus.nativeUI.showWaiting("正在解绑中...", {
+						padlock: true
+					});
+					wxBind(2, "")
+				}
+
+				// 获取登录授权认证服务列表，单独保存微信登录授权对象
+				// 5+APP在plusready事件中调用，uni-app在vue页面的onLoad中调用
+				function getService() {
+					plus.oauth.getServices(function(services) {
+						for (var i = 0; i < services.length; i++) {
+							auths[services[i].id] = services[i];
+						}
+						aweixin = auths['weixin'];
+					}, function(e) {
+						plus.nativeUI.alert("获取登录授权服务列表失败：" + JSON.stringify(e));
+					});
+				}
+
+
+				//wx登录                
+				document.getElementById('wxBind').addEventListener('tap', function() {
+					plus.nativeUI.showWaiting("正在登录中...", {
+						padlock: true
+					});
+					if (!aweixin.authResult) {
+						authLogin().then(res => {
+							wxLogin() //调用自定义的登录接口
+						}).catch(res => {
+							plus.nativeUI.closeWaiting();
+						})
+					} else {
+						wxLogin() //调用自定义的登录接口
+					}
+				});
+				// 获取微信登录授权对象后可进行授权操作
+				function authorize() {
+					return new Promise(function(resolve, reject) {
+						if (!aweixin) {
+							plus.nativeUI.alert("当前环境不支持微信登录");
+							return;
+						}
+						aweixin.authorize(function(e) {
+							// plus.nativeUI.alert("授权成功："+JSON.stringify(e));
+							authLogin().then(res => {
+								resolve(res);
+							});
+						}, function(e) {
+							// plus.nativeUI.alert("授权失败："+JSON.stringify(e));
+							plus.nativeUI.closeWaiting();
+							reject(e);
+						}, {
+							scope: 'snsapi_userinfo',
+							state: 'authorize test'
+						});
+					})
+				}
+
+				// 获取微信登录授权对象后可进行登录认证操作
+				function authLogin() {
+					return new Promise(function(resolve, reject) {
+						if (!aweixin) {
+							plus.nativeUI.alert("当前环境不支持微信登录");
+							return;
+						}
+						if (!aweixin.authResult) {
+							aweixin.login(function(e) {
+								// plus.nativeUI.alert("登录认证成功!"+JSON.stringify(e));
+								resolve(e);
+							}, function(e) {
+								reject(e);
+							});
+						} else {
+							// plus.nativeUI.alert("已经登录认证!");
+						}
+					})
+				}
+
+			})
+			// 注册极光id
+			// var getRegistrationID = function() {
+			// 	plus.Push.getRegistrationID(function(data) {
+			// 		if (data.length != 0) {
+			// 			console.log(data)
+			// 		}
+			// 	})
+			// }
+		</script>
+	</body>
+</html>

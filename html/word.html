@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>消息</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="mes-list" id="app">
+			<div class="mui-content systerm-message">
+				<div class="mes-head">
+					<div class="mes-img"><img src="../images/xttz.png"></div><!-- <span class="mui-badge mui-badge-danger">1</span> -->
+				</div>
+				<div class="mes-item">
+					<div class="name-time">
+						<h5 class="mes-name">系统通知</h5>
+						<!-- <p class="mes-time">10-15 16:48</p> -->
+					</div>
+					<p class="mes-des" v-if="systermnum==0">暂无系统通知</p>
+					<p v-else>有{{systermnum}}条系统通知</p>
+				</div>
+			</div>
+			<ul class="mui-content user-message">
+				<li :id="item.id" :sendId="item.sendId" :name="item.nickname" v-for="item in datalist" :key="item.id">
+					<div class="mes-head">
+						<div class="mes-img"><img :src=imgurl+item.headImgUrl></div><!-- <span class="mui-badge mui-badge-danger">1</span> -->
+					</div>
+					<div class="mes-item">
+						<div class="name-time">
+							<h5 class="mes-name">{{item.nickname}}</h5>
+							<p class="mes-time">{{item.updateTime}}</p>
+						</div>
+						<p class="mes-des">{{item.content}}</p>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/jpush.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		mui.init({
+			swipeBack: false //启用右滑关闭功能
+		});
+		mui.plusReady(function() {
+			var token = plus.storage.getItem('token');
+			options.token = token;
+			getlist(token);
+			getsys(token)
+		})
+		var options = new Vue({
+			el: '#app',
+			data: {
+				datalist: [],
+				token: "",
+				systermnum:''
+			},
+			methods: {
+			
+			}
+		});
+
+		// 极光推送监听
+		var receiveNotification = function(event) {
+			var content;
+			if (plus.os.name == 'iOS') {
+				content = window.plus.Push.receiveNotification.aps.alert;
+			} else {
+				content = window.plus.Push.receiveNotification.alert;
+			}
+			getlist(options.token)
+			console.log(content)
+		}
+		document.addEventListener("jpush.receiveNotification", receiveNotification, false);
+		document.addEventListener("plusready", function() {
+		    // 监听点击消息事件
+		    plus.push.addEventListener("click", function(msg) {
+		        //根据需要填写
+		        plus.webview.open("word.html");
+		 
+		    }, false);
+		}, false);
+		// 获取系统消息
+		function getsys(token) {
+			mui.ajax({
+				type: 'get',
+				url: baseurl + "client/mfflChatContents/getSystemMessages",
+				dataType: "json",
+				beforeSend: function(XMLHttpRequest) {
+					XMLHttpRequest.setRequestHeader(
+						"token", token
+					);
+				},
+				headers: {
+					'contentType': "application/x-www-form-urlencoded",
+					'token': token
+				},
+				data: {},
+				success: function(data) {
+					console.log(data)
+					if (data.errCode == 200) {
+						options.systermnum = data.datas.length;
+					} else {
+						mui.toast(data.message)
+					}
+				},
+				error: function(err) {
+					console.log(err)
+				}
+			})
+		}
+		// 获取消息列表
+		function getlist(token) {
+			mui.ajax({
+				type: 'get',
+				url: baseurl + "client/mfflChatContents/getMyMessage",
+				dataType: "json",
+				beforeSend: function(XMLHttpRequest) {
+					XMLHttpRequest.setRequestHeader(
+						"token", token
+					);
+				},
+				headers: {
+					'contentType': "application/x-www-form-urlencoded",
+					'token': token
+				},
+				data: {},
+				success: function(data) {
+					console.log(data)
+					if (data.errCode == 200) {
+						options.datalist = data.datas;
+					} else {
+						mui.toast(data.message)
+					}
+				},
+				error: function(err) {
+					console.log(err)
+				}
+			})
+		}
+
+		mui("body").on("tap", ".systerm-message", function() {
+			// console.log(this.getAttribute("name"))
+			// var newname = this.getAttribute("name");
+			mui.openWindowWithTitle({
+				url: "sysmessagelist.html",
+				id: "sysmessagelist.html",
+				styles: {},
+				extras: {
+					// 打开页面的同时，向新页面传递数据。
+					newsId: "0"
+				}
+			}, {
+				//标题栏的背景色和底边线配置
+				backgroundColor: "#ffffff",
+				//bottomBorderColor:"#00ff00",
+				title: {
+					//标题文字的内容和样式配置
+					text: "系统消息"
+				},
+				back: {
+					image: {
+						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+						imgSrc: "../images/left-icon.png"
+					}
+				}
+			})
+		});
+
+		mui(".user-message").on("tap", "li", function() {
+			console.log(this.getAttribute("sendId"))
+			var sendId = this.getAttribute("sendId");
+			var newname = this.getAttribute("name");
+			mui.ajax({
+				type: 'post',
+				url: baseurl + "client/mfflChatContents/setStartTime",
+				dataType: "json",
+				beforeSend: function(XMLHttpRequest) {
+					XMLHttpRequest.setRequestHeader(
+						"token", options.token
+					);
+				},
+				headers: {
+					'contentType': "application/x-www-form-urlencoded",
+					'token': options.token
+				},
+				data: {
+					'receiveId': sendId,
+				},
+				success: function(data) {
+					console.log(data)
+					if (data.errCode == 200) {
+						mui.openWindowWithTitle({
+							url: "dialog.html",
+							id: "dialog.html",
+							styles: {},
+							extras: {
+								// 打开页面的同时，向新页面传递数据。
+								sendId: sendId
+							}
+						}, {
+							//标题栏的背景色和底边线配置
+							backgroundColor: "#ffffff",
+							//bottomBorderColor:"#00ff00",
+							title: {
+								//标题文字的内容和样式配置
+								text: newname + "("+data.datas.timeRemaining+")",
+								whiteSpace: "normal"
+							},
+							back: {
+								image: {
+									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+									imgSrc: "../images/left-icon.png"
+								}
+							}
+						})
+					} else {
+						mui.toast(data.message)
+					}
+				},
+				error: function(err) {
+					console.log(err)
+				}
+			})
+		});
+	</script>
+</html>

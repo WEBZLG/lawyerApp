@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>律师函列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlist">
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">298元</em>
+					<div class="orderstatus orangecolor">咨询中</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">申请退款</button>
+						<button type="button" class="mui-btn">修改邮寄地址</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">298元</em>
+					<div class="orderstatus redcolor">退款中</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn">取消退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">298元</em>
+					<div class="orderstatus greencolor">已寄出</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+					<div class="orderaction">
+						<button type="button" class="mui-btn drawback">申请退款</button>
+						<button type="button" class="mui-btn">查看物流</button>
+						<button type="button" class="mui-btn">确认收到</button>
+					</div>
+				</div>
+			</div>
+			<div class="orderlistitem">
+				<div class="orderreference">
+					<div class="ordernum">订单编号：2019017150536290007</div>
+					<em class="orangecolor">398元</em>
+					<div class="orderstatus bluecolor">已完成</div>
+				</div>
+				<div class="orderquestion">
+					<label>问题内容</label>
+					<p class="ordercontent">您好请问邻居家总在半夜装修我可以告他吗？已经好几...</p>
+				</div>
+				<div class="orderchange">
+					<div class="ordertime">10-18 11:01</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui("body").on("tap", ".orderlistitem .orderreference", function() {
+				mui.openWindowWithTitle({
+					url: "myorderlistdetailslsh.html",
+					id: "myorderlistdetailslsh.html",
+					styles: {
+						top:"0",
+						bottom:"0",
+					},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "律师函详情",
+						styles: {
+							color: "#ffffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+			
+			mui("body").on("tap", ".drawback", function() {
+				mui.openWindowWithTitle({
+					url: "drawback.html",
+					id: "drawback.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "申请退款",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

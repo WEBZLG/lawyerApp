@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>免费咨询详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="myorderlistdetials">
+			<div class="numbox">
+				<div class="ordernumber">订单编号：2019017150536290007</div>
+				<div class="bluecolor">复制</div>
+			</div>
+			<div class="myorderdesc  mui-content">
+				<div class="user-info">
+					<div class="user-box">
+						<div class="user-head"><img src="../images/touxiang.png"></div>
+						<div class="user-type">用户</div>
+						<div class="user-name">北京大兴张律师</div>
+					</div>
+					<div class="hot-box">
+						<div class="hot-num">10-16 14:14</div>
+					</div>
+				</div>
+				<div class="ordertype">
+					<div class="tags">
+						<span class="tag">婚姻家庭</span>
+					</div>
+					<div class="orderstatus orangecolor">咨询中</div>
+				</div>
+				<div class="descitem">
+					<label>问题内容</label>
+					<div>
+						<p> 您好请问邻居家总在半夜装修我可以告他吗？已经好几天了，每天晚上一到十点左右就开始叮叮当当的，我本来就经常失眠，最近更严重了，真的是太崩溃了！</p>
+					</div>
+				</div>
+				<div class="descitem">
+					<label>对方态度</label>
+					<div>
+						<p> 您好请问邻居家总在半夜装修我可以告他吗？已经好几天了，每天晚上一到十点左右就开始叮叮当当的，我本来就经常失眠，最近更严重了，真的是太崩溃了！</p>
+					</div>
+				</div>
+				<div class="descitem">
+					<label>我的诉求</label>
+					<div>
+						<p> 您好请问邻居家总在半夜装修我可以告他吗？已经好几天了，每天晚上一到十点左右就开始叮叮当当的，我本来就经常失眠，最近更严重了，真的是太崩溃了！</p>
+					</div>
+				</div>
+			</div>
+			<div class="br">——  律师解答  ——</div>
+			<div class="mui-content">
+				<div class="lawyeransitem">
+					<div class="user-info">
+						<div class="user-box">
+							<div class="user-head"><img src="../images/touxiang.png"></div>
+							<div class="user-type">用户</div>
+							<div class="user-name">北京大兴张律师</div>
+						</div>
+						<div class="hot-box">
+							<div class="hot-num">10-16 14:14</div>
+						</div>
+					</div>
+					<div class="">
+						<p class="anscontent">您好，根据您提供的描述，该邻居的行为已经构成扰民行为若沟通无效可以联系物业进行处理，严重的可以报警处理。</p>
+						<div class="answersecond">
+							<div class="answeritme">
+								<div  class="user-info">
+									<div class="user-name bluecolor">北京大兴张律师</div>
+									<div class="hot-num">10-16 14:14</div>
+								</div>
+								<div class="">
+									<p>回复<em>大成法律宋律师：</em>谢谢你宋律师，我已经联系物业了并没有什么实际效果。</p>
+								</div>
+							</div>
+							<div class="answeritme">
+								<div  class="user-info">
+									<div class="user-name bluecolor">北京大兴张律师</div>
+									<div class="hot-num">10-16 14:14</div>
+								</div>
+								<div class="">
+									<p>回复<em>大成法律宋律师：</em>谢谢你宋律师，我已经联系物业了并没有什么实际效果。</p>
+								</div>
+							</div>
+						</div>
+						<div class="dataaction">
+							<div class="databox">
+								<div class="dataicon"><img src="../images/ask.png" ></div>
+								<div>追问<i>2</i></div>
+							</div>
+							<div class="databox dsbtn">
+								<div class="dataicon"><img src="../images/pay.png" ></div>
+								<div>打赏<i>12</i></div>
+							</div>
+							<div class="databox">
+								<div class="dataicon"><img src="../images/Consultation1.png" ></div>
+								<div>咨询</div>
+							</div>
+							<div class="databox">
+								<div class="dataicon"><img src="../images/caina1.png" ></div>
+								<div>采纳ta</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui("body").on("tap", ".dsbtn", function() {
+				mui.openWindowWithTitle({
+					url: "myorderdetailsds.html",
+					id: "myorderdetailsds.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						newsId: "0"
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "打赏",
+						styles:{
+							color:"#fffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+		</script>
+	</body>
+
+</html>

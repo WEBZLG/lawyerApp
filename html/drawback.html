@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>申请退款</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="mailingfinfor">
+<!-- 			<div class="choosetalk">
+				<label>退款原因</label>
+				<div class="talktype">
+					<select name="type">
+						<option value="">请选择</option>
+					</select>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+			</div>
+			<div class="choosetalk">
+				<label>退款原因</label>
+				<div class="bluecolor">
+					238元
+				</div>
+			</div> -->
+			<div class="talktextarea">
+				<label>退款说明(必填)</label>
+				<div class="">
+					<textarea rows="6" placeholder="请输入退款说明" maxlength="1000" id="data"></textarea>
+				</div>
+			</div>
+<!-- 			<div class="talktextarea">
+				<label>上传凭证(选填)</label>
+				<div class="upimg ">
+					<ul id="ulelemss" class="clearfix">
+						<li class="addimg imageup" id="addimgss"><img src="../images/addpic.png"></li>
+					</ul>
+				</div>
+			</div> -->
+			
+			<div class="paysuccess">
+				<div class="dbbtn">
+					<button type="button" class="mui-btn" onclick="mui.back();">取消</button>
+					<button type="button" class="mui-btn refund">提交</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function () {
+			    var token = plus.storage.getItem('token');
+			    var self = plus.webview.currentWebview();
+			    var id = self.hid;
+				
+				mui("body").on('tap', '.refund', function() {
+					var reason = document.getElementById('data').value;
+					if(reason==""){
+						mui.toast('请填写退款原因')
+					}else{
+						refund(token, id,reason)
+					}
+				})
+			})
+			
+			//申请退款
+			function refund(token, id,reason) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/refund",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': id,
+						'refundreason':reason
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast("申请成功！")
+							mui.back();
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,413 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>免费咨询修改</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="" id="app">
+			<div class="zxprogress">
+				<div class="progressimg"><img src="../images/rate.png"></div>
+				<ul>
+					<li>发布</li>
+					<li>律师解答</li>
+					<li>采纳答案</li>
+					<li>完成</li>
+				</ul>
+			</div>
+			<div class="choosetalk">
+				<label>问题类别</label>
+				<div class="talktype">
+					<select name="type" onchange="selected()" id="select">
+						<option value="">请选择类别</option>
+						<option :value="item.id" v-for="item in typelist" :key="item.id">{{item.name}}</option>
+					</select>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+			</div>
+			<div class="questioncontent">
+				<div class="talktextarea">
+					<label>问题内容</label>
+					<div class="">
+						<textarea rows="6" placeholder="请输入问题内容" maxlength="1000" id="notedata1"></textarea>
+					</div>
+				</div>
+				<div class="upimg clearfix">
+					<ul id="ulelem" class="clearfix">
+						<li v-for="imgitem in imgArray1" :key="imgitem">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						</li>
+						<li class="addimg imageup" id="addimg"><img src="../images/addpic.png"></li>
+					</ul>
+				</div>
+			</div>
+			<div class="otherattitude">
+				<div class="talktextarea">
+					<div class="switchtitle">
+						<label>对方态度<span class="orangecolor">（选填）</span></label>
+						<div class="mui-switch mui-switch-blue mui-switch-mini" id="otherSwitch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="othercontent mui-hidden">
+						<textarea rows="6" placeholder="请输入问题内容" maxlength="1000" id="notedata2"></textarea>
+					</div>
+				</div>
+				<div class="upimg otherupimg mui-hidden clearfix">
+					<ul id="ulelems" class="clearfix">
+						<li v-if="imgArray11[0] != ''" v-for="imgitem in imgArray11" :key="imgitem">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						</li>
+						<li class="addimg imageup" id="addimgs"><img src="../images/addpic.png"></li>
+					</ul>
+				</div>
+			</div>
+			<div class="myappeal">
+				<div class="talktextarea">
+					<div class="switchtitle">
+						<label>我的诉求<span class="orangecolor">（选填）</span></label>
+						<div class="mui-switch mui-switch-blue mui-switch-mini" id="mySwitch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="mycontent mui-hidden">
+						<textarea rows="6" placeholder="请输入问题内容" maxlength="1000" id="notedata3"></textarea>
+					</div>
+				</div>
+				<div class="upimg myupimg mui-hidden clearfix">
+					<!-- 					<ul id="ulelemss" class="clearfix">
+						<li class="addimg imageup" id="addimgss"><img src="../images/addpic.png"></li>
+					</ul> -->
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="dbbtn">
+					<button type="button" class="mui-btn" onclick="mui.back();">取消</button>
+					<button type="button" class="mui-btn" id="publishbtn">发布</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			
+			mui.init();
+			mui.plusReady(function() {
+
+				// 弹出系统选择按钮框
+				mui("body").on("tap", ".imageup", function() {
+					console.log(this.getAttribute("id"));
+					var id = this.getAttribute("id");
+					options.imgid = id;
+					page.imgUp(id);
+				})
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var infoid = self.yid;
+				console.log(infoid)
+				options.token = token;
+				getnewtype(token);
+				getdetails(token, infoid)
+				mui("body").on("tap", "#publishbtn", function() {
+					publish(token);
+				})
+			})
+		var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+					typelist: [],
+					infoid: '',
+					token: '',
+					type: '',
+					imgid: '',
+					imgArray1:[],
+					imgArray11:[],
+			
+				},
+				methods: {
+			
+				}
+			});
+				document.getElementById("mySwitch").addEventListener("toggle", function(event) {
+					if (event.detail.isActive) {
+						document.getElementsByClassName("myupimg")[0].classList.remove("mui-hidden");
+						document.getElementsByClassName("mycontent")[0].classList.remove("mui-hidden");
+					} else {
+						document.getElementsByClassName("myupimg")[0].classList.add("mui-hidden");
+						document.getElementsByClassName("mycontent")[0].classList.add("mui-hidden");
+					}
+				});
+				document.getElementById("otherSwitch").addEventListener("toggle", function(event) {
+					if (event.detail.isActive) {
+						document.getElementsByClassName("otherupimg")[0].classList.remove("mui-hidden");
+						document.getElementsByClassName("othercontent")[0].classList.remove("mui-hidden");
+					} else {
+						document.getElementsByClassName("otherupimg")[0].classList.add("mui-hidden");
+						document.getElementsByClassName("othercontent")[0].classList.add("mui-hidden");
+					}
+				});
+
+			// 问题类别
+			function selected() {
+				var type = document.getElementsByName("type")[0];
+				console.log(type.value)
+				options.type = type.value;
+			}
+			// 获取咨詢类型
+			function getnewtype(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getserviceidtype",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'serviceid':1
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.typelist = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+			// 获取详情
+			function getdetails(token, infoid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations/" + infoid,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datadetails = data.datas;
+							var select = document.getElementById('select');
+							for (var i = 0; i < select.options.length; i++){  
+							        if (select.options[i].text == data.datas.typename){  
+							            select.options[i].selected = true;  
+										options.type = select.options[i].value;
+							            break;  
+							        }  
+							    } 
+							document.getElementById('notedata1').innerText = data.datas.content;
+							document.getElementById('notedata2').innerText = data.datas.defendantAttitude;
+							document.getElementById('notedata3').innerText = data.datas.myAppeal;
+							imgstr = data.datas.imageUrl;
+							imgstr2 = data.datas.defendantUrl;
+							var imgArray1 = data.datas.imageUrl.split(';');
+							var imgArray11 = data.datas.defendantUrl.split(';');
+							options.imgArray1 = imgArray1;
+							options.imgArray11 = imgArray11;
+							
+							
+							
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+			// 免费咨询发布
+			function publish(token) {
+				var content = document.getElementById('notedata1').value;
+				var content2 = document.getElementById('notedata2').value;
+				var content3 = document.getElementById('notedata3').value;
+				mui.ajax({
+					type: 'put',
+					url: baseurl + "client/mfflConsultations",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': options.infoid,
+						'type': options.type,
+						'content': content,
+						'imageUrl': imgstr,
+						'defendantAttitude': content2,
+						'defendantUrl': imgstr2,
+						'myAppeal': content3,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast('修改成功！');
+							mui.back();
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+
+
+
+			var page = null;
+			var imgArray = [];
+			var imgArray2 = [];
+			var imgstr='';
+			var imgstr2='';
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						if (options.imgid == 'addimg') {
+							var addli = document.getElementById("addimg");
+							var li = document.createElement("li");
+							li.innerHTML = '<img src="' + path + '">';
+							document.getElementById("ulelem").insertBefore(li, addli);
+						} else {
+							var addli = document.getElementById("addimgs");
+							var li = document.createElement("li");
+							li.innerHTML = '<img src="' + path + '">';
+							document.getElementById("ulelems").insertBefore(li, addli);
+						}
+						upload(path)
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					if (options.imgid == 'addimg') {
+						var addli = document.getElementById("addimg");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path + '">';
+						document.getElementById("ulelem").insertBefore(li, addli);
+					} else {
+						var addli = document.getElementById("addimgs");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path + '">';
+						document.getElementById("ulelems").insertBefore(li, addli);
+					}
+					upload(path)
+				});
+			}
+			//服务端接口路径
+			var server = baseurl + "mffl/uploadimagefile";
+			// 上传文件
+			function upload(files) {
+				var files = [{
+					path: files
+				}];
+				if (files.length <= 0) {
+					plus.nativeUI.alert('没有添加上传文件！');
+					return;
+				}
+				mui.toast('开始上传');
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: 'POST'
+					},
+					function(t, status) { //上传完成
+						plus.nativeUI.closeWaiting();
+						if (status == 200) {
+							imgArray = [];
+							imgArray2 = [];
+							mui.toast('上传成功');
+							var imgUrl = JSON.parse(t.responseText).datas.max
+							plus.storage.setItem('uploader', t.responseText);
+							if (options.imgid == 'addimg') {
+								imgArray.push(imgurl + imgUrl);
+								imgstr = imgArray.join(';');
+							} else if(options.imgid == 'addimgs'){
+								imgArray2.push(imgurl + imgUrl);
+								imgstr2 = imgArray.join(';');
+							}
+						} else {
+							mui.toast('上传失败');
+							wt.close();
+						}
+					}
+				);
+				task.setRequestHeader('token', options.token);
+				for (var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: 'file'
+					});
+				}
+				task.start();
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>对话窗口</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+			#container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+
+			.header {
+				background: #000;
+				height: 40px;
+				color: #fff;
+				line-height: 34px;
+				font-size: 20px;
+				padding: 0 10px;
+			}
+
+			.footer {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				display: flex;
+				align-content: center;
+				align-items: center;
+				padding: 10px 15px;
+				background-color: #F0F0F0;
+			}
+
+
+			#user_face_icon {
+				width: 25px;
+				height: 25px;
+				border-radius: 50%;
+				margin-right: 10px;
+				margin-top: -8px;
+			}
+
+			#btn {
+				display: block;
+				height: 30px;
+				width: 50px;
+				text-align: center;
+			}
+
+			.content {
+				font-size: 12px;
+				overflow: auto;
+				padding: 5px;
+				position: absolute !important;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 82px;
+			}
+
+			.content li {
+				margin-top: 10px;
+				padding-left: 10px;
+				display: block;
+				clear: both;
+				overflow: hidden;
+			}
+
+			.content li img {
+				float: left;
+			}
+
+			.content li span {
+				background: #7cfc00;
+				padding: 10px;
+				border-radius: 10px;
+				float: left;
+				margin: 6px 10px 0 10px;
+				max-width: 310px;
+				border: 1px solid #ccc;
+				box-shadow: 0 0 3px #ccc;
+			}
+
+			.content li img.imgleft {
+				float: left;
+				height: 54px;
+				width: 54px;
+				border-radius: 10px;
+				overflow: hidden;
+			}
+
+			.content li img.imgright {
+				float: right;
+				float: right;
+				height: 54px;
+				width: 54px;
+				border-radius: 10px;
+				overflow: hidden;
+			}
+
+			.content li span.spanleft {
+				float: left;
+				background: #fff;
+			}
+
+			.content li span.spanright {
+				float: right;
+				background: #7cfc00;
+			}
+
+			.dighead {
+				height: 30px;
+				width: 30px;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<div id="container">
+				<ul class="content mui-scroll">
+					<li v-for="item in datalist" :key="item.id">
+						<div v-if="item.identity==0"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
+						<div v-if="item.identity==1"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
+					</li>
+				</ul>
+				<div class="footer">
+					<div id="user_face_icon"><img src="../images/+2.png" alt=""></div>
+					<input id="text" type="text" placeholder="说点什么吧...">
+					<span id="btn">发送</span>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				beforeback: function() {
+					closed(options.token, options.sendId)
+				}
+			});
+
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var sendId = self.sendId;
+				var userinfo = plus.storage.getItem('userinfo');
+				options.userinfo = JSON.parse(userinfo);
+				console.log(options.userinfo)
+				options.sendId = sendId;
+				options.token = token;
+				getlist(token, sendId, 0, 100);
+			})
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: [],
+					sendId: '',
+					token: "",
+					userinfo: ''
+				},
+				methods: {
+					gohome: function() {
+
+					}
+				}
+			});
+			window.onload = function() {
+				var btn = document.getElementById('btn');
+				var text = document.getElementById('text');
+				var contentbox = document.getElementsByTagName('ul')[0];
+
+				btn.onclick = function() {
+					if (text.value == '') {
+						alert('不能发送空消息');
+					} else {
+						sendmsg(options.token, options.sendId, text.value);
+					}
+				}
+				// 发送信息
+				function sendmsg(token, rid, content) {
+					mui.ajax({
+						type: 'post',
+						url: baseurl + "client/mfflChatContents/sendMessageText",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': token
+						},
+						data: {
+							'receiveId': rid,
+							'content': content
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
+									'" class="imgright"><span class="spanright">' + text.value + '</span></li>';
+								text.value = '';
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				}
+			}
+			// 发送图片
+			function sendimg(token, rid, content) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflChatContents/sendMessageImg",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'receiveId': rid,
+						'file': content
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							// options.datalist = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
+
+			// 关闭触发
+			function closed(token, id) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflChatContents/setEndTime",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'receiveId': id
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							// options.datalist = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 获取聊天记录
+			function getlist(token, id, offset, limit) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflChatContents/getChatRecord",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'receiveId': id,
+						'offset': offset,
+						'limit': limit
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas.data
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>
