@@ -122,6 +122,7 @@
 			window.addEventListener("chooselawyer", function(e) {
 				document.getElementById("pricenum").innerHTML = e.detail.price;
 				options.yid = e.detail.yid;
+				lawyerdetails(options.token,e.detail.yid)
 			});
 			// 合同审核发布
 			function publish(token) {
@@ -217,7 +218,7 @@
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						typeid: "0"
+						typeid: "4"
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -323,7 +324,37 @@
 					}
 				});
 			}
-			
+			// 律师详情
+			function lawyerdetails(token, lawyerid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflTypes/getLawyerDetails",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerId': lawyerid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.lawyerdetails = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
 			
 			// 获取合同类型
 			function gethttype(token) {

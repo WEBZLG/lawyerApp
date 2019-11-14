@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>评价成功</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+	<body>
+		<div class="mes-list" id="app">
+			<div class="mui-content">
+				<div class="evaluateitem" v-for="item in datalist" :key='item.id'>
+					<div class="user-info">
+						<div class="user-box">
+							<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+							<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+							<div class="user-name">{{item.nickname}}</div>
+						</div>
+						<div class="hot-box">
+							<div class="hot-num">{{item.updateTime}}</div>
+						</div>
+					</div>
+					<div class="evaluate">
+						<p class="evaluatetext">{{item.content}}</p>
+						<div class="tags">
+							<span class="tag">{{item.fieldName}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="nodata" v-if="datalist.length==0">暂无评价</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			// 返回首页
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				var self = plus.webview.currentWebview();
+				var lawyerid = self.lawyerid;
+				lawyerdetails(token, lawyerid);
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: {},
+					token: '',
+				},
+				methods: {
+			
+				}
+			});
+			function lawyerdetails(token, lawyerid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflTypes/getLawyerComment",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerId': lawyerid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
+		</script>
+	</body>
+</html>

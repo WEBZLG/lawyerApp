@@ -37,8 +37,8 @@
 									<div class="nameprice">
 										<p class="intro-name" :id="item.id">{{item.nickname}}</p>
 										<div class="m-radio">
-											<label class="orangecolor">{{item.lwyerPersonalServiceMoney}}元</label>
-											<input name="radio" type="radio" :value="item.lwyerPersonalServiceMoney" class="rds" :id="item.id" onclick='getVals(this)'>
+											<label class="orangecolor">{{item.price}}元</label>
+											<input name="radio" type="radio" :value="item.price" class="rds" :id="item.id" onclick='getVals(this)'>
 										</div>
 									</div>
 									<p class="intro-city">{{item.areaName}}</p>
@@ -86,7 +86,7 @@
 			function pulldownRefresh() {
 					console.log('下')
 				setTimeout(function() {
-					// lawyerlist(options.token,options.comid,options.type,options.order,'',0,10)
+					lawyerlist(options.token,options.pubtype,0,10)
 					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				}, 1500);
 			}
@@ -99,7 +99,7 @@
 				options.limit = options.limit*1+10;
 				setTimeout(function() {
 					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
-					// lawyerlist(options.token,options.comid,options.type,options.order,'',options.offset,options.limit)
+					lawyerlist(options.token,options.pubtype,options.offset,options.limit)
 				}, 1500);
 			}
 			var options = new Vue({
@@ -107,11 +107,12 @@
 				data: {
 					lawyerlist: [],
 					lawyertype: [],
+					token:"",
 					type: '',
 					comid: '',
 					order: '',
 					offset:0,
-					limit:10
+					limit:10,
 					pubtype:''
 				},
 				methods: {
@@ -120,23 +121,11 @@
 			});
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
-				console.log(token)
-				var old_back = mui.back;
-				mui.back = function() {
-					old_back()
-				};
+				options.token = token;
 				var self = plus.webview.currentWebview();
-				    var lshtype = self.type;//获得参数
-					var httype = self.typeid;
-					options.pubtype = httype;
-					console.log(lshtype)
-				lawyertype(token);
-				if(httype==0||httype==1){
-					htlawyerlist(token,httype);
-				}else{
-					lawyerlist(token);
-				}
-
+					options.pubtype = self.typeid;
+					console.log(options.pubtype)
+					lawyerlist(token,self.typeid,0,10)
 			});
 			// 获取单选框
 			function getVals(event) {
@@ -147,12 +136,12 @@
 					return;
 				} else {
 					//获取父页面A.html
-					if(options.pubtype==0){
+					if(options.pubtype==4){
 					var main = plus.webview.getWebviewById("publishht.html");
 						
-					}else if(options.pubtype==1){
+					}else if(options.pubtype==5){
 						var main = plus.webview.getWebviewById("publishhtdz.html");
-					}else{
+					}else if(options.pubtype==3){
 						var main = plus.webview.getWebviewById("publishlsh.html");
 					}
 					//自定义事件,事件名为changeCity
@@ -206,43 +195,12 @@
 					}
 				})
 			});
-			// 律师类型
-			function lawyertype(token) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflTypes/getLawyerType",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {},
-					success: function(data) {
-						console.log(data)
-						if (data.errCode == 200) {
-							options.lawyertype = data.datas;
-							//初始化轮播组件
-							gallery = mui('.mui-slider');
-							gallery.slider();
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				})
-			}
+
 			// 律师列表
-			function lawyerlist(token) {
+			function lawyerlist(token,serviceId,offset,limit) {
 				mui.ajax({
 					type: 'get',
-					url: baseurl + "client/mfflLawyerletters/getsrvicelaywer",
+					url: baseurl + "client/mfflTypes/getSelectLawyerList",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
 						XMLHttpRequest.setRequestHeader(
@@ -254,8 +212,9 @@
 						'token': token
 					},
 					data: {
-						'offset': 0,
-						'limit': 100,
+						'serviceId':serviceId,
+						'offset': offset,
+						'limit': limit,
 					},
 					success: function(data) {
 						console.log(data)
@@ -270,41 +229,6 @@
 					}
 				})
 			}
-			// 合同律师列表
-			function htlawyerlist(token,httype) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflContracts/getsrvicelaywer",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'service':httype,
-						'offset': 0,
-						'limit': 100,
-					},
-					success: function(data) {
-						console.log(data)
-						if (data.errCode == 200) {
-							options.lawyerlist = data.datas.data;
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				})
-			}
-
-
 		</script>
 
 	</body>

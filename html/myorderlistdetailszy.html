@@ -39,14 +39,20 @@
 				</div>
 				<div class="descitem">
 					<label>问题内容</label>
-					<div>
-						<p>{{datadetails.content}}</p>
+					<div v-html="datadetails.content"></div>
+					<div class="news-show" v-if="datadetails.imageUrl!=''">
+						<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						</div>
 					</div>
 				</div>
 				<div class="descitem">
 					<label>对方态度</label>
-					<div>
-						<p>{{datadetails.defendantAttitude}}</p>
+					<div v-html="datadetails.defendantAttitude"></div>
+					<div class="news-show" v-if="datadetails.defendantUrl!=''">
+						<div class="news-img" v-for="imgitem in datadetails.defendantUrl.split(';')" :key="imgitem">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						</div>
 					</div>
 				</div>
 				<div class="descitem">

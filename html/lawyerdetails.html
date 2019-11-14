@@ -65,7 +65,7 @@
 				<div class="mui-content" style="overflow: auto;">
 					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height:90px">
 						<div class="mui-scroll"  style="height:90px">
-							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id'>
+							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id' :id="item.serverId">
 								<div class="serviceicon"><img src="../images/twzx.png"></div>
 								<p>{{item.serviceName}}</p>
 								<p v-if="item.serviceName=='图文咨询'">{{item.money}}元/12小时</p>
@@ -78,7 +78,7 @@
 			<div class="detailsitem">
 				<div class="pubtitle-box">
 					<div class="pub-title">用户评价</div>
-					<div class="pjmore">更多（0）</div>
+					<div class="pjmore">更多（{{datalist.comment.length}}）</div>
 				</div>
 				<div class="mui-content">
 					<div class="evaluateitem" v-for="item in datalist.comment" :key='item.id'>
@@ -99,7 +99,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="nodata">暂无评价</div>
+					<div class="nodata" v-if="datalist.comment.length==0">暂无评价</div>
 				</div>
 			</div>
 			<div class="detailsitem">
@@ -123,9 +123,9 @@
 					</div>
 				</div>
 			</div>
-			<!-- 		<div class="other">
-				<button type="button" class="mui-btn otherbtn">其他服务</button>
-			</div> -->
+			<div class="other">
+				<button type="button" class="mui-btn otherbtn">找Ta服务</button>
+			</div>
 		</div>
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
@@ -138,6 +138,7 @@
 				data: {
 					datalist: {},
 					token: '',
+					lawyerid:''
 				},
 				methods: {
 
@@ -148,6 +149,7 @@
 				options.token = token;
 				var self = plus.webview.currentWebview();
 				var lawyerid = self.lawyerid;
+				options.lawyerid = lawyerid;
 				lawyerdetails(token, lawyerid);
 			})
 
@@ -181,7 +183,32 @@
 						console.log(err)
 					}
 				})
-			}
+			};
+			mui('body').on('tap','.pjmore',function(){
+				mui.openWindowWithTitle({
+					url: "evaluatelist.html",
+					id: "evaluatelist.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						lawyerid: options.lawyerid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					//bottomBorderColor:"#00ff00",
+					title: {
+						//标题文字的内容和样式配置
+						text: "评价列表"
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			})
 		</script>
 	</body>
 </html>

@@ -70,29 +70,26 @@
 				</div>
 			</div>
 			<div class="mui-content">
-<!-- 				<div class="recom-item">
+				<div class="recom-item" v-if="lawyerdetails !='">
 					<div class="head-img">
-						<img src="../images/touxiang.png">
+						<img :src= imgurl+lawyerdetails.lawyer.headImgUrl >
 					</div>
 					<div class="infor">
 						<div class="intro">
 							<div class="nameprice">
-								<p class="intro-name">王律师1</p>
+								<p class="intro-name">{{lawyerdetails.lawyer.nickname}}</p>
 								<div class="m-radio">
-									<label class="orangecolor">398元</label>
+									<label class="orangecolor" ><em dir="price"></em>元</label>
 								</div>
 							</div>
-							<p class="intro-city">北京市</p>
-							<p class="intro-company">xxx律师事务所</p>
+							<!-- <p class="intro-city">北京市</p> -->
+							<p class="intro-company">{{lawyerdetails.lawyer.lawfirm}}</p>
 						</div>
-						<div class="tags">
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
+						<div class="tags" v-for="item in lawyerdetails.service" :key='item'> 
+							<span class="tag">{{item}}</span>
 						</div>
 					</div>
-				</div> -->
+				</div>
 				<div class="choosels">
 					选择律师
 				</div>
@@ -139,7 +136,8 @@
 					typelist:[],
 					type:"",
 					yid:'',
-					token:''
+					token:'',
+					lawyerdetails:[]
 				},
 				methods: {
 					gohome: function() {
@@ -184,10 +182,43 @@
 					}
 				});
 			}
+			// 律师详情
+			function lawyerdetails(token, lawyerid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflTypes/getLawyerDetails",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerId': lawyerid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.lawyerdetails = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
 			// 获取子页面值
 			window.addEventListener("chooselawyer", function(e) {
 				document.getElementById("pricenum").innerHTML = e.detail.price;
+				document.getElementById("price").innerHTML = e.detail.price;
 				options.yid = e.detail.yid;
+				lawyerdetails(options.token, e.detail.yid)
 			});
 			// 律师函发布
 			function publish(token) {
@@ -293,7 +324,7 @@
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						type: options.type,
+						typeid: 3,
 						
 					}
 				}, {

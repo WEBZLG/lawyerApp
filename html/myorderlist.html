@@ -38,6 +38,9 @@
 							</div>
 						</div>
 					</div>
+					<div class="nodata" v-if="datalist.length==0">
+						暂无数据
+					</div>
 				</div>
 			</div>
 		</div>
@@ -59,13 +62,27 @@
 					}
 				}
 			});
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				datalist(token, 0, 10)
+				mui('body').on('tap', '.cancelbtn', function() {
+					var id = this.getAttribute('id');
+					var btnArray = ['是', '否'];
+					mui.confirm('确定取消发布?', '', btnArray, function(e) {
+						if (e.index == 0) {
+							cancel(token, id);
+						}
+					})
+				})
+			})
 			/**
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
 				console.log('下')
 				setTimeout(function() {
-					datalist(options.token,0,10)
+					datalist(options.token, 0, 10)
 					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				}, 1500);
 			}
@@ -78,7 +95,7 @@
 				options.limit = options.limit * 1 + 10;
 				setTimeout(function() {
 					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
-					datalist(options.token,options.offset,options.limit)
+					datalist(options.token, options.offset, options.limit)
 				}, 1500);
 			}
 			var options = new Vue({
@@ -88,29 +105,14 @@
 					token: '',
 					uid: '',
 					infor: '',
-					offset:'0',
-					limit:'10'
+					offset: '0',
+					limit: '10'
 				},
 				methods: {
 
 				}
 			});
-			mui.plusReady(function() {
-				var token = plus.storage.getItem('token');
-				options.token = token;
-				datalist(token,0,10)
-				mui('body').on('tap', '.cancelbtn', function() {
-					var id = this.getAttribute('id');
-					var btnArray = ['是', '否'];
-					mui.confirm('确定取消发布?', '', btnArray, function(e) {
-						if (e.index == 0) {
-							cancel(token, id);
-						}
-					})
-				})
 
-
-			})
 
 
 			// 取消发布
@@ -144,7 +146,7 @@
 				})
 			}
 			// 获取列表
-			function datalist(token,offset,limit) {
+			function datalist(token, offset, limit) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflConsultations",
