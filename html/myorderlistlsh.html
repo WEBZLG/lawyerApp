@@ -18,7 +18,9 @@
 				<div class="mui-scroll">
 					<div class="orderlistitem" v-for="item in datalist" :key="item.id">
 						<div class="orderreference" :id="item.id">
-							<div class="ordernum">订单编号：{{item.payMerchantNumber}}</div>
+							<div class="ordernum">
+								<p>订单编号：</p>
+								<p>{{item.payMerchantNumber}}</p></div>
 							<em class="orangecolor">{{item.money}}元</em>
 							<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
 							<div class="orderstatus bluecolor" v-if="item.payState==1">已支付</div>

@@ -26,7 +26,7 @@
 				<label>文书类型</label>
 				<div class="talktype">
 					<select name="writ" onchange="selected();">
-						<option value ="">请选择文书类型</option>
+						<option value="">请选择文书类型</option>
 						<option :value="item.id" v-for="item in typelist" :key='item.id'>{{item.name}}</option>
 					</select>
 					<span class="mui-icon mui-icon-arrowdown"></span>
@@ -70,23 +70,23 @@
 				</div>
 			</div>
 			<div class="mui-content">
-				<div class="recom-item" v-if="lawyerdetails !='">
+				<div class="recom-item" v-if="isshow==true">
 					<div class="head-img">
-						<img :src= imgurl+lawyerdetails.lawyer.headImgUrl >
+						<img :src=imgurl+lawyerdetails.headImgUrl>
 					</div>
 					<div class="infor">
 						<div class="intro">
 							<div class="nameprice">
-								<p class="intro-name">{{lawyerdetails.lawyer.nickname}}</p>
+								<p class="intro-name">{{lawyerdetails.nickname}}</p>
 								<div class="m-radio">
-									<label class="orangecolor" ><em dir="price"></em>元</label>
+									<label class="orangecolor">{{lawyerdetails.price}}元</label>
 								</div>
 							</div>
-							<!-- <p class="intro-city">北京市</p> -->
-							<p class="intro-company">{{lawyerdetails.lawyer.lawfirm}}</p>
+							<p class="intro-city">{{lawyerdetails.areaName}}</p>
+							<p class="intro-company">{{lawyerdetails.lawfirm}}</p>
 						</div>
-						<div class="tags" v-for="item in lawyerdetails.service" :key='item'> 
-							<span class="tag">{{item}}</span>
+						<div class="tags">
+							<span class="tag" v-for="item in lawyerdetails.fieldList" :key='item'>{{item}}</span>
 						</div>
 					</div>
 				</div>
@@ -108,7 +108,7 @@
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
-				options.token=token
+				options.token = token
 				var self = plus.webview.currentWebview();
 				var id = self.id;
 				getnewtype(token)
@@ -128,20 +128,21 @@
 					alert("获取支付通道失败：" + e.message);
 				});
 			})
-			var channel=null;
+			var channel = null;
 			var options = new Vue({
 				el: '#app',
 				data: {
 					datalist: [],
-					typelist:[],
-					type:"",
-					yid:'',
-					token:'',
-					lawyerdetails:[]
+					typelist: [],
+					type: "",
+					yid: '',
+					token: '',
+					lawyerdetails:'',
+					isshow:false
 				},
 				methods: {
 					gohome: function() {
-			
+
 					}
 				}
 			});
@@ -167,7 +168,7 @@
 						'token': token
 					},
 					data: {
-						'serviceid':2
+						'serviceid': 2
 					},
 					success: function(data) {
 						console.log(data);
@@ -182,43 +183,13 @@
 					}
 				});
 			}
-			// 律师详情
-			function lawyerdetails(token, lawyerid) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflTypes/getLawyerDetails",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'lawyerId': lawyerid
-					},
-					success: function(data) {
-						console.log(data)
-						if (data.errCode == 200) {
-							options.lawyerdetails = data.datas;
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				})
-			};
 			// 获取子页面值
 			window.addEventListener("chooselawyer", function(e) {
+				options.isshow = true;
+				console.log(JSON.parse(e.detail.item))
+				options.lawyerdetails = JSON.parse(e.detail.item);
 				document.getElementById("pricenum").innerHTML = e.detail.price;
-				document.getElementById("price").innerHTML = e.detail.price;
 				options.yid = e.detail.yid;
-				lawyerdetails(options.token, e.detail.yid)
 			});
 			// 律师函发布
 			function publish(token) {
@@ -245,7 +216,7 @@
 					data: {
 						'Realname': myname,
 						'typeId': options.type,
-						'number':mycall,
+						'number': mycall,
 						'describe': mydesc,
 						'imageUrl': imgstr,
 						'We': myname2,
@@ -268,7 +239,7 @@
 					}
 				});
 			}
-			
+
 			// 支付
 			function payfor(token, num) {
 				mui.ajax({
@@ -291,7 +262,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
-							plus.payment.request(channel,data.datas, function(result) {
+							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -304,7 +275,7 @@
 								console.log(error)
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
-							
+
 						} else {
 							mui.toast(data.message)
 						}
@@ -314,9 +285,9 @@
 					}
 				});
 			}
-			
-			
-		
+
+
+
 			mui("body").on("tap", ".choosels", function() {
 				mui.openWindowWithTitle({
 					url: "chooselawyerlist.html",
@@ -325,7 +296,7 @@
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
 						typeid: 3,
-						
+
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -348,25 +319,25 @@
 			});
 			// 弹出系统选择按钮框
 
-				mui("body").on("tap", ".imageup", function() {
-					console.log(this.getAttribute("id"))
-					var id = this.getAttribute("id");
-					page.imgUp(id);
-				});
-				mui(".pricelist").on("tap", "li", function() {
-					for (var i = 0; i < this.parentNode.children.length; i++) {
-						this.parentNode.children[i].classList.remove("active");
-					}
-					this.classList.add("active");
-					var id = this.getAttribute("id");
-					var price = this.innerText;
-					document.getElementsByClassName("pricenum")[0].innerHTML = price;
-					if (id == 8) {
-						document.getElementsByClassName("xspricenum")[0].classList.remove("mui-hidden");
-					} else {
-						document.getElementsByClassName("xspricenum")[0].classList.add("mui-hidden");
-					}
-				})
+			mui("body").on("tap", ".imageup", function() {
+				console.log(this.getAttribute("id"))
+				var id = this.getAttribute("id");
+				page.imgUp(id);
+			});
+			mui(".pricelist").on("tap", "li", function() {
+				for (var i = 0; i < this.parentNode.children.length; i++) {
+					this.parentNode.children[i].classList.remove("active");
+				}
+				this.classList.add("active");
+				var id = this.getAttribute("id");
+				var price = this.innerText;
+				document.getElementsByClassName("pricenum")[0].innerHTML = price;
+				if (id == 8) {
+					document.getElementsByClassName("xspricenum")[0].classList.remove("mui-hidden");
+				} else {
+					document.getElementsByClassName("xspricenum")[0].classList.add("mui-hidden");
+				}
+			})
 
 			var page = null;
 			var imgArray = [];
@@ -445,25 +416,27 @@
 						plus.nativeUI.closeWaiting();
 						if (status == 200) {
 							mui.toast('上传成功');
-								var imgUrl = JSON.parse(t.responseText).datas.max
-								plus.storage.setItem('uploader', t.responseText); imgArray.push(imgUrl); console.log(imgArray.join(
-									';')); imgstr = imgArray.join(';');
-							}
-							else {
-								mui.toast('上传失败');
-								wt.close();
-							}
+							var imgUrl = JSON.parse(t.responseText).datas.max
+							plus.storage.setItem('uploader', t.responseText);
+							imgArray.push(imgUrl);
+							console.log(imgArray.join(
+								';'));
+							imgstr = imgArray.join(';');
+						} else {
+							mui.toast('上传失败');
+							wt.close();
 						}
-					); task.setRequestHeader('token', options.token);
-					for (var i = 0; i < files.length; i++) {
-						var f = files[i];
-						task.addFile(f.path, {
-							key: 'file'
-						});
 					}
-					task.start();
+				);
+				task.setRequestHeader('token', options.token);
+				for (var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: 'file'
+					});
 				}
-
+				task.start();
+			}
 		</script>
 	</body>
 

@@ -27,6 +27,7 @@
 				width: 80%;
 				border-radius: 5px;
 			}
+
 			.mui-bottom {
 				display: none;
 			}
@@ -119,13 +120,17 @@
 						<div class="dataaction">
 							<div class="databox ask" :ansid="datadetails.id" :appendid="item.id">
 								<div class="dataicon"><img src="../images/ask.png"></div>
-								<div>追问<i>2</i></div>
+								<div>追问
+									<!-- <i>2</i> -->
+								</div>
 							</div>
-							<div class="databox">
+							<div class="databox dsbtn" :ansid="datadetails.id" :qid="item.id" :info="JSON.stringify(item.userinfo)">
 								<div class="dataicon"><img src="../images/pay.png"></div>
-								<div>打赏<i>12</i></div>
+								<div>打赏
+									<!-- <i>12</i> -->
+								</div>
 							</div>
-							<div class="databox">
+							<div class="databox dialog"  :sendId="item.userinfo.id" :name="item.userinfo.nickname">
 								<div class="dataicon"><img src="../images/Consultation1.png"></div>
 								<div>咨询</div>
 							</div>
@@ -145,7 +150,7 @@
 				</div>
 				<div class="likebtn">
 					<div class="cancel">取消</div>
-					<div class="savebtn" id="lsjybtn">发送</div>
+					<div class="savebtn" id="pubtalk">发送</div>
 				</div>
 			</div>
 			<!-- 			<div class="mui-content pubbox mui-hidden" id="pubipt">
@@ -170,17 +175,19 @@
 				options.infoid = infoid;
 				getdetails(token, infoid)
 
-
+				// 采纳
 				mui('body').on('tap', '.cainabtn', function() {
-					var ansid = this.getAttribute('asnid');
+					var ansid = this.getAttribute('ansid');
 					var bestid = this.getAttribute('bestid');
+					console.log(ansid)
 					setbestans(token, ansid, bestid);
 					getdetails(token, infoid);
 				});
+				// 追问
 				mui('body').on('tap', '.ask', function() {
 					// document.getElementById("pubipt").classList.remove('mui-hidden');	
 					mui("#sendword").popover('toggle', document.getElementById("div"));
-					var ansid = this.getAttribute('asnid');
+					var ansid = this.getAttribute('ansid');
 					var appendid = this.getAttribute('appendid');
 					options.ansid = ansid;
 					options.appendid = appendid;
@@ -194,7 +201,63 @@
 							height: originalHeight
 						});
 					}
-				}
+				};
+				// 联系律师
+				mui(".myorderlistdetials").on("tap", ".dialog", function() {
+					var sendId = this.getAttribute("sendId");
+					var newname = this.getAttribute("name");
+					mui.ajax({
+						type: 'post',
+						url: baseurl + "client/mfflChatContents/setStartTime",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", options.token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': options.token
+						},
+						data: {
+							'receiveId': sendId,
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								mui.openWindowWithTitle({
+									url: "dialog.html",
+									id: "dialog.html",
+									styles: {},
+									extras: {
+										// 打开页面的同时，向新页面传递数据。
+										sendId: sendId
+									}
+								}, {
+									//标题栏的背景色和底边线配置
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										//标题文字的内容和样式配置
+										text: newname + "("+data.datas.timeRemaining+")",
+										whiteSpace: "normal"
+									},
+									back: {
+										image: {
+											/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								})
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				});
 			})
 
 			mui('body').on('tap', '.cancel', function() {
@@ -203,7 +266,7 @@
 			})
 			mui('body').on('tap', '#pubtalk', function() {
 				console.log("追评")
-				var text = document.getElementById('saytext').value;
+				var text = document.getElementById('lsjy').value;
 				addans(options.token, options.ansid, options.appendid, text)
 			});
 			var options = new Vue({
@@ -312,7 +375,8 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							mui.toast("评论成功！");
-							getdetails(options.token, options.infoid)
+							getdetails(options.token, options.infoid);
+							document.getElementById('lsjy').value = '';
 						} else {
 							mui.toast(data.message);
 							mui.back();
@@ -323,15 +387,20 @@
 					}
 				})
 			}
-
+			// 打赏 
 			mui("body").on("tap", ".dsbtn", function() {
+				var qid = this.getAttribute('qid');
+				var info = this.getAttribute('info');
+				var ansid = this.getAttribute('ansid');
 				mui.openWindowWithTitle({
 					url: "myorderdetailsds.html",
 					id: "myorderdetailsds.html",
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						newsId: "0"
+						qid: qid,
+						info: info,
+						ansid : ansid
 					}
 				}, {
 					//标题栏的背景色和底边线配置

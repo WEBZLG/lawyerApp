@@ -16,18 +16,18 @@
 			<div class="my-info">
 				<div class="circle-big">
 					<div class="circle-sm">
-						<div><img src="../images/touxiang_bg.png"></div>
+						<div><img id="headimg" src="../images/touxiang_bg.png"></div>
 					</div>
 				</div>
-				<h4>蹦沙卡拉卡_李乐乐</h4>
-				<h4>XXX律师事务所</h4>
+				<h4 id="name"></h4>
+				<h4 id="lawyerfirm"></h4>
 				<div class="infornum">
 					<div class="">
-						<p>146</p>
+						<p id="servicenum">0</p>
 						<p>服务人次</p>
 					</div>
 					<div class="">
-						<p>100%</p>
+						<p><span id="rating"></span>%</p>
 						<p>好评率</p>
 					</div>
 				</div>
@@ -62,36 +62,115 @@
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			var channel=null;
 			mui.init();
-			mui("body").on("tap", ".choosels", function() {
-				mui.openWindowWithTitle({
-					url: "chooselawyerlist.html",
-					id: "chooselawyerlist.html",
-					styles: {},
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						newsId: "0"
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var info = JSON.parse(self.info);
+				var qid = self.qid;
+				var ansid = self.ansid;
+				document.getElementById('headimg').src = imgurl + info.headImgUrl;
+				document.getElementById('name').innerText = info.nickname;
+				document.getElementById('lawyerfirm').innerText = info.lawfirm;
+				document.getElementById('servicenum').innerText = info.serverNumber;
+				document.getElementById('rating').innerText = info.rating;
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					// bottomBorderColor:"#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "选择律师",
-						styles: {
-							color: "#333333"
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
+				mui("body").on("tap", "#payfor", function() {
+					var money = document.getElementsByClassName("pricenum")[0].innerHTML;
+					reward(token, ansid, qid, money)
+					
+				});
+			})
+			// 打赏下单
+			function reward(token, ansid, replyId, money) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations/Reward",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': ansid,
+						'replyId': replyId,
+						'money': money
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							 payfor(token,data.datas)
+						} else {
+							mui.toast(data.message);
+							// mui.back();
 						}
 					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
+					error: function(err) {
+						console.log(err)
 					}
 				})
-			});
+			}
+			// 打赏支付
+			function payfor(token,ordernum) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflConsultations/rewarduserPay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'paymerchantnumber': ordernum,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							// mui.toast("评论成功！");
+							plus.payment.request(channel,data.datas, function(result) {
+								mui.openWindow({
+									url: "paysuccess.html"
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+			
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+
 			mui(".pricelist").on("tap", "li", function() {
 				for (var i = 0; i < this.parentNode.children.length; i++) {
 					this.parentNode.children[i].classList.remove("active");
@@ -102,22 +181,15 @@
 				document.getElementsByClassName("pricenum")[0].innerHTML = price;
 				if (id == 8) {
 					document.getElementsByClassName("xspricenum")[0].classList.remove("mui-hidden");
-					document.getElementById('pricenum').value="";
+					document.getElementById('pricenum').value = "";
 				} else {
 					document.getElementsByClassName("xspricenum")[0].classList.add("mui-hidden");
 				}
 			});
 			var pricenum = document.getElementById('pricenum');
-			pricenum.addEventListener('input',function () {
-			    document.getElementsByClassName("pricenum")[0].innerHTML = pricenum.value;
+			pricenum.addEventListener('input', function() {
+				document.getElementsByClassName("pricenum")[0].innerHTML = pricenum.value;
 			});
-			mui("body").on("tap", "#payfor", function() {
-				mui.openWindow({
-					url: "paysuccess.html"
-				})
-			});
-			
-			
 		</script>
 	</body>
 

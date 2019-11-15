@@ -10,6 +10,8 @@
 		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+		</style>
 	</head>
 	<body>
 		<div id="app">
@@ -273,6 +275,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							options.lawyerlist = data.datas.data;
+							
 						} else {
 							mui.toast(data.message)
 						}

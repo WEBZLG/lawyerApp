@@ -56,29 +56,26 @@
 				</div>
 			</div>
 			<div class="mui-content">
-				<!-- 				<div class="recom-item">
+				<div class="recom-item" v-if="isshow==true">
 					<div class="head-img">
-						<img src="../images/touxiang.png">
+						<img :src=imgurl+lawyerdetails.headImgUrl>
 					</div>
 					<div class="infor">
 						<div class="intro">
 							<div class="nameprice">
-								<p class="intro-name">王律师1</p>
+								<p class="intro-name">{{lawyerdetails.nickname}}</p>
 								<div class="m-radio">
-									<label class="orangecolor">398元</label>
+									<label class="orangecolor">{{lawyerdetails.price}}元</label>
 								</div>
 							</div>
-							<p class="intro-city">北京市</p>
-							<p class="intro-company">xxx律师事务所</p>
+							<p class="intro-city">{{lawyerdetails.areaName}}</p>
+							<p class="intro-company">{{lawyerdetails.lawfirm}}</p>
 						</div>
 						<div class="tags">
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
-							<span class="tag">婚姻家庭</span>
+							<span class="tag" v-for="item in lawyerdetails.fieldList" :key='item'>{{item}}</span>
 						</div>
 					</div>
-				</div> -->
+				</div>
 				<div class="choosels">
 					选择律师
 				</div>
@@ -129,7 +126,9 @@
 					type: "",
 					yid: '',
 					token: '',
-					httype: ""
+					httype: "",
+					lawyerdetails:'',
+					isshow:false
 				},
 				methods: {
 					gohome: function() {
@@ -218,6 +217,9 @@
 
 			// 获取子页面值
 			window.addEventListener("chooselawyer", function(e) {
+				options.isshow = true;
+				console.log(JSON.parse(e.detail.item))
+				options.lawyerdetails = JSON.parse(e.detail.item);
 				document.getElementById("pricenum").innerHTML = e.detail.price;
 				options.yid = e.detail.yid;
 			});

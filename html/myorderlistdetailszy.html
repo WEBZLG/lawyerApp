@@ -10,6 +10,28 @@
 		<link rel="stylesheet" href="../css/mui.min.css">
 		<!-- <link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" /> -->
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<style type="text/css">
+			#div {
+				width: 0px;
+				height: 0px;
+				background: red;
+				position: fixed;
+				top: 70%;
+				left: 50%;
+			}
+
+			#sendword {
+				max-height: 180px;
+				position: absolute;
+				left: 10% !important;
+				width: 80%;
+				border-radius: 5px;
+			}
+
+			.mui-bottom {
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -21,7 +43,7 @@
 			<div class="myorderdesc  mui-content">
 				<div class="user-info">
 					<div class="user-box">
-						<div class="user-head"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
+						<div class="user-head" v-if="datadetails.userinfo"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
 						<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
 						<div class="user-name">{{datadetails.nickname}}</div>
 					</div>
@@ -41,7 +63,7 @@
 					<label>问题内容</label>
 					<div v-html="datadetails.content"></div>
 					<div class="news-show" v-if="datadetails.imageUrl!=''">
-						<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
+						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
 							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
@@ -50,7 +72,7 @@
 					<label>对方态度</label>
 					<div v-html="datadetails.defendantAttitude"></div>
 					<div class="news-show" v-if="datadetails.defendantUrl!=''">
-						<div class="news-img" v-for="imgitem in datadetails.defendantUrl.split(';')" :key="imgitem">
+						<div class="news-img" v-for="imgitem in (datadetails.defendantUrl || '').split(';')" :key="imgitem">
 							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
@@ -63,7 +85,7 @@
 				</div>
 			</div>
 			<div class="br">—— 律师解答 ——</div>
-			<div class="mui-content">
+			<div class="">
 				<div class="lawyeransitem" v-for="item in  datadetails.replyList" :key="item.id">
 					<div class="user-info">
 						<div class="user-box">
@@ -100,13 +122,17 @@
 						<div class="dataaction">
 							<div class="databox ask" :ansid="datadetails.id" :appendid="item.id">
 								<div class="dataicon"><img src="../images/ask.png"></div>
-								<div>追问<i>2</i></div>
+								<div>追问
+									<!-- <i>2</i> -->
+								</div>
 							</div>
-							<div class="databox">
+							<div class="databox dsbtn" :ansid="datadetails.id" :qid="item.id" :info="JSON.stringify(item.userinfo)">
 								<div class="dataicon"><img src="../images/pay.png"></div>
-								<div>打赏<i>12</i></div>
+								<div>打赏
+									<!-- <i>12</i> -->
+								</div>
 							</div>
-							<div class="databox">
+							<div class="databox dialog"  :sendId="item.userinfo.id" :name="item.userinfo.nickname">
 								<div class="dataicon"><img src="../images/Consultation1.png"></div>
 								<div>咨询</div>
 							</div>
@@ -119,14 +145,24 @@
 					</div>
 				</div>
 			</div>
-			<div class="mui-content pubbox mui-hidden" id="pubipt">
+			<div id="div"></div>
+			<div id="sendword" class="mui-popover">
+				<div class="">
+					<textarea rows="6" cols="" id="lsjy"></textarea>
+				</div>
+				<div class="likebtn">
+					<div class="cancel">取消</div>
+					<div class="savebtn" id="pubtalk">发送</div>
+				</div>
+			</div>
+			<!-- 			<div class="mui-content pubbox mui-hidden" id="pubipt">
 				<div class="iptbox">
 					<input type="text" placeholder="说点什么" id="saytext">
 				</div>
 				<div class="pubbtnbox">
 					<button type="button" class="mui-btn mui-btn-blue" id="pubtalk">发布</button>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
@@ -140,25 +176,96 @@
 				options.token = token;
 				options.infoid = infoid;
 				getdetails(token, infoid)
+				// 采纳
 				mui('body').on('tap', '.cainabtn', function() {
-					var ansid = this.getAttribute('asnid');
+					var ansid = this.getAttribute('ansid');
 					var bestid = this.getAttribute('bestid');
 					setbestans(token, ansid, bestid);
 					getdetails(token, infoid);
 				});
+
+				// 追问
 				mui('body').on('tap', '.ask', function() {
-					document.getElementById("pubipt").classList.remove('mui-hidden');	
-					var ansid = this.getAttribute('asnid');
+					// document.getElementById("pubipt").classList.remove('mui-hidden');	
+					mui("#sendword").popover('toggle', document.getElementById("div"));
+					var ansid = this.getAttribute('ansid');
 					var appendid = this.getAttribute('appendid');
 					options.ansid = ansid;
 					options.appendid = appendid;
 				});
-			})
-				mui('body').on('tap', '#pubtalk', function() {
-					console.log("追评")
-					var text = document.getElementById('saytext').value;
-					addans(options.token, options.ansid, options.appendid,text)
+				var originalHeight = document.documentElement.clientHeight || document.body.clientHeight;
+				window.onresize = function() {
+					//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+					var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+					if (resizeHeight * 1 < originalHeight * 1) { //resizeHeight<originalHeight证明窗口被挤压了
+						plus.webview.currentWebview().setStyle({
+							height: originalHeight
+						});
+					}
+				};
+				// // 联系律师
+				mui(".myorderlistdetials").on("tap", ".dialog", function() {
+					var sendId = this.getAttribute("sendId");
+					var newname = this.getAttribute("name");
+					mui.ajax({
+						type: 'post',
+						url: baseurl + "client/mfflChatContents/setStartTime",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", options.token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': options.token
+						},
+						data: {
+							'receiveId': sendId,
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								mui.openWindowWithTitle({
+									url: "dialog.html",
+									id: "dialog.html",
+									styles: {},
+									extras: {
+										// 打开页面的同时，向新页面传递数据。
+										sendId: sendId
+									}
+								}, {
+									//标题栏的背景色和底边线配置
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										//标题文字的内容和样式配置
+										text: newname + "("+data.datas.timeRemaining+")",
+										whiteSpace: "normal"
+									},
+									back: {
+										image: {
+											/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								})
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
 				});
+			})
+			
+			mui('body').on('tap', '#pubtalk', function() {
+				console.log("追评")
+				var text = document.getElementById('lsjy').value;
+				addans(options.token, options.ansid, options.appendid, text)
+			});
 			var options = new Vue({
 				el: '#app',
 				data: {
@@ -166,8 +273,8 @@
 					otherdetails: [],
 					infoid: '',
 					token: '',
-					ansid:'',
-					appendid:''	
+					ansid: '',
+					appendid: ''
 				},
 				methods: {
 					gohome: function() {
@@ -242,7 +349,7 @@
 			}
 
 			// 追评text
-			function addans(token, ansid, appendid,text) {
+			function addans(token, ansid, appendid, text) {
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflConsultations/replyconsultation",
@@ -259,7 +366,7 @@
 					data: {
 						'consultationid': ansid,
 						'appendid': appendid,
-						'reply':text
+						'reply': text
 					},
 					success: function(data) {
 						console.log(data)
@@ -276,25 +383,31 @@
 					}
 				})
 			}
-			
+
+			// 打赏
 			mui("body").on("tap", ".dsbtn", function() {
+				var qid = this.getAttribute('qid');
+				var info = this.getAttribute('info');
+				var ansid = this.getAttribute('ansid');
 				mui.openWindowWithTitle({
 					url: "myorderdetailsds.html",
 					id: "myorderdetailsds.html",
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						newsId: "0"
+						qid: qid,
+						info: info,
+						ansid: ansid
 					}
 				}, {
 					//标题栏的背景色和底边线配置
 					backgroundColor: "#267CFB",
-					bottomBorderColor:"#267CFB",
+					bottomBorderColor: "#267CFB",
 					title: {
 						//标题文字的内容和样式配置
 						text: "打赏",
-						styles:{
-							color:"#fffff"
+						styles: {
+							color: "#fffff"
 						}
 					},
 					back: {
