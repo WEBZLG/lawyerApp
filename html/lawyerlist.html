@@ -7,11 +7,10 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../css/mui.min.css">
-		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css"/>
-		<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
-		<style type="text/css">
-		</style>
+		<script src="../js/mui.min.js"></script>
 	</head>
 	<body>
 		<div id="app">
@@ -55,7 +54,6 @@
 			</div>
 		</div>
 		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../js/mui.min.js"></script>
 		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/mui.poppicker.js"></script>
 		<script src="../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
@@ -69,7 +67,7 @@
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
-						style:'circle',
+						style: 'circle',
 						callback: pulldownRefresh
 					},
 					up: {
@@ -82,9 +80,9 @@
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
-					console.log('下')
+				console.log('下')
 				setTimeout(function() {
-					lawyerlist(options.token,options.comid,options.type,options.order,'',0,10)
+					lawyerlist(options.token, options.comid, options.type, options.order, '', 0, 10)
 					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				}, 1500);
 			}
@@ -94,10 +92,10 @@
 			 */
 			function pullupRefresh() {
 				console.log('上')
-				options.limit = options.limit*1+10;
+				options.limit = options.limit * 1 + 10;
 				setTimeout(function() {
 					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
-					lawyerlist(options.token,options.comid,options.type,options.order,'',options.offset,options.limit)
+					lawyerlist(options.token, options.comid, options.type, options.order, '', options.offset, options.limit)
 				}, 1500);
 			}
 			var options = new Vue({
@@ -108,8 +106,8 @@
 					type: '',
 					comid: '',
 					order: '',
-					offset:0,
-					limit:10
+					offset: 0,
+					limit: 10
 				},
 				methods: {
 
@@ -121,7 +119,7 @@
 				console.log(token)
 				options.token = token
 				servicetype(token);
-				lawyerlist(token,'','','','',options.offset,options.limit);
+				lawyerlist(token, '', '', '', '', options.offset, options.limit);
 			});
 
 			// 律师详情
@@ -170,15 +168,18 @@
 						'token': token
 					},
 					data: {
-						'serviceid':1
+						'serviceid': 1
 					},
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
 							var res = data.datas;
 							var newdata = [];
-							for(var i = 0;i<res.length;i++){
-								newdata.push({value:res[i].id,text:res[i].name})
+							for (var i = 0; i < res.length; i++) {
+								newdata.push({
+									value: res[i].id,
+									text: res[i].name
+								})
 							}
 							console.log(newdata)
 							options.servicetype = newdata;
@@ -194,7 +195,7 @@
 											showLikesPickerButton.innerText = items[0].text;
 											options.type = items[0].value
 											console.log(items[0].value)
-											lawyerlist(options.token,options.comid,options.type,options.order,'',options.offset,options.limit)
+											lawyerlist(options.token, options.comid, options.type, options.order, '', options.offset, options.limit)
 											//返回 false 可以阻止选择框的关闭
 											//return false;
 										});
@@ -215,13 +216,13 @@
 									showCapacityPickerButton.addEventListener('tap', function(event) {
 										showCapacityPicker.show(function(items) {
 											showCapacityPickerButton.innerText = items[0].text;
-											options.order =  items[0].value
-											lawyerlist(options.token,options.comid,options.type,options.order,'',options.offset,options.limit)
+											options.order = items[0].value
+											lawyerlist(options.token, options.comid, options.type, options.order, '', options.offset, options.limit)
 											//返回 false 可以阻止选择框的关闭
 											//return false;
 										});
 									}, false);
-									
+
 									//级联示例
 									var cityPicker = new $.PopPicker({
 										layer: 2
@@ -230,9 +231,9 @@
 									var showCityPickerButton = doc.getElementById('showCityPicker');
 									showCityPickerButton.addEventListener('tap', function(event) {
 										cityPicker.show(function(items) {
-											showCityPickerButton.innerText =  items[1].text;
+											showCityPickerButton.innerText = items[1].text;
 											options.comid = items[1].value;
-											lawyerlist(options.token,options.comid,options.type,options.order,'',options.offset,options.limit)
+											lawyerlist(options.token, options.comid, options.type, options.order, '', options.offset, options.limit)
 											//返回 false 可以阻止选择框的关闭
 											//return false;
 										});
@@ -249,7 +250,7 @@
 				})
 			}
 			// 律师列表
-			function lawyerlist(token,comid,type,order,keyword,offset,limit) {
+			function lawyerlist(token, comid, type, order, keyword, offset, limit) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflTypes/getLawyerList",
@@ -264,9 +265,9 @@
 						'token': token
 					},
 					data: {
-						'comid':comid,
-						'type':type,
-						'order':order,
+						'comid': comid,
+						'type': type,
+						'order': order,
 						'keyword': keyword,
 						'offset': offset,
 						'limit': limit,
@@ -275,7 +276,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							options.lawyerlist = data.datas.data;
-							
+
 						} else {
 							mui.toast(data.message)
 						}

@@ -76,7 +76,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="choosels">
+				<div class="choosels" v-if="hidechoose==false">
 					选择律师
 				</div>
 			</div>
@@ -96,7 +96,8 @@
 			    var token = plus.storage.getItem('token');
 			    options.token=token
 			    var self = plus.webview.currentWebview();
-			    var id = self.id;
+			    options.yid = self.lawyerid;
+				options.hidechoose = self.hidechoose
 			    // getnewtype(token)
 				gethttype(token)
 			    mui("body").on("tap", "#gobuy", function() {
@@ -274,7 +275,8 @@
 					token:'',
 					httype:"",
 					lawyerdetails:'',
-					isshow:false
+					isshow:false,
+					hidechoose:false
 				},
 				methods: {
 					gohome: function() {

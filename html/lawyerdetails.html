@@ -9,22 +9,25 @@
 		<link rel="stylesheet" href="../css/mui.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
 		<style type="text/css">
-			.mui-segmented-control.mui-scroll-wrapper .mui-control-item{
-				    background-color: #ACCDFE;
-				    height: 90px;
-				    width: 90px;
-				    margin: 0;
-				    margin-right: 27px;
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item {
+				background-color: #ACCDFE;
+				height: 90px;
+				width: 90px;
+				margin: 0;
+				margin-right: 27px;
 			}
-			.mui-segmented-control.mui-scroll-wrapper .mui-control-item p{
-					color: #FFFFFF;
+
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item p {
+				color: #FFFFFF;
 			}
-			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
 				border: none;
 				color: #FFFFFF;
 				background-color: #2E82FF;
 			}
-			.mui-segmented-control.mui-scroll-wrapper .mui-control-item:last-child{
+
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item:last-child {
 				margin-right: 15px;
 			}
 		</style>
@@ -64,8 +67,8 @@
 				</div>
 				<div class="mui-content" style="overflow: auto;">
 					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height:90px">
-						<div class="mui-scroll"  style="height:90px">
-							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id' :id="item.serverId">
+						<div class="mui-scroll" style="height:90px">
+							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id' :name="item.serviceName" :id="item.lawyerId">
 								<div class="serviceicon"><img src="../images/twzx.png"></div>
 								<p>{{item.serviceName}}</p>
 								<p v-if="item.serviceName=='图文咨询'">{{item.money}}元/12小时</p>
@@ -138,12 +141,14 @@
 				data: {
 					datalist: {},
 					token: '',
-					lawyerid:''
+					lawyerid: '',
+					servicename: ''
 				},
 				methods: {
 
 				}
 			});
+			var channel = null;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
@@ -151,7 +156,128 @@
 				var lawyerid = self.lawyerid;
 				options.lawyerid = lawyerid;
 				lawyerdetails(token, lawyerid);
-			})
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
+				mui('body').on('tap', '.mui-control-item', function() {
+					var servicename = this.getAttribute('name');
+					options.servicename = servicename;
+				});
+				mui('body').on('tap', '.otherbtn', function() {
+					var name = options.servicename;
+					if (name == '') {
+						mui.toast('请选择服务类型！')
+					} else {
+						switch (name) {
+							case '图文咨询':
+								mui.ajax({
+									type: 'post',
+									url: baseurl + "client/mflimageandtext/imageandtextorder",
+									dataType: "json",
+									beforeSend: function(XMLHttpRequest) {
+										XMLHttpRequest.setRequestHeader(
+											"token", token
+										);
+									},
+									headers: {
+										'contentType': "application/x-www-form-urlencoded",
+										'token': token
+									},
+									data: {
+										'lawyerid': lawyerid,
+									},
+									success: function(data) {
+										console.log(data);
+										if (data.errCode == 200) {
+											payfor(token,data.datas)
+										} else {
+											mui.toast(data.message)
+										}
+									},
+									error: function(err) {
+										console.log(err)
+									}
+								});
+								break;
+							case '律师函件':
+								mui.openWindowWithTitle({
+									url: "publishlsh.html",
+									id: "publishlsh.html",
+									styles: {},
+									extras: {
+										lawyerid: options.lawyerid,
+										hidechoose:true
+									}
+								}, {
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										text: "律师函件"
+									},
+									back: {
+										image: {
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								});
+								break;
+							case '合同审核':
+								mui.openWindowWithTitle({
+									url: "publishht.html",
+									id: "publishht.html",
+									styles: {},
+									extras: {
+										lawyerid: options.lawyerid,
+										hidechoose:true
+									}
+								}, {
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										text: "合同审核"
+									},
+									back: {
+										image: {
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								});
+								break;
+							case '合同定制':
+								mui.openWindowWithTitle({
+									url: "publishhtdz.html",
+									id: "publishhtdz.html",
+									styles: {},
+									extras: {
+										lawyerid: options.lawyerid,
+										hidechoose:true
+									}
+								}, {
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										text: "合同定制"
+									},
+									back: {
+										image: {
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								})
+								break;
+						}
+					}
+				})
+			});
 
 			// 律师详情
 			function lawyerdetails(token, lawyerid) {
@@ -184,7 +310,65 @@
 					}
 				})
 			};
-			mui('body').on('tap','.pjmore',function(){
+			// 支付
+			function payfor(token, num) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mflimageandtext/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'paymerchantnumber': num,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							console.log(channel)
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								mui.openWindowWithTitle({
+									url: "dialog.html",
+									id: "dialog.html",
+									styles: {},
+									extras: {
+										lawyerid: options.lawyerid,
+										servicename:options.servicename
+									}
+								}, {
+									backgroundColor: "#ffffff",
+									//bottomBorderColor:"#00ff00",
+									title: {
+										text: "图文咨询"
+									},
+									back: {
+										image: {
+											imgSrc: "../images/left-icon.png"
+										}
+									}
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			mui('body').on('tap', '.pjmore', function() {
 				mui.openWindowWithTitle({
 					url: "evaluatelist.html",
 					id: "evaluatelist.html",
