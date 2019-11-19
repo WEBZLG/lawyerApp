@@ -39,9 +39,12 @@
 						<div class="orderchange">
 							<div class="ordertime">{{item.updateTime}}</div>
 							<div class="orderaction">
+								<button type="button" class="mui-btn gopay" :paynum="item.payMerchantNumber"  v-if="item.state==0">去支付</button>
+							</div>
+							<!-- 							<div class="orderaction">
 								<button type="button" class="mui-btn changebtn" :id='item.id'>修改内容</button>
 								<button type="button" class="mui-btn cancelbtn" :id='item.id'>取消发布</button>
-							</div>
+							</div> -->
 						</div>
 					</div>
 					<div class="nodata" v-if="datalist.length==0">
@@ -135,6 +138,7 @@
 
 				}
 			});
+			var channel = null;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
@@ -145,8 +149,63 @@
 						var id = this.getAttribute('id');
 						cancel(token, id);
 					})
+				});
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
+				// 支付
+				mui('body').on('tap', '.gopay', function() {
+					var num = this.getAttribute('paynum');
+					payfor(token, num)
 				})
 			})
+			// 支付
+			function payfor(token, num) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflConsultations/rewardPay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'paymerchantnumber': num,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							console.log(channel)
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								datalist(options.token, 0, 10);
+							}, function(error) {
+								console.log(error)
+							});
+			
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
 			// 取消发布
 			function cancel(token, id) {
 				mui.ajax({
@@ -256,6 +315,7 @@
 					}
 				})
 			});
+			// 修改内容
 			mui('body').on('tap', '.changebtn', function() {
 				var yid = this.getAttribute('id');
 				mui.openWindowWithTitle({

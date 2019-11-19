@@ -145,6 +145,13 @@
 					</div>
 				</div>
 			</div>
+			<div class="actionbox">
+				<div></div>
+				<div class="orderaction ">
+					<button type="button" class="mui-btn changebtn" :id='datadetails.id'>修改内容</button>
+					<button type="button" class="mui-btn cancelbtn" :id='datadetails.id'>取消发布</button>
+				</div>
+			</div>
 			<div id="div"></div>
 			<div id="sendword" class="mui-popover">
 				<div class="">
@@ -183,7 +190,14 @@
 					setbestans(token, ansid, bestid);
 					getdetails(token, infoid);
 				});
-
+				// 取消发布
+				mui('body').on('tap', '.cancelbtn', function() {
+					var btnArray = ['是', '否'];
+					mui.confirm('确定取消发布?', '', btnArray, function(e) {
+						var id = this.getAttribute('id');
+						cancel(token, id);
+					})
+				})
 				// 追问
 				mui('body').on('tap', '.ask', function() {
 					// document.getElementById("pubipt").classList.remove('mui-hidden');	
@@ -414,6 +428,65 @@
 						image: {
 							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
 							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+			// 取消发布
+			function cancel(token, id) {
+				mui.ajax({
+					type: 'DELETE',
+					url: baseurl + "client/mfflConsultations/" + id,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('取消成功！')
+							datalist(options.token);
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 修改内容
+			mui('body').on('tap', '.changebtn', function() {
+				var yid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "mychangezyzx.html",
+					id: "mychangezyzx.html",
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						yid: yid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "专业咨询修改",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
 						}
 					}
 				})

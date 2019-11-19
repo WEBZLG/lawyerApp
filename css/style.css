@@ -828,12 +828,7 @@ p {
 }
 
 .filtrate-con {
-	position: absolute;
-	top: 87px;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	overflow: auto;
+    margin-top: 76px;
 }
 
 
@@ -1302,6 +1297,25 @@ label {
 }
 
 .orderchange button {
+	border: 1px solid #2E82FF;
+	color: #2E82FF;
+	border-radius: 30px;
+	margin-left: 5px;
+	padding: 4px 8px;
+}
+
+.actionbox {
+	font-size: 13px;
+	color: #666666;
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px ;
+	background-color: #FFFFFF;
+}
+
+.actionbox button {
 	border: 1px solid #2E82FF;
 	color: #2E82FF;
 	border-radius: 30px;
@@ -1818,12 +1832,16 @@ input[type='text'] {
 }
 
 .filtrate {
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-	padding: 18.5px;
-	background-color: #ffffff;
-	margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 18.5px;
+    background-color: #ffffff;
+    /* margin-top: 15px; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .filtrate label {
@@ -1844,9 +1862,11 @@ input[type='text'] {
 	padding: 15px;
 	background-color: #FFFFFF;
 }
-.mui-content-gbg{
+
+.mui-content-gbg {
 	padding: 15px;
 }
+
 .myorderlistdetials .likebtn {
 	display: flex;
 	align-items: center;
@@ -1867,7 +1887,7 @@ input[type='text'] {
 	border-left: 1px solid #E1E1E1;
 }
 
-textarea{
+textarea {
 	border: none;
 	outline: none;
 }

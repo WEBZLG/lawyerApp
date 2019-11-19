@@ -34,7 +34,7 @@
 	</head>
 	<body>
 		<div class="lawyerdetails" id="app">
-			<div class="my-info">
+			<div class="my-info" v-if="datalist.lawyer">
 				<div class="circle-big">
 					<div class="circle-sm">
 						<div><img :src=imgurl+datalist.lawyer.headImgUrl></div>
@@ -57,7 +57,7 @@
 				<div class="pubtitle-box">
 					<div class="pub-title">擅长领域</div>
 				</div>
-				<div class="tags mui-content">
+				<div class="tags mui-content" v-if="datalist.lawyer">
 					<span class="tag" v-for="tag in datalist.lawyer.fieldList" :key="tag">{{tag}}</span>
 				</div>
 			</div>
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="detailsitem">
+			<div class="detailsitem"  v-if="datalist.comment">
 				<div class="pubtitle-box">
 					<div class="pub-title">用户评价</div>
 					<div class="pjmore">更多（{{datalist.comment.length}}）</div>
@@ -109,7 +109,7 @@
 				<div class="pubtitle-box">
 					<div class="pub-title">个人介绍</div>
 				</div>
-				<div class="personmessage">
+				<div class="personmessage" v-if="datalist.lawyer">
 					<div class="mui-content">
 						<h5><span class="orangecircle"><img src="../images/yuan.png"></span>律师寄语</h5>
 						<div class="mescontent">
@@ -313,7 +313,7 @@
 			// 支付
 			function payfor(token, num) {
 				mui.ajax({
-					type: 'post',
+					type: 'get',
 					url: baseurl + "client/mflimageandtext/pay",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {

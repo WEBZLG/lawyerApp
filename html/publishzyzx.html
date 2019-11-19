@@ -245,8 +245,6 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							// mui.toast('发布成功！');
-							// mui.back();
 							payfor(token, data.datas)
 						} else {
 							mui.toast(data.message)
@@ -282,13 +280,12 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
-								// mui.toast('发布成功！');
-								// mui.back();
 								mui.openWindow({
 									url: 'publishsuccess.html',
 									id: 'publishsuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
+										typeid:1
 									}
 								})
 							}, function(error) {

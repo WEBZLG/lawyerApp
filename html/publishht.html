@@ -97,7 +97,9 @@
 			    options.token=token
 			    var self = plus.webview.currentWebview();
 			    options.yid = self.lawyerid;
-				options.hidechoose = self.hidechoose
+				if (self.hidechoose) {
+					options.hidechoose = self.hidechoose
+				}
 			    // getnewtype(token)
 				gethttype(token)
 			    mui("body").on("tap", "#gobuy", function() {
@@ -153,8 +155,6 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							// mui.toast('发布成功！');
-							// mui.back();
 							payfor(token, data.datas)
 						} else {
 							mui.toast(data.message)
@@ -194,6 +194,7 @@
 									id: 'publishsuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
+										typeid:3
 									}
 								})
 							}, function(error) {
