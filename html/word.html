@@ -176,7 +176,6 @@
 		});
 
 		mui(".user-message").on("tap", "li", function() {
-			console.log(this.getAttribute("sendId"))
 			var sendId = this.getAttribute("sendId");
 			var newname = this.getAttribute("name");
 			mui.ajax({
@@ -197,6 +196,7 @@
 				},
 				success: function(data) {
 					console.log(data)
+					return false;
 					if (data.errCode == 200) {
 						mui.openWindowWithTitle({
 							url: "dialog.html",

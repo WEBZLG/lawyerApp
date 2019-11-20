@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>登录</title>
+		<title>微信登录</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -29,14 +29,6 @@
 				<div class="other">
 					<button type="button" class="mui-btn otherbtn" id="zhuce">登 录</button>
 				</div>
-				<div class="three">
-					<span class="l-line"></span>
-					<span>第三方登录</span>
-					<span class="l-line"></span>
-				</div>
-				<div>
-					<div class="weixinicon" id="wxBind"><img src="../images/wechat.png"></div>
-				</div>
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
@@ -55,17 +47,10 @@
 			});
 
 			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var openid = self.openid;
+				var access = self.access;
 				var auths = {};
-				plus.oauth.getServices(function(services) {
-					for (var i in services) {
-						var service = services[i];
-						auths[service.id] = service;
-					}
-					var service = auths['weixin'];
-					auth = service;
-				}, function(e) {
-					console.log("获取登录认证失败：" + e.message);
-				});
 
 				// 获取验证码
 				function GetCode(tels) {
@@ -142,7 +127,8 @@
 						mui.toast('请填写验证码');
 						return false;
 					} else {
-						adduse(zhuceBox, yzinfoBox, 0);
+						// adduse(zhuceBox, yzinfoBox, 0);
+						bindphone(openid, access, zhuceBox, yzinfoBox)
 					};
 				});
 
@@ -207,127 +193,70 @@
 					});
 				}
 
-				// 微信授权登录对象
-				document.getElementById('wxBind').addEventListener('tap', function() {
-					auth.login(function(services) {
-						auth.getUserInfo(function() {
-							console.log(auth)
-							var openid = auth.authResult.openid;
-							var access = auth.authResult.access_token;
-							wechatlogin(openid, access)
 
-						}, function(e) {
-							console.log("获取用户信息失败：" + e.message);
-						});
-					}, function(e) {
-						console.log("登录认证失败：" + e.message);
-					});
-				});
 
-				// 注销所有登录授权认证服务
-				function authLogout() {
-					var auth = auths['weixin'];
-					if (auth) {
-						auth.logout(function(e) {
-							logout();
-						}, function(e) {
-							console.log("注销登录认证失败！");
-						});
-					} else {
-						logout();
-					}
-				}
-
-			});
-
-			function wechatlogin(openid, access) {
-				mui.ajax({
-					type: 'post',
-					contentType: "application/x-www-form-urlencoded",
-					url: baseurl + "mffl/wechatlogin",
-					dataType: "json",
-					data: {
-						'openid': openid,
-						'access_token': access,
-					},
-					success: function(data) {
-						console.log(data)
-						if(data.errCode==130){
-							mui.openWindowWithTitle({
-								url: "wechatlogin.html",
-								id: "wechatlogin.html",
-								styles: {},
-								extras: {
-									// 打开页面的同时，向新页面传递数据。
-									openid: openid,
-									access: access,
-								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#267CFB",
-								bottomBorderColor:"#267CFB",
-								title: {
-									//标题文字的内容和样式配置
-									text: "绑定手机",
-									styles: {
-										color: "#ffffff"
+				function bindphone(openid, access, phone, code) {
+					mui.ajax({
+						type: 'post',
+						contentType: "application/x-www-form-urlencoded",
+						url: baseurl + "mffl/openidandphonebind",
+						dataType: "json",
+						data: {
+							'openid': openid,
+							'access_token': access,
+							'phone': phone,
+							'code': code
+						},
+						success: function(data) {
+							console.log(data)
+							if(data.errCode==200){
+								mui.toast('登录成功!')
+								plus.storage.setItem('token', data.datas.token);
+								var userinfo = JSON.stringify(data.datas.userInfo)
+								plus.storage.setItem('userinfo', userinfo);
+								plus.Push.getRegistrationID(function(res) {
+									if (res.length != 0) {
+										console.log(res)
+										mui.ajax({
+											type: 'post',
+											contentType: "application/x-www-form-urlencoded",
+											url: baseurl + "mffl/updateJPush", //此处填写自己的服务器url地址；
+											dataType: "json",
+											beforeSend: function(XMLHttpRequest) {
+												XMLHttpRequest.setRequestHeader(
+													"token", data.datas.token
+												);
+											},
+											headers: {
+												'contentType': "application/x-www-form-urlencoded",
+												'token': data.datas.token
+											},
+											data: { //data携带的参数，根据自己的服务器参数写就ok；
+												'jpush': res
+											},
+											success: function(res) {
+												if (res.errCode == 200) {
+													setTimeout(function() {
+														var home = plus.webview.getLaunchWebview().getURL();
+														plus.webview.open(home);
+														plus.webview.currentWebview().close();
+													}, 1000)
+												}
+											},
+											error: function() {}
+										})
 									}
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/wleft-icon.png"
-									}
-								}
-							})
-						}else if(data.errCode==200){
-							mui.toast('登录成功!')
-							plus.storage.setItem('token', data.datas.token);
-							var userinfo = JSON.stringify(data.datas.userInfo)
-							plus.storage.setItem('userinfo', userinfo);
-							plus.Push.getRegistrationID(function(res) {
-								if (res.length != 0) {
-									console.log(res)
-									mui.ajax({
-										type: 'post',
-										contentType: "application/x-www-form-urlencoded",
-										url: baseurl + "mffl/updateJPush", //此处填写自己的服务器url地址；
-										dataType: "json",
-										beforeSend: function(XMLHttpRequest) {
-											XMLHttpRequest.setRequestHeader(
-												"token", data.datas.token
-											);
-										},
-										headers: {
-											'contentType': "application/x-www-form-urlencoded",
-											'token': data.datas.token
-										},
-										data: { //data携带的参数，根据自己的服务器参数写就ok；
-											'jpush': res
-										},
-										success: function(res) {
-											if (res.errCode == 200) {
-												setTimeout(function() {
-													var home = plus.webview.getLaunchWebview().getURL();
-													plus.webview.open(home);
-													plus.webview.currentWebview().close();
-												}, 1000)
-											}
-										},
-										error: function() {}
-									})
-								}
-							})
-						}else{
-							mui.toast(data.message)
+								})
+							}else{
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							mui.toast(err)
 						}
-					},
-					error: function(err) {
-						mui.toast(err)
-					}
-				})
-			}
-
+					})
+				}
+			});
 
 			// 注册极光id
 			// var getRegistrationID = function() {

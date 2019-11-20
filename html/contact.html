@@ -16,19 +16,55 @@
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
 					<div>客服电话</div>
-					<div class="con-text">400-000-0000</div>
+					<div class="con-text" id="phone"></div>
 				</li>
 				<li class="mui-table-view-cell">
 					<div>电子邮箱</div>
-					<div class="con-text">mufa@falv.com</div>
+					<div class="con-text" id="email"></div>
 				</li>
 			</ul>
 		</div>
 
 
 		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init()
+			mui.plusReady(function () {
+			    var token = plus.storage.getItem('token');
+				getdetails(token)
+			});
+			// 获取详情
+			function getdetails(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getaboutusinfo",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							document.getElementById('phone').innerText=data.datas.Contactus_phone
+							document.getElementById('email').innerText=data.datas.Contactus_email
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
 		</script>
 	</body>
 

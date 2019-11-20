@@ -13,7 +13,7 @@
 		<div id="app">
 			<div class="my-bg">
 				<img src="../images/my_bg.png">
-				<div class="my-info">
+				<div class="my-info" v-if="userinfo">
 					<div class="circle-big" :id="token==null?'login':''">
 						<div class="circle-sm">
 							<div><img :src=imgurl+userinfo.headImgUrl></div>

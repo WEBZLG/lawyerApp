@@ -99,14 +99,14 @@
 					</div>
 					<div class="">
 						<p class="anscontent">{{item.reply}}</p>
-						<div class="answersecond" v-for="second in item.consultationReplyList" :key="second.id">
-							<div class="answeritme">
+						<div class="answersecond">
+							<div class="answeritme"  v-for="second in item.consultationReplyList" :key="second.id">
 								<div class="user-info">
 									<div class="user-name bluecolor">{{second.userinfo.nickname}}</div>
 									<div class="hot-num">{{second.updateTime}}</div>
 								</div>
 								<div class="">
-									<p>回复<em>{{item.userinfo.nickname}}：</em>{{second.reply}}</p>
+									<p>回复<em class="bluecolor">{{item.userinfo.nickname==second.userinfo.nickname?datadetails.userinfo.nickname:item.userinfo.nickname}}：</em>{{second.reply}}</p>
 								</div>
 							</div>
 							<!-- 							<div class="answeritme">

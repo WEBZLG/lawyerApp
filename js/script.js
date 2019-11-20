@@ -1,5 +1,5 @@
-// var baseurl = 'http://dev.ngdemo.cn/mufa/'; //服务器url
-// var imgurl = 'http://dev.ngdemo.cn/mufa/statics'; //图片url
+// var baseurl = 'http://mufa.ngdemo.cn/'; //服务器url
+// var imgurl = 'http://mufa.ngdemo.cn/statics'; //图片url
 var baseurl = 'http://192.168.0.22:8900/'; //服务器url
 var imgurl = 'http://192.168.0.22:8900/statics'; //图片url
 

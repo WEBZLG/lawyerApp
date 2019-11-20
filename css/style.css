@@ -828,7 +828,7 @@ p {
 }
 
 .filtrate-con {
-    margin-top: 76px;
+	margin-top: 76px;
 }
 
 
@@ -1311,7 +1311,7 @@ label {
 	align-content: center;
 	align-items: center;
 	justify-content: space-between;
-	padding: 15px ;
+	padding: 15px;
 	background-color: #FFFFFF;
 }
 
@@ -1687,6 +1687,10 @@ input[type='text'] {
 	margin-bottom: 20px;
 }
 
+.answeritme p{
+	font-size: 12px;
+}
+
 .answeritme:last-child {
 	margin-bottom: 0;
 }
@@ -1832,16 +1836,16 @@ input[type='text'] {
 }
 
 .filtrate {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 18.5px;
-    background-color: #ffffff;
-    /* margin-top: 15px; */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	padding: 18.5px;
+	background-color: #ffffff;
+	/* margin-top: 15px; */
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
 }
 
 .filtrate label {

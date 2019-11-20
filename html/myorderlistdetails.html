@@ -43,7 +43,7 @@
 			<div class="myorderdesc  mui-content">
 				<div class="user-info">
 					<div class="user-box">
-						<div class="user-head"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
+						<div class="user-head" v-if="datadetails.userinfo"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
 						<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
 						<div class="user-name">{{datadetails.nickname}}</div>
 					</div>
@@ -53,7 +53,7 @@
 				</div>
 				<div class="ordertype">
 					<div class="tags">
-						<!-- <span class="tag" v-for="tag in item.datadetails.userinfo.fieldList" :key="tag">{{tag}}</span> -->
+						<span class="tag">{{datadetails.typename}}</span>
 					</div>
 
 					<div class="orderstatus orangecolor">
@@ -63,7 +63,7 @@
 					<label>问题内容</label>
 					<div v-html="datadetails.content"></div>
 					<div class="news-show" v-if="datadetails.imageUrl!=''">
-						<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
+						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
 							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 					<label>对方态度</label>
 					<div v-html="datadetails.defendantAttitude"></div>
 					<div class="news-show" v-if="datadetails.defendantUrl!=''">
-						<div class="news-img" v-for="imgitem in datadetails.defendantUrl.split(';')" :key="imgitem">
+						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
 							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
@@ -85,7 +85,7 @@
 			<div class="br">—— 律师解答 ——</div>
 			<div class="">
 				<div class="lawyeransitem" v-for="item in  datadetails.replyList" :key="item.id">
-					<div class="user-info">
+					<div class="user-info" v-if="item.userinfo">
 						<div class="user-box">
 							<div class="user-head"><img :src=imgurl+item.userinfo.headImgUrl></div>
 							<div class="user-type">{{item.userinfo.identity==0?"用户":"律师"}}</div>
@@ -97,17 +97,17 @@
 					</div>
 					<div class="">
 						<div class="anscontent" v-html="item.reply"></div>
-						<div class="answersecond" v-for="second in item.consultationReplyList" :key="second.id">
-							<div class="answeritme">
+						<div class="answersecond" v-if="item.consultationReplyList.length!=0">
+							<div class="answeritme" v-for="second in item.consultationReplyList" :key="second.id">
 								<div class="user-info">
 									<div class="user-name bluecolor">{{second.userinfo.nickname}}</div>
 									<div class="hot-num">{{second.updateTime}}</div>
 								</div>
 								<div class="">
-									<p>回复<em>{{item.userinfo.nickname}}：</em>{{second.reply}}</p>
+									<p>回复<em class="bluecolor">{{item.userinfo.nickname==second.userinfo.nickname?datadetails.userinfo.nickname:item.userinfo.nickname}}：</em>{{second.reply}}</p>
 								</div>
 							</div>
-							<!-- <div class="answeritme">
+<!-- 							<div class="answeritme">
 								<div class="user-info">
 									<div class="user-name bluecolor">北京大兴张律师</div>
 									<div class="hot-num">10-16 14:14</div>
