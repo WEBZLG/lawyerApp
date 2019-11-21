@@ -42,10 +42,10 @@
 			</div>
 			<div class="myorderdesc  mui-content">
 				<div class="user-info">
-					<div class="user-box">
-						<div class="user-head" v-if="datadetails.userinfo"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
-						<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
-						<div class="user-name">{{datadetails.nickname}}</div>
+					<div class="user-box" v-if="datadetails.userinfo">
+						<div class="user-head"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
+						<div class="user-type">{{datadetails.userinfo.identity==0?"用户":"律师"}}</div>
+						<div class="user-name">{{datadetails.userinfo.nickname}}</div>
 					</div>
 					<div class="hot-box">
 						<div class="hot-num">{{datadetails.updateTime}}</div>
@@ -97,7 +97,7 @@
 					</div>
 					<div class="">
 						<div class="anscontent" v-html="item.reply"></div>
-						<div class="answersecond" v-if="item.consultationReplyList.length!=0">
+						<div class="answersecond" v-if="item.consultationReplyList.length != 0">
 							<div class="answeritme" v-for="second in item.consultationReplyList" :key="second.id">
 								<div class="user-info">
 									<div class="user-name bluecolor">{{second.userinfo.nickname}}</div>
@@ -107,15 +107,6 @@
 									<p>回复<em class="bluecolor">{{item.userinfo.nickname==second.userinfo.nickname?datadetails.userinfo.nickname:item.userinfo.nickname}}：</em>{{second.reply}}</p>
 								</div>
 							</div>
-<!-- 							<div class="answeritme">
-								<div class="user-info">
-									<div class="user-name bluecolor">北京大兴张律师</div>
-									<div class="hot-num">10-16 14:14</div>
-								</div>
-								<div class="">
-									<p>回复<em>大成法律宋律师：</em>谢谢你宋律师，我已经联系物业了并没有什么实际效果。</p>
-								</div>
-							</div> -->
 						</div>
 						<div class="dataaction">
 							<div class="databox ask" :ansid="datadetails.id" :appendid="item.id">

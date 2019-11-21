@@ -95,7 +95,6 @@
 			// 拍照添加文件
 			function appendByCamera() {
 				plus.camera.getCamera().captureImage(function(e) {
-					console.log(e);
 					plus.io.resolveLocalFileSystemURL(e, function(entry) {
 						var path = entry.toLocalURL();
 						document.getElementById('head-img').src = path;
@@ -134,7 +133,7 @@
 						if (status == 200) {
 							mui.toast('上传成功');
 							console.log(t.responseText)
-							var imgUrl = JSON.parse(t.responseText).datas.max
+							var imgUrl = JSON.parse(t.responseText).datas.min;
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
 							imgstr = imgArray.join(';');

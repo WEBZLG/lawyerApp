@@ -156,18 +156,7 @@
 				var lawyerid = self.lawyerid;
 				options.lawyerid = lawyerid;
 				lawyerdetails(token, lawyerid);
-				// 获取支付通道
-				plus.payment.getChannels(function(channels) {
-					for (var i in channels) {
-						if (channels[i].id == "wxpay") {
-							channel = channels[i];
-						} else {
-							aliChannel = channels[i];
-						}
-					}
-				}, function(e) {
-					alert("获取支付通道失败：" + e.message);
-				});
+
 				mui('body').on('tap', '.mui-control-item', function() {
 					var servicename = this.getAttribute('name');
 					options.servicename = servicename;
@@ -179,34 +168,27 @@
 					} else {
 						switch (name) {
 							case '图文咨询':
-								mui.ajax({
-									type: 'post',
-									url: baseurl + "client/mflimageandtext/imageandtextorder",
-									dataType: "json",
-									beforeSend: function(XMLHttpRequest) {
-										XMLHttpRequest.setRequestHeader(
-											"token", token
-										);
-									},
-									headers: {
-										'contentType': "application/x-www-form-urlencoded",
-										'token': token
-									},
-									data: {
-										'lawyerid': lawyerid,
-									},
-									success: function(data) {
-										console.log(data);
-										if (data.errCode == 200) {
-											payfor(token,data.datas)
-										} else {
-											mui.toast(data.message)
-										}
-									},
-									error: function(err) {
-										console.log(err)
+							mui.openWindowWithTitle({
+								url: "dialog.html",
+								id: "dialog.html",
+								styles: {},
+								extras: {
+									sendId: options.lawyerid,
+								}
+							}, {
+								backgroundColor: "#ffffff",
+								//bottomBorderColor:"#00ff00",
+								title: {
+									//标题文字的内容和样式配置
+									text: options.datalist.lawyer.nickname,
+									whiteSpace: "normal"
+								},
+								back: {
+									image: {
+										imgSrc: "../images/left-icon.png"
 									}
-								});
+								}
+							})
 								break;
 							case '律师函件':
 								mui.openWindowWithTitle({
@@ -310,64 +292,7 @@
 					}
 				})
 			};
-			// 支付
-			function payfor(token, num) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mflimageandtext/pay",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'paymerchantnumber': num,
-					},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-							console.log(channel)
-							plus.payment.request(channel, data.datas, function(result) {
-								console.log(result)
-								mui.openWindowWithTitle({
-									url: "dialog.html",
-									id: "dialog.html",
-									styles: {},
-									extras: {
-										lawyerid: options.lawyerid,
-										servicename:options.servicename
-									}
-								}, {
-									backgroundColor: "#ffffff",
-									//bottomBorderColor:"#00ff00",
-									title: {
-										text: "图文咨询"
-									},
-									back: {
-										image: {
-											imgSrc: "../images/left-icon.png"
-										}
-									}
-								})
-							}, function(error) {
-								console.log(error)
-								// plus.nativeUI.alert(JSON.stringify(error)); 
-							});
-
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
-			}
+	
 			mui('body').on('tap', '.pjmore', function() {
 				mui.openWindowWithTitle({
 					url: "evaluatelist.html",

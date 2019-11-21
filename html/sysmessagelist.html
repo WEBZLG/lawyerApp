@@ -13,8 +13,8 @@
 		<div class="sysmessagelist" id="app">
 			<ul>
 				<li v-for="item in datadetails" :key='item.id'>
-					<p><span class="dot"></span>10-18 11:01</p>
-					<p class="sysdesc">您发布的律师函件订单(2019017150536290007)，律师已经寄出函件啦，快去看看吧！</p>
+					<p><span class="dot"></span>{{item.updateTime}}</p>
+					<p class="sysdesc">{{item.content}}</p>
 				</li>
 			</ul>
 			<div v-if="datadetails.length==0">

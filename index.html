@@ -18,23 +18,18 @@
 		</header>
 		<nav class="mui-bar mui-bar-tab">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="html/home.html">
-				<!-- <span class="mui-icon mui-icon-home"></span> -->
 				<span class="mui-tab-label" title="首页"><img style="width:30%;" src="images/home_1.png"></span>
 			</a>
 			<a class="mui-tab-item" href="html/news.html">
-				<!-- <span class="mui-icon mui-icon-email"></span> -->
 				<span class="mui-tab-label" title="资讯"><img style="width:30%;" src="images/news_1.png" ></span>
 			</a>
 			<a class="mui-tab-item" href="html/publish.html">
-				<!-- <span class="mui-icon mui-icon-plus"></span> -->
 				<span class="mui-tab-label" title="发布"><img style="width:30%;" src="images/logo.png" ></span>
 			</a>
 			<a class="mui-tab-item" href="html/word.html">
-				<!-- <span class="mui-icon mui-icon-chatbubble"></span> -->
 				<span class="mui-tab-label" title="消息"><img style="width:30%;" src="images/message_1.png" ></span>
 			</a>
 			<a class="mui-tab-item" href="html/myself.html">
-				<!-- <span class="mui-icon mui-icon-person"></span> -->
 				<span class="mui-tab-label" title="我的"><img style="width:30%;" src="images/my_1.png" ></span>
 			</a>
 		</nav>
@@ -79,6 +74,46 @@
 					pageArr.push(page);
 					! function(i) {
 						arr[i].addEventListener("tap", function() {
+							console.log(this)
+							switch (i) {
+								case 0:
+									this.childNodes[1].childNodes[0].src = "images/home_2.png"
+									arr[1].childNodes[1].childNodes[0].src = "images/news_1.png"
+									arr[2].childNodes[1].childNodes[0].src = "images/logo.png"
+									arr[3].childNodes[1].childNodes[0].src = "images/message_1.png"
+									arr[4].childNodes[1].childNodes[0].src = "images/my_1.png"
+									break;
+								case 1:
+									this.childNodes[1].childNodes[0].src = "images/news_2.png"
+									arr[0].childNodes[1].childNodes[0].src = "images/home_1.png"
+									arr[2].childNodes[1].childNodes[0].src = "images/logo.png"
+									arr[3].childNodes[1].childNodes[0].src = "images/message_1.png"
+									arr[4].childNodes[1].childNodes[0].src = "images/my_1.png"
+									break;
+								case 2:
+									this.childNodes[1].childNodes[0].src = "images/logo.png"
+									arr[0].childNodes[1].childNodes[0].src = "images/home_1.png"
+									arr[1].childNodes[1].childNodes[0].src = "images/news_1.png"
+									arr[3].childNodes[1].childNodes[0].src = "images/message_1.png"
+									arr[4].childNodes[1].childNodes[0].src = "images/my_1.png"
+									break;
+								case 3:
+									this.childNodes[1].childNodes[0].src = "images/message_2.png"
+									arr[0].childNodes[1].childNodes[0].src = "images/home_1.png"
+									arr[1].childNodes[1].childNodes[0].src = "images/news_1.png"
+									arr[2].childNodes[1].childNodes[0].src = "images/logo.png"
+									arr[4].childNodes[1].childNodes[0].src = "images/my_1.png"
+									break;
+								case 4:
+									this.childNodes[1].childNodes[0].src = "images/my_2.png"
+									arr[0].childNodes[1].childNodes[0].src = "images/home_1.png"
+									arr[1].childNodes[1].childNodes[0].src = "images/news_1.png"
+									arr[2].childNodes[1].childNodes[0].src = "images/logo.png"
+									arr[3].childNodes[1].childNodes[0].src = "images/message_1.png"
+									break;
+								default:
+									break;
+							}
 							var pageid = this.getAttribute('href');
 							var wobj = plus.webview.getWebviewById(pageid); //根据页面ID获取到页面对象
 							wobj.reload(true);

@@ -48,11 +48,25 @@
 				margin-top: -8px;
 			}
 
+			#user_add_icon {
+				width: 25px;
+				height: 25px;
+				border-radius: 50%;
+				margin-left: 10px;
+				margin-top: -8px;
+			}
+
 			#btn {
 				display: block;
 				height: 30px;
-				width: 50px;
+				width: 60px;
+				line-height: 30px;
+				background-color: #59b500;
 				text-align: center;
+				color: #fff;
+				border-radius: 5px;
+				margin-left: 6px;
+				margin-bottom: 15px;
 			}
 
 			.content {
@@ -79,20 +93,20 @@
 			}
 
 			.content li span {
-				background: #7cfc00;
 				padding: 10px;
 				border-radius: 10px;
 				float: left;
 				margin: 6px 10px 0 10px;
-				max-width: 310px;
+				max-width: 260px;
 				border: 1px solid #ccc;
 				box-shadow: 0 0 3px #ccc;
+				word-break: break-all;
 			}
 
 			.content li img.imgleft {
 				float: left;
-				height: 54px;
-				width: 54px;
+				height: 50px;
+				width: 50px;
 				border-radius: 10px;
 				overflow: hidden;
 			}
@@ -100,8 +114,8 @@
 			.content li img.imgright {
 				float: right;
 				float: right;
-				height: 54px;
-				width: 54px;
+				height: 50px;
+				width: 50px;
 				border-radius: 10px;
 				overflow: hidden;
 			}
@@ -116,11 +130,36 @@
 				background: #7cfc00;
 			}
 
+			.content li span.imgleft {
+				float: left;
+			}
+
+			.content li span.imgright {
+				float: right;
+			}
+
 			.dighead {
 				height: 30px;
 				width: 30px;
 				border-radius: 50%;
 				overflow: hidden;
+			}
+
+			#actionbuy input {
+				margin: 0 auto;
+			}
+			#btnsay {
+				line-height: 21px;
+				width: 100%;
+				height: 40px;
+				margin-bottom: 15px;
+				padding: 10px 15px;
+				-webkit-user-select: text;
+				border: 1px solid rgba(0, 0, 0, .2);
+				border-radius: 3px;
+				outline: 0;
+				background-color: #fff;
+				-webkit-appearance: none;
 			}
 		</style>
 	</head>
@@ -130,14 +169,21 @@
 			<div id="container">
 				<ul class="content mui-scroll">
 					<li v-for="item in datalist" :key="item.id">
-						<div v-if="item.identity==0"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
-						<div v-if="item.identity==1"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
+					<div v-if="item.identity==0&&item.state==0"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
+					<div v-if="item.identity==0&&item.state==1"><img :src=imgurl+item.headImgUrl class="imgright"><span class="imgright"> <img :src=imgurl+item.content ></span></div>
+					<div v-if="item.identity==1&&item.state==0"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
+					<div v-if="item.identity==1&&item.state==1"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="imgleft"><img :src=imgurl+item.content ></span></div>
 					</li>
 				</ul>
-				<div class="footer">
-					<div id="user_face_icon"><img src="../images/+2.png" alt=""></div>
+				<div class="footer" id="action">
+					<div id="user_face_icon" onclick="btn_toggle();"><img src="../images/yuyin1.png" alt=""></div>
 					<input id="text" type="text" placeholder="说点什么吧...">
-					<span id="btn">发送</span>
+					<button  id="btnsay" class="mui-hidden" type="button" ontouchstart="return false;">按住说话</button>
+					<span id="btn" class="mui-hidden">发送</span>
+					<div id="user_add_icon"><img src="../images/+1.png" alt=""></div>
+				</div>
+				<div class="footer mui-hidden" id="actionbuy">
+					<input id="btnbuy" type="button" value="服务已到期，点击购买">
 				</div>
 			</div>
 		</div>
@@ -150,25 +196,48 @@
 					closed(options.token, options.sendId)
 				}
 			});
-
+			var channel = null;
 			mui.plusReady(function() {
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
 				var sendId = self.sendId;
+				var usetime = self.usetime;
 				var userinfo = plus.storage.getItem('userinfo');
 				options.userinfo = JSON.parse(userinfo);
-				console.log(options.userinfo)
 				options.sendId = sendId;
 				options.token = token;
+				startTime(token, sendId)
 				getlist(token, sendId, 0, 100);
-			})
+				mui("body").on("tap", "#user_add_icon", function() {
+					page.imgUp();
+				});
+				mui("body").on("tap", "#btnbuy", function() {
+					order(token, options.lawyerId)
+				});
+			});
+
 			var options = new Vue({
 				el: '#app',
 				data: {
 					datalist: [],
 					sendId: '',
 					token: "",
-					userinfo: ''
+					userinfo: '',
+					usetime: '',
+					showtime: '',
+					lawyerId: ''
 				},
 				methods: {
 					gohome: function() {
@@ -176,11 +245,85 @@
 					}
 				}
 			});
+			//开启长按、释放功能
+			var r;
+			var voiceTime;
+			//按住录音
+			document.getElementById("btnsay").addEventListener("hold", function() {
+				console.log(this)
+				this.innerHTML= '请说话'
+				r = plus.audio.getRecorder(); //录音对象
+				if (r == null) {
+					mui.alert("调用麦克风失败！", "提示信息", "关闭", null);
+					return;
+				}
+				voiceTime = (new Date()).valueOf();
+				var voicePath = "_doc/audio/";
+				r.record({
+					filename: voicePath,
+					samplerate: 16000
+				}, function(path) {
+					//录音成功回调
+					// mui.showLoading("正在提交..","div");
+					plus.io.resolveLocalFileSystemURL(path, function(entry) {
+						console.log(entry)
+			
+						// var url = jsonp_url + "sys/MobileWays/recVoice?&mobileLogin=true";
+						// var task=plus.uploader.createUpload(url,{method:"POST"},function(t,status){
+						// 	mui.hideLoading();
+						// 	if(status == 200){
+						// 		var dataJson=JSON.parse(t.responseText);
+						// 		//语音解析成功
+						// 		if(dataJson.result == "1"){
+						// 			mui.alert("识别结果:" + dataJson.data,"信息提示","关闭",function(){
+			
+						// 			});
+						// 		}else{
+						// 			mui.alert("语音解析失败:" + dataJson.data,"系统错误","关闭",false);
+						// 		}
+						// 	}else{
+						// 		mui.alert(status + ":语音解析失败！","系统错误","关闭",false); 
+						// 	}
+						// });
+						// task.addFile(path,{key:"file"});
+						// task.start();
+					});
+			
+				}, function(e) {
+					//录音错误回调
+					mui.alert("录音失败！" + e.message, "提示信息", "关闭", null);
+					return;
+				});
+			})
+			
+			//释放
+			document.getElementById("btnsay").addEventListener("release", function() {
+				this.innerHTML= '按住说话'
+				var timeNow = (new Date()).valueOf();
+				if ((parseInt(timeNow) - parseInt(voiceTime)) >= 2000) {
+					//停止录音
+					if (r != null) {
+						r.stop();
+					}
+				} else {
+					mui.toast('录音不足2秒，请重新录入！');
+				}
+			})
+			
+			function btn_toggle() {
+				var sh = document.getElementById('btnsay').classList.contains('mui-hidden');
+				if (sh) {
+					document.getElementById('btnsay').classList.remove('mui-hidden');
+					document.getElementById('text').classList.add('mui-hidden');
+				} else {
+					document.getElementById('text').classList.remove('mui-hidden');
+					document.getElementById('btnsay').classList.add('mui-hidden');
+				}
+			}
 			window.onload = function() {
 				var btn = document.getElementById('btn');
 				var text = document.getElementById('text');
 				var contentbox = document.getElementsByTagName('ul')[0];
-
 				btn.onclick = function() {
 					if (text.value == '') {
 						alert('不能发送空消息');
@@ -188,46 +331,69 @@
 						sendmsg(options.token, options.sendId, text.value);
 					}
 				}
-				// 发送信息
-				function sendmsg(token, rid, content) {
-					mui.ajax({
-						type: 'post',
-						url: baseurl + "client/mfflChatContents/sendMessageText",
-						dataType: "json",
-						beforeSend: function(XMLHttpRequest) {
-							XMLHttpRequest.setRequestHeader(
-								"token", token
-							);
-						},
-						headers: {
-							'contentType': "application/x-www-form-urlencoded",
-							'token': token
-						},
-						data: {
-							'receiveId': rid,
-							'content': content
-						},
-						success: function(data) {
-							console.log(data)
-							if (data.errCode == 200) {
-								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
-									'" class="imgright"><span class="spanright">' + text.value + '</span></li>';
-								text.value = '';
-							} else {
-								mui.toast(data.message)
-							}
-						},
-						error: function(err) {
-							console.log(err)
-						}
-					})
+			};
+			document.getElementById("text").addEventListener('input', function() {
+				console.log(this.value);
+				if (this.value != '') {
+					document.getElementById('btn').classList.remove('mui-hidden')
+					document.getElementById('user_add_icon').classList.add('mui-hidden')
+				} else {
+					document.getElementById('user_add_icon').classList.remove('mui-hidden')
+					document.getElementById('btn').classList.add('mui-hidden')
 				}
-			}
-			// 发送图片
-			function sendimg(token, rid, content) {
+			});
+			// 聊天开始触发
+			function startTime(token, sendId) {
 				mui.ajax({
 					type: 'post',
-					url: baseurl + "client/mfflChatContents/sendMessageImg",
+					url: baseurl + "client/mfflChatContents/setStartTime",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", options.token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': options.token
+					},
+					data: {
+						'receiveId': sendId,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.showtime = data.datas.timeRemaining;
+							options.usetime = data.datas.firstTime;
+							options.lawyerId = data.datas.lawyerId;
+							var wv = plus.webview.currentWebview();
+							wv.setStyle({
+								titleNView: {
+									titleText: options.showtime,
+									titleColor: '#2E82FF',
+								}
+							})
+							if (data.datas.firstTime == 0) {
+								document.getElementById('actionbuy').classList.remove("mui-hidden");
+								document.getElementById('action').classList.add('mui-hidden')
+							} else {
+								document.getElementById('action').classList.remove("mui-hidden");
+								document.getElementById('actionbuy').classList.add('mui-hidden')
+							}
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+			// 发送信息
+			function sendmsg(token, rid, content) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflChatContents/sendMessageText",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
 						XMLHttpRequest.setRequestHeader(
@@ -240,12 +406,17 @@
 					},
 					data: {
 						'receiveId': rid,
-						'file': content
+						'content': content
 					},
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							// options.datalist = data.datas;
+							var contentbox = document.getElementsByTagName('ul')[0];
+							contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
+								'" class="imgright"><span class="spanright">' + text.value + '</span></li>';
+							text.value = '';
+							document.getElementById('user_add_icon').classList.remove('mui-hidden')
+							document.getElementById('btn').classList.add('mui-hidden')
 						} else {
 							mui.toast(data.message)
 						}
@@ -255,7 +426,6 @@
 					}
 				})
 			}
-
 
 			// 关闭触发
 			function closed(token, id) {
@@ -320,6 +490,172 @@
 						console.log(err)
 					}
 				})
+			};
+			// 发送图片
+
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						// document.getElementById('head-img').src = path;
+						upload(path)
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					// document.getElementById('head-img').src = path;
+					upload(path)
+				});
+			}
+			//服务端接口路径
+			var server = baseurl + "client/mfflChatContents/sendMessageImg";
+			// 上传文件
+			function upload(files) {
+				var files = [{
+					path: files
+				}];
+				if (files.length <= 0) {
+					plus.nativeUI.alert('没有选择图片！');
+					return;
+				}
+				mui.toast('正在发送');
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: 'POST'
+					},
+					function(t, status) { //上传完成
+						plus.nativeUI.closeWaiting();
+						var data = JSON.parse(t.responseText);
+						console.log(data);
+						if (status == 200) {
+							if (data.errCode == 200) {
+								var imgUrl = data.datas.max;
+								mui.toast('发送成功');
+								var contentbox = document.getElementsByTagName('ul')[0];
+								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
+									'" class="imgright"><span class="imgright"><img src='+imgurl+imgUrl+'></span></li>';
+							} else {
+								mui.toast(data.message)
+							}
+						} else {
+							mui.toast('发送失败');
+							wt.close();
+						}
+					}
+				);
+				task.setRequestHeader('token', options.token);
+				task.addData('receiveId', options.sendId)
+				for (var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: 'file'
+					});
+				}
+				task.start();
+			};
+
+			// 咨询下单
+			function order(token, lawyerid) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mflimageandtext/imageandtextorder",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'lawyerid': lawyerid,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							payfor(token, data.datas)
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			};
+			// 支付
+			function payfor(token, num) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mflimageandtext/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'paymerchantnumber': num,
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							console.log(channel)
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								mui.back();
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
 			}
 		</script>
 	</body>

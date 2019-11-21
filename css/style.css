@@ -583,6 +583,7 @@ p {
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
 	overflow: hidden;
+	word-break: break-all;
 }
 
 .mes-name {
@@ -1894,4 +1895,8 @@ input[type='text'] {
 textarea {
 	border: none;
 	outline: none;
+}
+.answersecond .hot-num{
+	font-size: 12px;
+	color: #8f8f94;
 }
