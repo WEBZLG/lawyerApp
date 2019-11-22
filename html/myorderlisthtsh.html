@@ -41,17 +41,14 @@
 							<div class="ordertime">{{item.updateTime}}</div>
 							<div class="orderaction" v-if="item.payState==0">
 								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
-								<button type="button" class="mui-btn gobuy" :num="item.payMerchantNumber">去支付</button>
+								<button type="button" class="mui-btn gobuy" :yid="item.id" :num="item.payMerchantNumber">去支付</button>
 							</div>
-							<!-- 					<div class="orderaction">
-						<button type="button" class="mui-btn">取消退款</button>
-						<button type="button" class="mui-btn">查看物流</button>
-					</div>
-					<div class="orderaction">
-						<button type="button" class="mui-btn drawback">申请退款</button>
-						<button type="button" class="mui-btn">查看物流</button>
-						<button type="button" class="mui-btn">确认收到</button>
-					</div> -->
+							<div class="orderaction" v-if="item.payState==2">
+								<button type="button" class="mui-btn disrefund"  :yid="item.id">取消退款</button>
+							</div>
+							<div class="orderaction" v-if="item.payState==1">
+								<button type="button" class="mui-btn drawback"  :yid="item.id">申请退款</button>
+							</div>
 						</div>
 					</div>
 					<div class="nodata" v-if="datalist.length==0">
@@ -104,7 +101,7 @@
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
-				letterlist(token,0,10);
+				letterlist(token, 0, 10);
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
 					for (var i in channels) {
@@ -129,6 +126,17 @@
 						}
 					})
 				});
+				// 取消退款
+				mui("body").on("tap", ".disrefund", function() {
+					var id = this.getAttribute('yid');
+					console.log(id)
+					var btnArray = ['是', '否'];
+					mui.confirm('确定取消退款?', '', btnArray, function(e) {
+						if (e.index == 0) {
+							disrefund(token, id);
+						}
+					})
+				});
 			})
 
 			var options = new Vue({
@@ -137,17 +145,42 @@
 					datalist: [],
 					receiveid: '',
 					token: "",
-					offset:0,
-					limit:10
-				},
-				methods: {
-					gohome: function() {
-
-					}
+					offset: 0,
+					limit: 10
 				}
 			});
+			// 申请退款
+			mui("body").on("tap", ".drawback", function() {
+				var hid = this.getAttribute('yid');
+				mui.openWindowWithTitle({
+					url: "drawback.html",
+					id: "drawback.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						hid: hid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "申请退款",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
+			});
 			// 合同审核列表
-			function letterlist(token,offset,limit) {
+			function letterlist(token, offset, limit) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflContracts",
@@ -214,6 +247,39 @@
 				})
 			});
 
+			// 取消退款
+			function disrefund(token, hid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflContracts/cancelRefund",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						id:hid
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('取消成功！')
+							letterlist(options.token);
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+						mui.toast(err.response)
+					}
+				})
+			}
 			// 取消发布
 			function cancel(token, hid) {
 				mui.ajax({
@@ -248,6 +314,7 @@
 			// 支付
 			mui("body").on("tap", ".gobuy", function() {
 				var num = this.getAttribute("num");
+				var oid = this.getAttribute("yid");
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflContracts/pay",
@@ -274,6 +341,7 @@
 									id: 'paysuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
+										oid: oid
 									}
 								})
 							}, function(error) {

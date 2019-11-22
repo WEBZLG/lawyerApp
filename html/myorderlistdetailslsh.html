@@ -13,7 +13,7 @@
 	</head>
 
 	<body>
-		<div class="myorderlistdetialslsh" id="app" >
+		<div class="myorderlistdetialslsh" id="app">
 			<div class="numbox">
 				<div class="ordernumber">订单状态：
 					<em v-if="datadetails.state==0">发布成功</em>
@@ -37,7 +37,7 @@
 							<div class="namebtn">
 								<p class="intro-name">{{laywerinfo.nickname}}</p>
 								<div class="smdbbtn">
-									<button type="button" class="mui-btn dialog"  :sendId="laywerinfo.id" :name="laywerinfo.nickname">联系律师</button>
+									<button type="button" class="mui-btn dialog" :sendId="laywerinfo.id" :name="laywerinfo.nickname">联系律师</button>
 									<button type="button" class="mui-btn telephone" :phone="laywerinfo.phone" :id="datadetails.id">拨打电话</button>
 								</div>
 							</div>
@@ -93,20 +93,24 @@
 				<div class="orderchange">
 					<div class="ordertime"></div>
 					<div class="orderaction" v-if="datadetails.state==1">
-						<button type="button" class="mui-btn refund"  :id="datadetails.id">申请退款</button>
-						<!-- <button type="button" class="mui-btn">修改邮寄地址</button> -->
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
 					</div>
-					<div class="orderaction" v-if="datadetails.state==4">
-						<button type="button" class="mui-btn pjia"  :id="datadetails.id">评价</button>
+					<div class="orderaction" v-if="datadetails.state==3">
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn finish" :id="datadetails.id">完成服务</button>
 					</div>
-					<div class="orderaction mui-hidden" v-if="datadetails.payState==2">
-						<button type="button" class="mui-btn disrefund"  :id="datadetails.id">取消退款</button>
-						<button type="button" class="mui-btn"  :id="datadetails.id">查看物流</button>
+					<div class="orderaction" v-if="datadetails.state==0">
+						<button type="button" v-if="datadetails.payState==0" class="mui-btn gobuy" :id="datadetails.id">去支付</button>
 					</div>
-					<div class="orderaction mui-hidden" v-if="datadetails.state==3">
-						<button type="button" class="mui-btn refund"  :id="datadetails.id">申请退款</button>
-						<button type="button" class="mui-btn wuliu" :num="datadetails.courierServicesOrder[0].courierNumber"  :id="datadetails.id">查看物流</button>
-						<button type="button" class="mui-btn receipt" :id="datadetails.id">确认收到</button>
+					<div class="orderaction" v-if="datadetails.payState==1">
+						<button type="button" class="mui-btn refund" :id="datadetails.id" v-if="datadetails.state==3||datadetails.state==1">>申请退款</button>
+						<!-- <button type="button" class="mui-btn changeaddr" v-if="datadetails.state==0||datadetails.state==1">修改邮寄地址</button> -->
+					</div>
+					<div class="orderaction mui-hidden" v-if="datadetails.payState==3">
+						<button type="button" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
+						<button type="button" class="mui-btn logistics" :id="datadetails.id">查看物流</button>
 					</div>
 				</div>
 			</div>
@@ -116,31 +120,39 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
+			var channel = null;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
 				var id = self.lshid;
 				options.lshid = id;
 				options.token = token;
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
 
 				getdetails(token, id)
 
-				// mui("body").on('tap', '.refund', function() {
-				// 	refund(token, id)
-				// })
+				mui("body").on('tap', '.refund', function() {
+					refund(token, id)
+				})
 
 				mui("body").on('tap', '.disrefund', function() {
 					disrefund(token, id)
 				})
 
-				mui("body").on('tap', '.receipt', function() {
-					var id = this.getAttribute("id");
-					receipt(token, id)
-				})
-
-				mui("body").on('tap', '.wuliu', function() {
-					var num = this.getAttribute("num");
-					receipt(token, num)
+				mui("body").on('tap', '.logistics', function() {
+					var id = this.getAttribute("num");
+					logistics(token, id)
 				})
 				// 拨打电话
 				mui("body").on('tap', '.telephone', function() {
@@ -192,7 +204,7 @@
 									//bottomBorderColor:"#00ff00",
 									title: {
 										//标题文字的内容和样式配置
-										text: newname + "("+data.datas.timeRemaining+")",
+										text: newname + "(" + data.datas.timeRemaining + ")",
 										whiteSpace: "normal"
 									},
 									back: {
@@ -217,8 +229,8 @@
 				el: '#app',
 				data: {
 					datadetails: {},
-					laywerinfo:{},
-					userinfo:{},
+					laywerinfo: {},
+					userinfo: {},
 					otherdetails: [],
 					infoid: '',
 					token: '',
@@ -227,6 +239,35 @@
 				mounted() {
 
 				}
+			});
+			// 修改邮寄地址
+			mui("body").on("tap", ".changeaddr", function() {
+				var hid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "mailinginfor.html",
+					id: "mailinginfor.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						hid: hid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#ffffff",
+					// bottomBorderColor:"#267CFB",
+					title: {
+						text: "修改邮寄地址",
+						styles: {
+							color: "#333333"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/left-icon.png"
+						}
+					}
+				})
 			});
 			// 申请退款
 			mui("body").on("tap", ".refund", function() {
@@ -237,7 +278,7 @@
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						id: hid
+						hid: hid
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -258,14 +299,16 @@
 					}
 				})
 			});
-			mui("body").on("tap", ".pjia", function() {
+			// 服务完成
+			mui("body").on("tap", ".finish", function() {
 				mui.openWindowWithTitle({
 					url: "evaluate.html",
 					id: "evaluate.html",
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						lshId: options.lshid
+						lshId: options.lshid,
+						filestype:0
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -273,7 +316,7 @@
 					bottomBorderColor: "#267CFB",
 					title: {
 						//标题文字的内容和样式配置
-						text: "打赏",
+						text: "服务评价",
 						styles: {
 							color: "#fffff"
 						}
@@ -286,7 +329,52 @@
 					}
 				})
 			});
-
+			// 支付
+			mui("body").on("tap", ".gobuy", function() {
+				var num = this.getAttribute("num");
+				var oid = this.getAttribute("yid");
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflLawyerletters/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", options.token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': options.token
+					},
+					data: {
+						'paymerchantnumber': num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								mui.openWindow({
+									url: 'paysuccess.html',
+									id: 'paysuccess.html',
+									extras: {
+										//自定义扩展参数，可以用来处理页面间传值  
+										oid: oid
+									}
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			});
 			//获取详情
 			function getdetails(token, id) {
 				mui.ajax({
@@ -318,45 +406,11 @@
 					}
 				});
 			}
-
-			//申请退款
-			// function refund(token, id) {
-			// 	mui.ajax({
-			// 		type: 'get',
-			// 		url: baseurl + "client/mfflContracts/refund",
-			// 		dataType: "json",
-			// 		beforeSend: function(XMLHttpRequest) {
-			// 			XMLHttpRequest.setRequestHeader(
-			// 				"token", token
-			// 			);
-			// 		},
-			// 		headers: {
-			// 			'contentType': "application/x-www-form-urlencoded",
-			// 			'token': token
-			// 		},
-			// 		data: {
-			// 			'id': id
-			// 		},
-			// 		success: function(data) {
-			// 			console.log(data);
-			// 			if (data.errCode == 200) {
-			// 				mui.toast("申请成功！")
-			// 				getdetails(options.token, options.lshid)
-			// 			} else {
-			// 				mui.toast(data.message)
-			// 			}
-			// 		},
-			// 		error: function(err) {
-			// 			console.log(err)
-			// 		}
-			// 	});
-			// }
-
 			//取消申请退款
 			function disrefund(token, id) {
 				mui.ajax({
 					type: 'get',
-					url: baseurl + "client/mfflContracts/cancelRefund",
+					url: baseurl + "client/mfflLawyerletters/cancelRefund",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
 						XMLHttpRequest.setRequestHeader(
@@ -406,7 +460,7 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							mui.toast("申请成功！")
+							mui.toast("评价完成")
 							getdetails(options.token, options.lshid)
 						} else {
 							mui.toast(data.message)
@@ -418,7 +472,7 @@
 				});
 			}
 			//查看快递
-			function ems(token, id) {
+			function logistics(token, id) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflLawyerletters/showCourier",
@@ -438,7 +492,7 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-
+							// https://m.kuaidi100.com/app/query/?com=quanfengkuaidi&nu=123456&coname=meizu
 						} else {
 							mui.toast(data.message)
 						}

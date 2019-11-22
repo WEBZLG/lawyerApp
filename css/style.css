@@ -1185,6 +1185,7 @@ label {
 	margin-right: 15px;
 	float: left;
 	margin-bottom: 15px;
+	position: relative;
 }
 
 .upimg li:last-child {
@@ -1193,6 +1194,13 @@ label {
 
 .upimg li img {
 	height: 100%;
+}
+
+.closeicon{
+	position: absolute;
+	right: -8px;
+	top: -8px;
+	font-size: 16px;
 }
 
 .dbbtn {

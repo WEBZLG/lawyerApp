@@ -37,7 +37,7 @@
 							<div class="namebtn">
 								<p class="intro-name">{{laywerinfo.nickname}}</p>
 								<div class="smdbbtn">
-									<button type="button" class="mui-btn dialog"  :sendId="laywerinfo.id" :name="laywerinfo.nickname">联系律师</button>
+									<button type="button" class="mui-btn dialog" :sendId="laywerinfo.id" :name="laywerinfo.nickname">联系律师</button>
 									<button type="button" class="mui-btn telephone" :phone="laywerinfo.phone" :id="datadetails.id">拨打电话</button>
 								</div>
 							</div>
@@ -59,35 +59,31 @@
 					<div class="" v-html="datadetails.content"></div>
 					<div class="news-show" v-if="datadetails.imageUrl!=''">
 						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
-							<img :src=imgurl+imgitem  data-preview-src="" data-preview-group="1">
+							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
 				</div>
 				<div class="talktextarea">
-					<div class="ordernum">
+					<p class="ordernum">
 						<span class="ordernumber">订单编号：{{datadetails.payMerchantNumber}}</span>
 						<span class="bluecolor" :num="datadetails.payMerchantNumber" id="copy">复制</span>
-					</div>
+					</p>
 					<p>下单时间：{{datadetails.createTime}}</p>
 					<p>支付时间：{{datadetails.paymentTime}}</p>
 				</div>
 				<div class="orderchange">
 					<div class="ordertime"></div>
 					<div class="orderaction" v-if="datadetails.state==1">
-						<button type="button" class="mui-btn refund" :id="datadetails.id">申请退款</button>
-						<!-- <button type="button" class="mui-btn">修改邮寄地址</button> -->
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
 					</div>
-					<div class="orderaction" v-if="datadetails.state==4">
-						<button type="button" class="mui-btn pjia" :id="datadetails.id">评价</button>
+					<div class="orderaction" v-if="datadetails.state==3">
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
+						<button type="button" v-if="datadetails.payState==1" class="mui-btn finish" :id="datadetails.id">服务完成</button>
 					</div>
-					<div class="orderaction mui-hidden" v-if="datadetails.state==2">
-						<button type="button" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
-						<button type="button" class="mui-btn"  :id="datadetails.id">查看物流</button>
-					</div>
-					<div class="orderaction mui-hidden" v-if="datadetails.state==3">
-						<button type="button" class="mui-btn refund" :id="datadetails.id">申请退款</button>
-						<button type="button" class="mui-btn wuliu" :num="datadetails.courierServicesOrder[0].courierNumber" :id="datadetails.id">查看物流</button>
-						<button type="button" class="mui-btn receipt" :id="datadetails.id">确认收到</button>
+					<div class="orderaction" v-if="datadetails.state==0">
+						<button type="button" v-if="datadetails.payState==0" class="mui-btn refund" :id="datadetails.id">去支付</button>
 					</div>
 				</div>
 			</div>
@@ -97,6 +93,7 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
+			var channel = null;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
@@ -104,22 +101,50 @@
 				options.lshid = id;
 				options.token = token;
 				getdetails(token, id)
-				// mui("body").on('tap', '.refund', function() {
-				// 	refund(token, id)
-				// })
-
 				mui("body").on('tap', '.disrefund', function() {
 					disrefund(token, id)
 				});
-
-				mui("body").on('tap', '.receipt', function() {
-					var id = this.getAttribute("id");
-					receipt(token, id)
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					for (var i in channels) {
+						if (channels[i].id == "wxpay") {
+							channel = channels[i];
+						} else {
+							aliChannel = channels[i];
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
 				});
-				
-				mui("body").on('tap', '.wuliu', function() {
-					var num = this.getAttribute("num");
-					receipt(token, num)
+				// 服务完成
+				mui("body").on("tap", ".finish", function() {
+					mui.openWindowWithTitle({
+						url: "evaluate.html",
+						id: "evaluate.html",
+						styles: {},
+						extras: {
+							// 打开页面的同时，向新页面传递数据。
+							lshId: options.lshid,
+							filestype: 2
+						}
+					}, {
+						//标题栏的背景色和底边线配置
+						backgroundColor: "#267CFB",
+						bottomBorderColor: "#267CFB",
+						title: {
+							//标题文字的内容和样式配置
+							text: "服务评价",
+							styles: {
+								color: "#fffff"
+							}
+						},
+						back: {
+							image: {
+								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+								imgSrc: "../images/wleft-icon.png"
+							}
+						}
+					})
 				});
 				// 拨打电话
 				mui("body").on('tap', '.telephone', function() {
@@ -133,7 +158,7 @@
 						}
 					});
 				})
-				
+
 				// 复制
 				mui("body").on('tap', '#copy', function() {
 					var num = this.getAttribute("num");
@@ -176,7 +201,7 @@
 									//bottomBorderColor:"#00ff00",
 									title: {
 										//标题文字的内容和样式配置
-										text: newname + "("+data.datas.timeRemaining+")",
+										text: newname + "(" + data.datas.timeRemaining + ")",
 										whiteSpace: "normal"
 									},
 									back: {
@@ -200,49 +225,14 @@
 				el: '#app',
 				data: {
 					datadetails: {},
-					laywerinfo:{},
+					laywerinfo: {},
 					otherdetails: [],
 					infoid: '',
 					token: '',
 					lshid: ""
-				},
-				methods: {
-					gohome: function() {
-			
-					}
 				}
 			});
 
-			// 评价
-			mui("body").on("tap", ".pjia", function() {
-				mui.openWindowWithTitle({
-					url: "evaluate.html",
-					id: "evaluate.html",
-					styles: {},
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						lshId: options.lshid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#267CFB",
-					bottomBorderColor:"#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "打赏",
-						styles:{
-							color:"#fffff"
-						}
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/wleft-icon.png"
-						}
-					}
-				})
-			});
-			
 
 			// 申请退款
 			mui("body").on("tap", ".refund", function() {
@@ -294,7 +284,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							options.datadetails = data.datas;
-							options.laywerinfo =data.datas.laywerinfo
+							options.laywerinfo = data.datas.laywerinfo
 						} else {
 							mui.toast(data.message)
 						}
@@ -371,38 +361,7 @@
 				});
 			}
 
-			//确认收货
-			function receipt(token, htid) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflContracts/ConfirmCompletion",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'id': htid
-					},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-							mui.toast("申请成功！")
-							getdetails(options.token, options.lshid)
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
-			}
+
 			//查看快递
 			function ems(token, id) {
 				mui.ajax({
@@ -424,7 +383,7 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							
+
 						} else {
 							mui.toast(data.message)
 						}
@@ -465,7 +424,52 @@
 					}
 				});
 			}
-
+			// 支付
+			mui("body").on("tap", ".gobuy", function() {
+				var num = this.getAttribute("num");
+				var oid = this.getAttribute("id");
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflContracts/pay",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", options.token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': options.token
+					},
+					data: {
+						'paymerchantnumber': num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							plus.payment.request(channel, data.datas, function(result) {
+								console.log(result)
+								mui.openWindow({
+									url: 'paysuccess.html',
+									id: 'paysuccess.html',
+									extras: {
+										//自定义扩展参数，可以用来处理页面间传值  
+										oid: oid
+									}
+								})
+							}, function(error) {
+								console.log(error)
+								// plus.nativeUI.alert(JSON.stringify(error)); 
+							});
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			});
 		</script>
 	</body>
 

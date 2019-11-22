@@ -89,21 +89,23 @@
 				<textarea id="content" rows="6" cols="" placeholder="请输入您对本次服务的评价"></textarea>
 			</div>
 			<div class="dbbtn">
-				<button type="button" class="mui-btn" id="submit">提交</button>
+				<button type="button" class="mui-btn" id="submit">完成服务</button>
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
 		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
 			var rank;
 			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
 				var id = self.lshid;
-				var token = plus.storage.getItem('token');
+				var filestype = self.filestype;
 				mui('body').on('tap', '#submit', function() {
 					var con = document.getElementById('content').value;
-					evalute(token, id, rank, con)
+					evalute(token, id, rank, con,filestype)
 				})
 
 			})
@@ -117,11 +119,18 @@
 					$(this).siblings('.box-item').find('.icon-icon').removeClass('active');
 				})
 			})
-
-			function evalute(token, lyid, rank, content) {
+			// 评价
+			function evalute(token, lyid, rank, content,filestype) {
+				if(filestype==0){
+					var type = 'get'
+					var path = baseurl + "client/mfflLawyerletters/ConfirmCompletion"
+				}else{
+					var type = 'post'
+					var path = baseurl + "client/mfflContracts/ConfirmCompletion"
+				}
 				mui.ajax({
-					type: 'post',
-					url: baseurl + "client/mfflTypes/saveLawyerComment",
+					type: type,
+					url: path,
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
 						XMLHttpRequest.setRequestHeader(
@@ -133,9 +142,8 @@
 						'token': token
 					},
 					data: {
-						'lawyerId': lyid,
+						'lawyerletterId': lyid,
 						'rank': rank,
-						'type': 2,
 						'content': content
 					},
 					success: function(data) {

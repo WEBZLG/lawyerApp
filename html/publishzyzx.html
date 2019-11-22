@@ -128,9 +128,34 @@
 				var token = plus.storage.getItem('token');
 				options.token = token;
 				getnewtype(token);
-				mui('body').on('tap', '.payforbtn', function() {
-					publish(token);
+				mui("body").on("tap", ".payforbtn", function() {
+					for (var i = 0; i < options.pubpath.length; i++) {
+						upload(options.pubpath[i], 0)
+					}
+					for (var j = 0; j < options.pubpaths.length; j++) {
+						upload(options.pubpaths[j], 1)
+					}
 				});
+				mui('#ulelem').on('tap', '.closeicon', function() {
+					var idx = this.index;
+					var list = document.getElementById('ulelem');
+					mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							list.removeChild(list.childNodes[idx]);
+							options.pubpath = options.pubpath.splice(idx, 1)
+						}
+					}, 'div')
+				})
+				mui('#ulelems').on('tap', '.closeicon', function() {
+					var idx = this.index;
+					var list = document.getElementById('ulelems');
+					mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							list.removeChild(list.childNodes[idx]);
+							options.pubpaths = options.pubpaths.splice(idx, 1)
+						}
+					}, 'div')
+				})
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
 					for (var i in channels) {
@@ -154,7 +179,9 @@
 					token: '',
 					type: '',
 					imgid: '',
-					time: ''
+					time: '',
+					pubpath: [],
+					pubpaths: []
 
 				},
 				methods: {
@@ -212,7 +239,7 @@
 				});
 			}
 
-			// 免费咨询发布
+			// 专业咨询发布
 			function publish(token) {
 				var content = document.getElementById('notedata1').value;
 				var content2 = document.getElementById('notedata2').value;
@@ -285,7 +312,7 @@
 									id: 'publishsuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
-										typeid:1
+										typeid: 1
 									}
 								})
 							}, function(error) {
@@ -380,17 +407,26 @@
 					plus.io.resolveLocalFileSystemURL(e, function(entry) {
 						var path = entry.toLocalURL();
 						if (options.imgid == 'addimg') {
+							options.pubpath = new Array(path);
 							var addli = document.getElementById("addimg");
 							var li = document.createElement("li");
-							li.innerHTML = '<img src="' + path + '">';
+							li.innerHTML = '<img src="' + path + '"><span class="closeicon mui-icon mui-icon-close"></span>';
 							document.getElementById("ulelem").insertBefore(li, addli);
+							var closes = document.getElementsByClassName('closeicon');
+							for (var j = 0; j < closes.length; j++) {
+								closes[j].index = j;
+							}
 						} else {
+							options.pubpaths = new Array(path);
 							var addli = document.getElementById("addimgs");
 							var li = document.createElement("li");
-							li.innerHTML = '<img src="' + path + '">';
+							li.innerHTML = '<img src="' + path + '"><span class="closeicon closeicons mui-icon mui-icon-close"></span>';
 							document.getElementById("ulelems").insertBefore(li, addli);
+							var closes = document.getElementsByClassName('closeicons');
+							for (var j = 0; j < closes.length; j++) {
+								closes[j].index = j;
+							}
 						}
-						upload(path)
 					}, function(e) {
 						mui.toast("读取拍照文件错误：" + e.message);
 					});
@@ -401,23 +437,48 @@
 			function appendByGallery() {
 				plus.gallery.pick(function(path) {
 					if (options.imgid == 'addimg') {
-						var addli = document.getElementById("addimg");
-						var li = document.createElement("li");
-						li.innerHTML = '<img src="' + path + '">';
-						document.getElementById("ulelem").insertBefore(li, addli);
+						options.pubpath = path.files;
+						for (var i in path.files) {
+							var addli = document.getElementById("addimg");
+							var li = document.createElement("li");
+							li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon mui-icon mui-icon-close"></span>';
+							document.getElementById("ulelem").insertBefore(li, addli);
+						}
+						var closes = document.getElementsByClassName('closeicon');
+						for (var j = 0; j < closes.length; j++) {
+							closes[j].index = j;
+						}
 					} else {
-						var addli = document.getElementById("addimgs");
-						var li = document.createElement("li");
-						li.innerHTML = '<img src="' + path + '">';
-						document.getElementById("ulelems").insertBefore(li, addli);
+						options.pubpaths = path.files;
+						for (var i in path.files) {
+							var addli = document.getElementById("addimgs");
+							var li = document.createElement("li");
+							li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon closeicons mui-icon mui-icon-close"></span>';
+							document.getElementById("ulelems").insertBefore(li, addli);
+						}
+						var closes = document.getElementsByClassName('closeicons');
+						for (var j = 0; j < closes.length; j++) {
+							closes[j].index = j;
+						}
 					}
-					upload(path)
+
+				}, function(e) {
+					console.log("取消选择图片");
+				}, {
+					filter: "image",
+					multiple: true,
+					maximum: 4,
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择4张图片');
+					}
 				});
+
 			}
 			//服务端接口路径
 			var server = baseurl + "mffl/uploadimagefile";
 			// 上传文件
-			function upload(files) {
+			function upload(files, type) {
 				var files = [{
 					path: files
 				}];
@@ -425,7 +486,7 @@
 					plus.nativeUI.alert('没有添加上传文件！');
 					return;
 				}
-				mui.toast('开始上传');
+				// mui.toast('开始上传');
 				var wt = plus.nativeUI.showWaiting();
 				var task = plus.uploader.createUpload(server, {
 						method: 'POST'
@@ -433,15 +494,16 @@
 					function(t, status) { //上传完成
 						plus.nativeUI.closeWaiting();
 						if (status == 200) {
-							mui.toast('上传成功');
 							var imgUrl = JSON.parse(t.responseText).datas.max
-							plus.storage.setItem('uploader', t.responseText);
-							if (options.imgid == 'addimg') {
+							if (type == 0) {
 								imgArray.push(imgUrl);
 								imgstr = imgArray.join(';');
-							} else if (options.imgid == 'addimgs') {
+							} else if (type == 1) {
 								imgArray2.push(imgUrl);
 								imgstr2 = imgArray.join(';');
+							}
+							if (options.pubpath.length == imgArray.length && options.pubpaths.length == imgArray2.length) {
+								publish(options.token);
 							}
 						} else {
 							mui.toast('上传失败');

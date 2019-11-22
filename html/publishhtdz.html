@@ -100,11 +100,22 @@
 				if (self.hidechoose) {
 					options.hidechoose = self.hidechoose
 				}
-				// getnewtype(token)
 				gethttype(token)
 				mui("body").on("tap", "#gobuy", function() {
-					publish(token)
+					for (var i = 0; i < options.pubpath.length; i++) {
+						upload(options.pubpath[i])
+					}
 				});
+				mui('body').on('tap', '.closeicon', function() {
+					var idx = this.index;
+					var list = document.getElementById('ulelem');
+					mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							list.removeChild(list.childNodes[idx]);
+							options.pubpath = options.pubpath.splice(idx, 1)
+						}
+					}, 'div')
+				})
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
 					for (var i in channels) {
@@ -130,9 +141,10 @@
 					yid: '',
 					token: '',
 					httype: "",
-					lawyerdetails:'',
-					isshow:false,
-					hidechoose:false
+					lawyerdetails: '',
+					isshow: false,
+					hidechoose: false,
+					pubpath: []
 				},
 				methods: {
 					gohome: function() {
@@ -296,7 +308,7 @@
 									id: 'publishsuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
-										typeid:4
+										typeid: 4
 									}
 								})
 							}, function(error) {
@@ -401,12 +413,15 @@
 					console.log(e);
 					plus.io.resolveLocalFileSystemURL(e, function(entry) {
 						var path = entry.toLocalURL();
-						console.log(path)
+						options.pubpath = new Array(path);
 						var addli = document.getElementById("addimg");
 						var li = document.createElement("li");
-						li.innerHTML = '<img src="' + path + '">';
+						li.innerHTML = '<img src="' + path + '"><span class="closeicon mui-icon mui-icon-close"></span>';
 						document.getElementById("ulelem").insertBefore(li, addli);
-						upload(path)
+						var closes = document.getElementsByClassName('closeicon');
+						for (var j = 0; j < closes.length; j++) {
+							closes[j].index = j;
+						}
 					}, function(e) {
 						mui.toast("读取拍照文件错误：" + e.message);
 					});
@@ -416,12 +431,27 @@
 			// 从相册添加文件
 			function appendByGallery() {
 				plus.gallery.pick(function(path) {
-					var addli = document.getElementById("addimg");
-					var li = document.createElement("li");
-					li.innerHTML = '<img src="' + path + '">';
-					document.getElementById("ulelem").insertBefore(li, addli);
-					console.log(path)
-					upload(path)
+					options.pubpath = path.files;
+					for (var i in path.files) {
+						var addli = document.getElementById("addimg");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon mui-icon mui-icon-close"></span>';
+						document.getElementById("ulelem").insertBefore(li, addli);
+					}
+					var closes = document.getElementsByClassName('closeicon');
+					for (var j = 0; j < closes.length; j++) {
+						closes[j].index = j;
+					}
+				}, function(e) {
+					console.log("取消选择图片");
+				}, {
+					filter: "image",
+					multiple: true,
+					maximum: 4,
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择4张图片');
+					}
 				});
 			}
 			//服务端接口路径
@@ -435,7 +465,7 @@
 					plus.nativeUI.alert('没有添加上传文件！');
 					return;
 				}
-				mui.toast('开始上传');
+				// mui.toast('开始上传');
 				var wt = plus.nativeUI.showWaiting();
 				var task = plus.uploader.createUpload(server, {
 						method: 'POST'
@@ -443,12 +473,11 @@
 					function(t, status) { //上传完成
 						plus.nativeUI.closeWaiting();
 						if (status == 200) {
-							mui.toast('上传成功');
 							var imgUrl = JSON.parse(t.responseText).datas.max
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
-							console.log(imgArray.join(';'));
 							imgstr = imgArray.join(';');
+							publish(options.token);
 						} else {
 							mui.toast('上传失败');
 							wt.close();

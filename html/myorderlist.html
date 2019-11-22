@@ -32,7 +32,7 @@
 						</div>
 						<div class="orderchange">
 							<div class="ordertime">{{item.updateTime}}</div>
-							<div class="orderaction">
+							<div class="orderaction" v-if="item.tradingState==0">
 								<button type="button" class="mui-btn changebtn" :id='item.id'>修改内容</button>
 								<button type="button" class="mui-btn cancelbtn" :id='item.id'>取消发布</button>
 							</div>

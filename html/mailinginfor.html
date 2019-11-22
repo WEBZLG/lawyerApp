@@ -35,15 +35,15 @@
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init()
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
-				var id = self.id;
+				var oid = self.oid;
 				mui('body').on('tap', '#savebtn', function() {
-					var id = this.getAttribute('id');
-					submit(token, id);
+					submit(token, oid);
 				})
 			})
 

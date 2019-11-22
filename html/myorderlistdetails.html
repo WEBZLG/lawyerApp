@@ -252,11 +252,9 @@
 			})
 
 			mui('body').on('tap', '.cancel', function() {
-				console.log(3333)
 				mui("#sendword").popover('toggle', document.getElementById("div"));
 			})
 			mui('body').on('tap', '#pubtalk', function() {
-				console.log("追评")
 				var text = document.getElementById('lsjy').value;
 				addans(options.token, options.ansid, options.appendid, text)
 			});

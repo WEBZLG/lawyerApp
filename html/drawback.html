@@ -51,13 +51,14 @@
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init()
 			mui.plusReady(function () {
 			    var token = plus.storage.getItem('token');
 			    var self = plus.webview.currentWebview();
 			    var id = self.hid;
-				
+				console.log(id)
 				mui("body").on('tap', '.refund', function() {
 					var reason = document.getElementById('data').value;
 					if(reason==""){

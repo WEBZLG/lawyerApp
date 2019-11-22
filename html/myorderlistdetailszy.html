@@ -100,7 +100,7 @@
 					<div class="">
 						<p class="anscontent">{{item.reply}}</p>
 						<div class="answersecond">
-							<div class="answeritme"  v-for="second in item.consultationReplyList" :key="second.id">
+							<div class="answeritme" v-for="second in item.consultationReplyList" :key="second.id">
 								<div class="user-info">
 									<div class="user-name bluecolor">{{second.userinfo.nickname}}</div>
 									<div class="hot-num">{{second.updateTime}}</div>
@@ -132,7 +132,7 @@
 									<!-- <i>12</i> -->
 								</div>
 							</div>
-							<div class="databox dialog"  :sendId="item.userinfo.id" :name="item.userinfo.nickname">
+							<div class="databox dialog" :sendId="item.userinfo.id" :name="item.userinfo.nickname">
 								<div class="dataicon"><img src="../images/Consultation1.png"></div>
 								<div>咨询</div>
 							</div>
@@ -192,9 +192,9 @@
 				});
 				// 取消发布
 				mui('body').on('tap', '.cancelbtn', function() {
+					var id = this.getAttribute('id');
 					var btnArray = ['是', '否'];
 					mui.confirm('确定取消发布?', '', btnArray, function(e) {
-						var id = this.getAttribute('id');
 						cancel(token, id);
 					})
 				})
@@ -254,7 +254,7 @@
 									//bottomBorderColor:"#00ff00",
 									title: {
 										//标题文字的内容和样式配置
-										text: newname + "("+data.datas.timeRemaining+")",
+										text: newname + "(" + data.datas.timeRemaining + ")",
 										whiteSpace: "normal"
 									},
 									back: {
@@ -274,7 +274,7 @@
 					})
 				});
 			})
-			
+
 			mui('body').on('tap', '#pubtalk', function() {
 				console.log("追评")
 				var text = document.getElementById('lsjy').value;
