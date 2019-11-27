@@ -33,6 +33,11 @@
 				outline: none;
 			}
 
+			.con-box label {
+				display: block;
+				margin-bottom: 8px;
+			}
+
 			.icon-icon1 {
 				background: url(../images/haoping2.png) no-repeat center;
 				background-size: cover;
@@ -85,7 +90,7 @@
 
 			</div>
 			<div class="con-box">
-				<label>评价</label>
+				<label>服务评价</label>
 				<textarea id="content" rows="6" cols="" placeholder="请输入您对本次服务的评价"></textarea>
 			</div>
 			<div class="dbbtn">
@@ -101,30 +106,31 @@
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
-				var id = self.lshid;
+				var id = self.lshId;
+				console.log(id)
 				var filestype = self.filestype;
 				mui('body').on('tap', '#submit', function() {
 					var con = document.getElementById('content').value;
-					evalute(token, id, rank, con,filestype)
+					evalute(token, id, rank, con, filestype)
 				})
 
 			})
 
 			$(function() {
 				$(".box").find(".box-item").on("click", function() {
-					var rankid = $(this).attr('id');
+					rank = $(this).attr('id');
 					console.log(rank)
-					rank = rankid;
 					$(this).find('.icon-icon').addClass("active");
 					$(this).siblings('.box-item').find('.icon-icon').removeClass('active');
 				})
+
 			})
 			// 评价
-			function evalute(token, lyid, rank, content,filestype) {
-				if(filestype==0){
+			function evalute(token, lyid, rank, content, filestype) {
+				if (filestype == 0) {
 					var type = 'get'
 					var path = baseurl + "client/mfflLawyerletters/ConfirmCompletion"
-				}else{
+				} else {
 					var type = 'post'
 					var path = baseurl + "client/mfflContracts/ConfirmCompletion"
 				}
@@ -142,9 +148,9 @@
 						'token': token
 					},
 					data: {
-						'lawyerletterId': lyid,
+						'id': lyid,
 						'rank': rank,
-						'content': content
+						'comment': content
 					},
 					success: function(data) {
 						console.log(data)

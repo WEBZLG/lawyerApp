@@ -53,7 +53,7 @@
 				</div>
 				<div class="ordertype">
 					<div class="tags">
-						<!-- <span class="tag" v-for="tag in item.datadetails.userinfo.fieldList" :key="tag">{{tag}}</span> -->
+						<span class="tag">{{datadetails.typename}}</span>
 					</div>
 
 					<div class="orderstatus orangecolor"><em class="orangecolor">悬赏{{datadetails.money}}元</em>
@@ -109,15 +109,6 @@
 									<p>回复<em class="bluecolor">{{item.userinfo.nickname==second.userinfo.nickname?datadetails.userinfo.nickname:item.userinfo.nickname}}：</em>{{second.reply}}</p>
 								</div>
 							</div>
-							<!-- 							<div class="answeritme">
-								<div class="user-info">
-									<div class="user-name bluecolor">北京大兴张律师</div>
-									<div class="hot-num">10-16 14:14</div>
-								</div>
-								<div class="">
-									<p>回复<em>大成法律宋律师：</em>谢谢你宋律师，我已经联系物业了并没有什么实际效果。</p>
-								</div>
-							</div> -->
 						</div>
 						<div class="dataaction">
 							<div class="databox ask" :ansid="datadetails.id" :appendid="item.id">

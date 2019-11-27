@@ -42,15 +42,9 @@
 								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
 								<button type="button" class="mui-btn gobuy" :yid="item.id" :num="item.payMerchantNumber">去支付</button>
 							</div>
-							<!-- 					<div class="orderaction">
-						<button type="button" class="mui-btn">取消退款</button>
-						<button type="button" class="mui-btn">查看物流</button>
-					</div>
-					<div class="orderaction">
-						<button type="button" class="mui-btn drawback">申请退款</button>
-						<button type="button" class="mui-btn">查看物流</button>
-						<button type="button" class="mui-btn">确认收到</button>
-					</div> -->
+							<div class="orderaction" v-if="item.payState==1&&item.state==0">
+								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
+							</div>
 						</div>
 					</div>
 					<div class="nodata" v-if="datalist.length==0">
@@ -257,12 +251,12 @@
 					data: {},
 					success: function(data) {
 						console.log(data)
-						if (data.errCode == 200) {
-							mui.toast('取消成功！')
-							letterlist(options.token);
-						} else {
-							mui.toast(data.message)
-						}
+							letterlist(options.token,options.offset,options.limit);
+						// if (data.errCode == 200) {
+						// 	mui.toast('取消成功！')
+						// } else {
+						// 	mui.toast(data.message)
+						// }
 					},
 					error: function(err) {
 						console.log(err)
@@ -271,6 +265,8 @@
 			}
 			// 支付
 			mui("body").on("tap", ".gobuy", function() {
+				var that = this;
+				this.setAttribute('disabled','disabled');
 				var num = this.getAttribute("num");
 				var oid = this.getAttribute("yid");
 				mui.ajax({
@@ -290,6 +286,7 @@
 						'paymerchantnumber': num
 					},
 					success: function(data) {
+						that.setAttribute('disabled','');
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
@@ -306,11 +303,56 @@
 								console.log(error)
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
+						} else if(data.errCode==142){
+							mui.ajax({
+								type: 'post',
+								url: baseurl + "client/mfflLawyerletters/pay",
+								dataType: "json",
+								beforeSend: function(XMLHttpRequest) {
+									XMLHttpRequest.setRequestHeader(
+										"token", options.token
+									);
+								},
+								headers: {
+									'contentType': "application/x-www-form-urlencoded",
+									'token': options.token
+								},
+								data: {
+									'paymerchantnumber': data.datas.newpayMerchantNumber
+								},
+								success: function(data) {
+									that.setAttribute('disabled','');
+									console.log(data)
+									if (data.errCode == 200) {
+										plus.payment.request(channel, data.datas, function(result) {
+											console.log(result)
+											mui.openWindow({
+												url: 'paysuccess.html',
+												id: 'paysuccess.html',
+												extras: {
+													//自定义扩展参数，可以用来处理页面间传值  
+													oid:oid
+												}
+											})
+										}, function(error) {
+											console.log(error)
+											// plus.nativeUI.alert(JSON.stringify(error)); 
+										});
+									}  else {
+										mui.toast(data.message)
+									}
+								},
+								error: function(err) {
+									that.setAttribute('disabled','');
+									console.log(err)
+								}
+							})
 						} else {
 							mui.toast(data.message)
 						}
 					},
 					error: function(err) {
+						that.setAttribute('disabled','');
 						console.log(err)
 					}
 				})

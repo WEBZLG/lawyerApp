@@ -404,6 +404,9 @@ p {
 	overflow: hidden;
 	margin: 0 2px;
 }
+.news-img img{
+	height: 100%;
+}
 
 .news-content {
 	display: -webkit-box;
@@ -1903,6 +1906,8 @@ input[type='text'] {
 textarea {
 	border: none;
 	outline: none;
+	padding: 10px;
+	font-size: 12px;
 }
 .answersecond .hot-num{
 	font-size: 12px;

@@ -102,6 +102,7 @@
 				}
 				gethttype(token)
 				mui("body").on("tap", "#gobuy", function() {
+					this.setAttribute('disabled','disabled');
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i])
 					}
@@ -271,6 +272,7 @@
 						if (data.errCode == 200) {
 							payfor(token, data.datas)
 						} else {
+							document.getElementById('gobuy').setAttribute('disabled','');
 							mui.toast(data.message)
 						}
 					},
@@ -302,6 +304,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
+							document.getElementById('gobuy').setAttribute('disabled','');
 							plus.payment.request(channel, data.datas, function(result) {
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -313,6 +316,7 @@
 								})
 							}, function(error) {
 								console.log(error)
+								document.getElementById('gobuy').setAttribute('disabled','');
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 
@@ -477,9 +481,12 @@
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
 							imgstr = imgArray.join(';');
-							publish(options.token);
+							if (options.pubpath.length == imgArray.length) {
+								publish(options.token);
+							}
 						} else {
 							mui.toast('上传失败');
+							document.getElementById('gobuy').setAttribute('disabled','');
 							wt.close();
 						}
 					}

@@ -301,35 +301,6 @@
 					}
 				})
 			});
-			// 评价
-			mui("body").on("tap", ".pjia", function() {
-				mui.openWindowWithTitle({
-					url: "evaluate.html",
-					id: "evaluate.html",
-					styles: {},
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						lshId: options.lshid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#267CFB",
-					bottomBorderColor: "#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "打赏",
-						styles: {
-							color: "#fffff"
-						}
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/wleft-icon.png"
-						}
-					}
-				})
-			});
 
 			var options = new Vue({
 				el: '#app',
@@ -412,38 +383,6 @@
 				});
 			}
 
-			//确认收货
-			function receipt(token, htid) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflContracts/ConfirmCompletion",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'id': htid
-					},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-							mui.toast("申请成功！")
-							getdetails(options.token, options.lshid)
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
-			}
 			//查看快递
 			function ems(token, id) {
 				mui.ajax({

@@ -72,7 +72,7 @@
 					<label>对方态度</label>
 					<div v-html="datadetails.defendantAttitude"></div>
 					<div class="news-show" v-if="datadetails.defendantUrl!=''">
-						<div class="news-img" v-for="imgitem in (datadetails.imageUrl || '').split(';')" :key="imgitem">
+						<div class="news-img" v-for="imgitem in (datadetails.defendantUrl || '').split(';')" :key="imgitem">
 							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 						</div>
 					</div>
@@ -126,8 +126,8 @@
 								<div>咨询</div>
 							</div>
 							<div class="databox cainabtn" :ansid="datadetails.id" :bestid="item.id">
-								<div class="dataicon" v-if="!item.best_answer_id"><img src="../images/caina1.png"></div>
-								<div class="dataicon" v-if="item.best_answer_id"><img src="../images/caina.png"></div>
+								<div class="dataicon" v-if="item.id!=datadetails.bestAnswerId"><img src="../images/caina1.png"></div>
+								<div class="dataicon" v-if="item.id==datadetails.bestAnswerId"><img src="../images/caina.png"></div>
 								<div>采纳ta</div>
 							</div>
 						</div>
@@ -172,7 +172,6 @@
 					var bestid = this.getAttribute('bestid');
 					console.log(ansid)
 					setbestans(token, ansid, bestid);
-					getdetails(token, infoid);
 				});
 				// 追问
 				mui('body').on('tap', '.ask', function() {
@@ -197,6 +196,7 @@
 				mui(".myorderlistdetials").on("tap", ".dialog", function() {
 					var sendId = this.getAttribute("sendId");
 					var newname = this.getAttribute("name");
+					console.log(newname)
 					mui.ajax({
 						type: 'post',
 						url: baseurl + "client/mfflChatContents/setStartTime",
@@ -331,7 +331,6 @@
 							getdetails(options.token, options.infoid)
 						} else {
 							mui.toast(data.message);
-							mui.back();
 						}
 					},
 					error: function(err) {

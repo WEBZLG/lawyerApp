@@ -129,6 +129,7 @@
 				options.token = token;
 				getnewtype(token);
 				mui("body").on("tap", ".payforbtn", function() {
+					this.setAttribute('disabled','disabled')
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i], 0)
 					}
@@ -272,8 +273,9 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							payfor(token, data.datas)
+							payfor(token, data.datas);
 						} else {
+							document.getElementById('payforbtn').setAttribute('disabled','');
 							mui.toast(data.message)
 						}
 					},
@@ -307,6 +309,7 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
+								document.getElementById('payforbtn').setAttribute('disabled','');
 								mui.openWindow({
 									url: 'publishsuccess.html',
 									id: 'publishsuccess.html',
@@ -316,10 +319,12 @@
 									}
 								})
 							}, function(error) {
+								document.getElementById('payforbtn').setAttribute('disabled','');
 								console.log(error)
 							});
 
 						} else {
+							document.getElementById('payforbtn').setAttribute('disabled','');
 							mui.toast(data.message)
 						}
 					},
@@ -500,7 +505,7 @@
 								imgstr = imgArray.join(';');
 							} else if (type == 1) {
 								imgArray2.push(imgUrl);
-								imgstr2 = imgArray.join(';');
+								imgstr2 = imgArray2.join(';');
 							}
 							if (options.pubpath.length == imgArray.length && options.pubpaths.length == imgArray2.length) {
 								publish(options.token);

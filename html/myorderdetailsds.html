@@ -98,7 +98,7 @@
 			// 打赏下单
 			function reward(token, ansid, replyId, money) {
 				mui.ajax({
-					type: 'get',
+					type: 'post',
 					url: baseurl + "client/mfflConsultations/Reward",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
@@ -132,7 +132,7 @@
 			// 打赏支付
 			function payfor(token,ordernum) {
 				mui.ajax({
-					type: 'post',
+					type: 'get',
 					url: baseurl + "client/mfflConsultations/rewarduserPay",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {

@@ -92,6 +92,7 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
+			var channel = null;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token
@@ -102,6 +103,7 @@
 				}
 				gethttype(token)
 				mui("body").on("tap", "#gobuy", function() {
+					this.setAttribute('disabled','disabled')
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i])
 					}
@@ -166,9 +168,10 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							payfor(token, data.datas)
+							payfor(token, data.datas);
 						} else {
-							mui.toast(data.message)
+							mui.toast(data.message);
+							document.getElementById('gobuy').setAttribute('disabled','');
 						}
 					},
 					error: function(err) {
@@ -179,6 +182,7 @@
 
 			// 支付
 			function payfor(token, num) {
+				document.getElementById('gobuy').setAttribute('disabled','disabled');
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflContracts/pay",
@@ -199,6 +203,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
+							document.getElementById('gobuy').setAttribute('disabled','');
 							plus.payment.request(channel, data.datas, function(result) {
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -210,6 +215,7 @@
 								})
 							}, function(error) {
 								console.log(error)
+								document.getElementById('gobuy').setAttribute('disabled','');
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 
@@ -275,7 +281,7 @@
 				})
 
 			}
-			var channel = null;
+			
 			var options = new Vue({
 				el: '#app',
 				data: {
@@ -290,11 +296,6 @@
 					isshow: false,
 					hidechoose: false,
 					pubpath: []
-				},
-				methods: {
-					gohome: function() {
-
-					}
 				}
 			});
 
@@ -365,7 +366,7 @@
 						if (data.errCode == 200) {
 							options.httypelist = data.datas;
 						} else {
-							mui.toast(data.message)
+							mui.toast(data.message);
 						}
 					},
 					error: function(err) {
@@ -473,9 +474,12 @@
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
 							imgstr = imgArray.join(';');
-							publish(options.token);
+							if (options.pubpath.length == imgArray.length) {
+								publish(options.token);
+							}
 						} else {
 							mui.toast('上传失败');
+							this.setAttribute('disabled','');
 							wt.close();
 						}
 					}

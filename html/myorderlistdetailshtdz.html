@@ -362,37 +362,6 @@
 			}
 
 
-			//查看快递
-			function ems(token, id) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflLawyerletters/showCourier",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					headers: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'id': id
-					},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
-			}
 			//拨打电话
 			function phone(token, htid) {
 				mui.ajax({

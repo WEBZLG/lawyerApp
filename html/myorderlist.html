@@ -113,6 +113,13 @@
 				}
 			});
 
+			(function($, doc) {
+				window.addEventListener('refresh', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
 
 
 			// 取消发布
@@ -135,7 +142,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							mui.toast('取消成功！')
-							datalist(options.token);
+							datalist(options.token, options.offset, options.limit);
 						} else {
 							mui.toast(data.message)
 						}

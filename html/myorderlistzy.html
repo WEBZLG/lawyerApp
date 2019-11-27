@@ -8,7 +8,7 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../css/mui.min.css">
-		<link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" />
+		<!-- <link rel="stylesheet" type="text/css" href="../css/mui.imageviewer.css" /> -->
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
 	</head>
 
@@ -23,9 +23,14 @@
 								<p>{{item.payMerchantNumber}}</p>
 							</div>
 							<em class="orangecolor">悬赏{{item.money}}元</em>
-							<div class="orderstatus orangecolor" v-if="item.state==0">待支付</div>
-							<div class="orderstatus bluecolor" v-if="item.state==1">正常</div>
-							<div class="orderstatus " v-if="item.state==2">完结</div>
+							<div class="orderstatus orangecolor" v-if="item.state==0">发布成功</div>
+							<div class="orderstatus orangecolor" v-if="item.state==1">已接单</div>
+							<div class="orderstatus orangecolor" v-if="item.state==2">拒绝接单</div>
+							<div class="orderstatus orangecolor" v-if="item.state==3">已发货</div>
+							<div class="orderstatus orangecolor" v-if="item.state==4">完成交易</div>
+							<div class="orderstatus orangecolor" v-if="item.state==5">已撤销订单</div>
+							<div class="orderstatus orangecolor" v-if="item.state==6">超时接单撤销,自动退款</div>
+							<div class="orderstatus orangecolor" v-if="item.state==7">已退款</div>
 						</div>
 						<div class="orderquestion">
 							<label>问题内容</label>
@@ -39,6 +44,7 @@
 						<div class="orderchange">
 							<div class="ordertime">{{item.updateTime}}</div>
 							<div class="orderaction">
+								<button type="button" class="mui-btn cancelbtn" :id='item.id'>取消发布</button>
 								<button type="button" class="mui-btn gopay" :paynum="item.payMerchantNumber"  v-if="item.state==0">去支付</button>
 							</div>
 							<!-- 							<div class="orderaction">
@@ -133,12 +139,14 @@
 				});
 				// 支付
 				mui('body').on('tap', '.gopay', function() {
+					var that = this;
+					this.setAttribute('disabled','disabled');
 					var num = this.getAttribute('paynum');
-					payfor(token, num)
+					payfor(token, num,that)
 				})
 			})
 			// 支付
-			function payfor(token, num) {
+			function payfor(token, num,that) {
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflConsultations/rewardPay",
@@ -156,21 +164,61 @@
 						'paymerchantnumber': num,
 					},
 					success: function(data) {
+						that.setAttribute('disabled','');
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
-								datalist(options.token, 0, 10);
+								datalist(options.token,options.offset,options.limit);
 							}, function(error) {
 								console.log(error)
 							});
 			
+						} else if(data.errCode==142){
+							mui.ajax({
+								type: 'post',
+								url: baseurl + "client/mfflConsultations/rewardPay",
+								dataType: "json",
+								beforeSend: function(XMLHttpRequest) {
+									XMLHttpRequest.setRequestHeader(
+										"token", token
+									);
+								},
+								headers: {
+									'contentType': "application/x-www-form-urlencoded",
+									'token': token
+								},
+								data: {
+									'paymerchantnumber':  data.datas.newpayMerchantNumber
+								},
+								success: function(data) {
+									that.setAttribute('disabled','');
+									console.log(data);
+									if (data.errCode == 200) {
+										console.log(channel)
+										plus.payment.request(channel, data.datas, function(result) {
+											console.log(result)
+											datalist(options.token,options.offset,options.limit);
+										}, function(error) {
+											console.log(error)
+										});
+										
+									}  else {
+										mui.toast(data.message)
+									}
+								},
+								error: function(err) {
+									that.setAttribute('disabled','');
+									console.log(err)
+								}
+							});
 						} else {
 							mui.toast(data.message)
 						}
 					},
 					error: function(err) {
+						that.setAttribute('disabled','');
 						console.log(err)
 					}
 				});
@@ -195,7 +243,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							mui.toast('取消成功！')
-							datalist(options.token);
+							datalist(options.token,options.offset,options.limit);
 						} else {
 							mui.toast(data.message)
 						}

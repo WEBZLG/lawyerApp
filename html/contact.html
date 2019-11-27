@@ -30,10 +30,13 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init()
-			mui.plusReady(function () {
-			    var token = plus.storage.getItem('token');
-				getdetails(token)
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				getdetails(token);
+
 			});
+
+
 			// 获取详情
 			function getdetails(token) {
 				mui.ajax({
@@ -53,8 +56,8 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							document.getElementById('phone').innerText=data.datas.Contactus_phone
-							document.getElementById('email').innerText=data.datas.Contactus_email
+							document.getElementById('phone').innerText = data.datas.Contactus_phone
+							document.getElementById('email').innerText = data.datas.Contactus_email
 						} else {
 							mui.toast(data.message);
 							mui.back();

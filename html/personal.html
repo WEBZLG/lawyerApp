@@ -137,7 +137,10 @@
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
 							imgstr = imgArray.join(';');
-							changeinfo(token, imgstr, '', '', '','')
+							changeinfo(token, imgstr, '', '', '',function(data){
+								console.log(data)
+								plus.storage.setItem('userinfo', data.datas);
+							})
 						} else {
 							mui.toast('上传失败');
 							wt.close();
