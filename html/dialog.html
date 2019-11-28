@@ -641,6 +641,7 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
+								paybacklsh(token, num);
 								mui.back();
 							}, function(error) {
 								console.log(error)
@@ -655,6 +656,38 @@
 						console.log(err)
 					}
 				});
+			}
+			// 支付回调律师函
+			function paybacklsh(token, num) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mflimageandtext/orderquery",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'payMerchantNumber': num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+			
+						} else {
+							mui.toast(data.message);
+							// mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
 			}
 		</script>
 	</body>

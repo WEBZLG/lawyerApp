@@ -25,8 +25,8 @@
 							<em class="orangecolor">{{item.money}}元</em>
 							<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
 							<div class="orderstatus bluecolor" v-if="item.payState==1">已支付</div>
-							<div class="orderstatus redcolor" v-if="item.payState==2">退款中</div>
-							<div class="orderstatus" v-if="item.payState==3">已经退款</div>
+							<div class="orderstatus redcolor" v-if="item.payState==2">已退款</div>
+							<div class="orderstatus" v-if="item.payState==3">申请退款</div>
 						</div>
 						<div class="orderquestion">
 							<label>问题内容</label>
@@ -336,6 +336,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
+								paybackht(token, num);
 								console.log(result)
 								mui.openWindow({
 									url: 'paysuccessht.html',

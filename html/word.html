@@ -36,9 +36,7 @@
 							<h5 class="mes-name">{{item.nickname}}</h5>
 							<p class="mes-time">{{item.updateTime}}</p>
 						</div>
-						<p class="mes-des" v-if="item.state==0">{{item.content}}</p>
-						<p class="mes-des" v-if="item.state==1">[图片]</p>
-						<p class="mes-des" v-if="item.state==2">语音</p>
+						<p class="mes-des">{{item.content}}</p>
 					</div>
 				</li>
 			</ul>

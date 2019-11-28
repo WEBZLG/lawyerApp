@@ -91,6 +91,9 @@
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			var email = '';
+			var bzdesc = '';
+			var money = '';
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
@@ -102,6 +105,19 @@
 				}
 				gethttype(token)
 				mui("body").on("tap", "#gobuy", function() {
+					email = document.getElementById('email').value;
+					bzdesc = document.getElementById('bzdesc').value;
+					money = document.getElementsByClassName('pricenum')[0].innerText;
+					if(options.httype==''){
+						mui.toast('请选择服务类型');
+						return false;
+					}else if(email==''){
+						mui.toast('请填写邮箱');
+						return false;
+					}else if(options.yid==''){
+						mui.toast('请选择律师');
+						return false;
+					}
 					this.setAttribute('disabled','disabled');
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i])
@@ -243,9 +259,6 @@
 
 			// 合同审核发布
 			function publish(token) {
-				var email = document.getElementById('email').value;
-				var bzdesc = document.getElementById('bzdesc').value;
-				var money = document.getElementsByClassName('pricenum')[0].innerText;
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflContracts",

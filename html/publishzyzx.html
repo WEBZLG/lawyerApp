@@ -124,11 +124,20 @@
 		<script type="text/javascript">
 			mui.init();
 			var channel = null;
+			var content="";
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
 				getnewtype(token);
 				mui("body").on("tap", ".payforbtn", function() {
+					content = document.getElementById('notedata1').value;
+					if(content==''){
+						mui.toast('请填写内容');
+						return false;
+					}else if(options.type==''){
+						mui.toast('请选择问题类别');
+						return false;
+					}
 					this.setAttribute('disabled','disabled')
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i], 0)
@@ -242,7 +251,6 @@
 
 			// 专业咨询发布
 			function publish(token) {
-				var content = document.getElementById('notedata1').value;
 				var content2 = document.getElementById('notedata2').value;
 				var content3 = document.getElementById('notedata3').value;
 				var money = document.getElementsByClassName('pricenum')[0].innerText;

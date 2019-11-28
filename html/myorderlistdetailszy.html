@@ -44,8 +44,8 @@
 				<div class="user-info">
 					<div class="user-box">
 						<div class="user-head" v-if="datadetails.userinfo"><img :src=imgurl+datadetails.userinfo.headImgUrl></div>
-						<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
-						<div class="user-name">{{datadetails.nickname}}</div>
+						<div class="user-type">{{datadetails.userinfo.identity==0?"用户":"律师"}}</div>
+						<div class="user-name">{{datadetails.userinfo.nickname}}</div>
 					</div>
 					<div class="hot-box">
 						<div class="hot-num">{{datadetails.updateTime}}</div>

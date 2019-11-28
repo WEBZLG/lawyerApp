@@ -133,7 +133,7 @@ function copy_fun(copy) { //参数copy是要复制的文本内容
 // 	task.start();
 // }
 // 修改信息
-function changeinfo(token, headimgurl, nickname, phone, code,fun) {
+function changeinfo(token, headimgurl, nickname, phone, code, fun) {
 	mui.ajax({
 		type: 'post',
 		url: baseurl + "mffl/updateSysUser",
@@ -148,10 +148,10 @@ function changeinfo(token, headimgurl, nickname, phone, code,fun) {
 			'token': token
 		},
 		data: {
-			'headImgUrl':headimgurl,
-			'nickname':nickname,
-			'phone':phone,
-			'code':code
+			'headImgUrl': headimgurl,
+			'nickname': nickname,
+			'phone': phone,
+			'code': code
 		},
 		success: function(data) {
 			console.log(data);
@@ -169,4 +169,72 @@ function changeinfo(token, headimgurl, nickname, phone, code,fun) {
 			console.log(err)
 		}
 	});
+}
+
+
+// 支付回调合同
+function paybackht(token, num) {
+	mui.ajax({
+		type: 'post',
+		url: baseurl + "client/mfflContracts/orderquery",
+		dataType: "json",
+		beforeSend: function(XMLHttpRequest) {
+			XMLHttpRequest.setRequestHeader(
+				"token", token
+			);
+		},
+		headers: {
+			'contentType': "application/x-www-form-urlencoded",
+			'token': token
+		},
+		data: {
+			'payMerchantNumber': num
+		},
+		success: function(data) {
+			console.log(data)
+			if (data.errCode == 200) {
+
+			} else {
+				mui.toast(data.message);
+				// mui.back();
+			}
+		},
+		error: function(err) {
+			console.log(err)
+		}
+	})
+}
+
+
+// 支付回调律师函
+function paybacklsh(token, num) {
+	mui.ajax({
+		type: 'post',
+		url: baseurl + "client/mfflLawyerletters/orderquery",
+		dataType: "json",
+		beforeSend: function(XMLHttpRequest) {
+			XMLHttpRequest.setRequestHeader(
+				"token", token
+			);
+		},
+		headers: {
+			'contentType': "application/x-www-form-urlencoded",
+			'token': token
+		},
+		data: {
+			'payMerchantNumber': num
+		},
+		success: function(data) {
+			console.log(data)
+			if (data.errCode == 200) {
+
+			} else {
+				mui.toast(data.message);
+				// mui.back();
+			}
+		},
+		error: function(err) {
+			console.log(err)
+		}
+	})
 }

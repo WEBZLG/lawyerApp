@@ -417,6 +417,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
+								paybackht(token, num);
 								console.log(result)
 								mui.openWindow({
 									url: 'paysuccess.html',

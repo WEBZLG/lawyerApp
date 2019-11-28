@@ -87,8 +87,8 @@
 				<div class="talktextarea">
 					<label>邮寄信息</label>
 					<div class="">
-						<p>收件人：{{getdetails.addRessee}}</p>
-						<p>联系方式：{{getdetails.recipientPhoneNumber}}</p>
+						<p>收件人：{{datadetails.addRessee}}</p>
+						<p>联系方式：{{datadetails.recipientPhoneNumber}}</p>
 						<p>地址：{{datadetails.address}}</p>
 					</div>
 				</div>
@@ -102,25 +102,13 @@
 				</div>
 				<div class="orderchange">
 					<div class="ordertime"></div>
-					<div class="orderaction" v-if="datadetails.state==1">
-						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
+					<div class="orderaction">
+						<button type="button" v-if="datadetails.payState==1&&datadetails.state!=4" class="mui-btn refund" :id="datadetails.id">申请退款</button>
 						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
-					</div>
-					<div class="orderaction" v-if="datadetails.state==3">
-						<button type="button" v-if="datadetails.payState==1" class="mui-btn refund" :id="datadetails.id">申请退款</button>
-						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
-						<button type="button" v-if="datadetails.payState==1" class="mui-btn finish" :id="datadetails.id">完成服务</button>
-					</div>
-					<div class="orderaction" v-if="datadetails.state==0">
-						<button type="button" v-if="datadetails.payState==0" class="mui-btn gobuy" :id="datadetails.id">去支付</button>
-					</div>
-					<div class="orderaction" v-if="datadetails.payState==1">
-						<button type="button" class="mui-btn refund" :id="datadetails.id" v-if="datadetails.state==3||datadetails.state==1">>申请退款</button>
-						<!-- <button type="button" class="mui-btn changeaddr" v-if="datadetails.state==0||datadetails.state==1">修改邮寄地址</button> -->
-					</div>
-					<div class="orderaction mui-hidden" v-if="datadetails.payState==3">
-						<button type="button" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
-						<button type="button" class="mui-btn logistics" :id="datadetails.id">查看物流</button>
+						<button type="button" class="mui-btn logistics" v-if="datadetails.state==3" :id="datadetails.id">查看物流</button>
+						<button type="button" v-if="datadetails.payState==1&&datadetails.state!=4" class="mui-btn finish" :id="datadetails.id">完成服务</button>
+						<button type="button" :id="datadetails.id" class="mui-btn changeaddr" v-if="datadetails.payState==1&&datadetails.state==0||datadetails.payState==1&&datadetails.state==1">修改邮寄地址</button>
+						<button type="button" v-if="datadetails.payState==0&&datadetails.state==0" class="mui-btn gobuy" :id="datadetails.id">去支付</button>
 					</div>
 				</div>
 			</div>
@@ -150,18 +138,14 @@
 					alert("获取支付通道失败：" + e.message);
 				});
 
-				getdetails(token, id)
-
-				mui("body").on('tap', '.refund', function() {
-					refund(token, id)
-				})
-
+				getdetails(token, id);
 				mui("body").on('tap', '.disrefund', function() {
 					disrefund(token, id)
 				})
 
 				mui("body").on('tap', '.logistics', function() {
-					var id = this.getAttribute("num");
+					var id = this.getAttribute("id");
+					console.log(id)
 					logistics(token, id)
 				})
 				// 拨打电话
@@ -259,7 +243,7 @@
 					styles: {},
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
-						hid: hid
+						oid: hid
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -363,7 +347,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
-								console.log(result)
+								paybacklsh(token, num)
 								mui.openWindow({
 									url: 'paysuccess.html',
 									id: 'paysuccess.html',
@@ -484,7 +468,7 @@
 			//查看快递
 			function logistics(token, id) {
 				mui.ajax({
-					type: 'get',
+					type: 'post',
 					url: baseurl + "client/mfflLawyerletters/showCourier",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
@@ -502,31 +486,33 @@
 					success: function(data) {
 						console.log(data);
 						if (data.errCode == 200) {
-							// mui.openWindowWithTitle({
-							// 	url: "embed.html",
-							// 	id: "embed.html",
-							// 	extras: {
-							// 		// 打开页面的同时，向新页面传递数据。
-							// 		yid: 0
-							// 	}
-							// }, {
-							// 	//标题栏的背景色和底边线配置
-							// 	backgroundColor: "#ffffff",
-							// 	// bottomBorderColor:"#267CFB",
-							// 	title: {
-							// 		//标题文字的内容和样式配置
-							// 		text: "查询物流",
-							// 		styles: {
-							// 			color: "#333333"
-							// 		}
-							// 	},
-							// 	back: {
-							// 		image: {
-							// 			/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							// 			imgSrc: "../images/left-icon.png"
-							// 		}
-							// 	}
-							// })
+							var datadetails = data.datas[0];
+							mui.openWindowWithTitle({
+								url: "embed.html",
+								id: "embed.html",
+								extras: {
+									// 打开页面的同时，向新页面传递数据。
+									couriernum: datadetails.courierNumber,
+									name:datadetails.mfflCourierServicesCompany.name
+								}
+							}, {
+								//标题栏的背景色和底边线配置
+								backgroundColor: "#ffffff",
+								// bottomBorderColor:"#267CFB",
+								title: {
+									//标题文字的内容和样式配置
+									text: "查询物流",
+									styles: {
+										color: "#333333"
+									}
+								},
+								back: {
+									image: {
+										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+										imgSrc: "../images/left-icon.png"
+									}
+								}
+							})
 						} else {
 							mui.toast(data.message)
 						}

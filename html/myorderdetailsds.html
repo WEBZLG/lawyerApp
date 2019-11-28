@@ -64,7 +64,7 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			var channel=null;
+			var channel = null;
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
@@ -92,7 +92,7 @@
 				mui("body").on("tap", "#payfor", function() {
 					var money = document.getElementsByClassName("pricenum")[0].innerHTML;
 					reward(token, ansid, qid, money)
-					
+
 				});
 			})
 			// 打赏下单
@@ -118,7 +118,7 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							 payfor(token,data.datas)
+							payfor(token, data.datas)
 						} else {
 							mui.toast(data.message);
 							// mui.back();
@@ -130,7 +130,7 @@
 				})
 			}
 			// 打赏支付
-			function payfor(token,ordernum) {
+			function payfor(token, ordernum) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflConsultations/rewarduserPay",
@@ -151,7 +151,8 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							// mui.toast("评论成功！");
-							plus.payment.request(channel,data.datas, function(result) {
+							plus.payment.request(channel, data.datas, function(result) {
+								payback(token, ordernum)
 								mui.openWindow({
 									url: "paysuccess.html"
 								})
@@ -159,7 +160,7 @@
 								console.log(error)
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
-			
+
 						} else {
 							mui.toast(data.message);
 							mui.back();
@@ -170,7 +171,38 @@
 					}
 				})
 			}
-
+			// 支付回调
+			function payback(token, num) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflConsultations/rewardpayorderquery",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'payMerchantNumber':num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							
+						} else {
+							mui.toast(data.message);
+							// mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
 			mui(".pricelist").on("tap", "li", function() {
 				for (var i = 0; i < this.parentNode.children.length; i++) {
 					this.parentNode.children[i].classList.remove("active");

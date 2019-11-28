@@ -169,6 +169,7 @@
 						if (data.errCode == 200) {
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
+								payback(token, num);
 								console.log(result)
 								datalist(options.token,options.offset,options.limit);
 							}, function(error) {
@@ -222,6 +223,36 @@
 						console.log(err)
 					}
 				});
+			}
+			// 支付回调
+			function payback(token, num) {
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflConsultations/orderquery",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'payMerchantNumber':num
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
 			}
 			// 取消发布
 			function cancel(token, id) {

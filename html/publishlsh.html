@@ -105,6 +105,13 @@
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			var myname = '';
+			var myname2 = '';
+			var othername = '';
+			var mycall = '';
+			var mydesc = '';
+			var bzdesc = '';
+			var money = '';
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
@@ -117,6 +124,17 @@
 				console.log(self.hidechoose)
 				getnewtype(token)
 				mui("body").on("tap", "#gobuy", function() {
+					myname = document.getElementById('myname').value;
+					myname2 = document.getElementById('myname2').value;
+					othername = document.getElementById('othername').value;
+					mycall = document.getElementById('mycall').value;
+					mydesc = document.getElementById('mydesc').value;
+					bzdesc = document.getElementById('bzdesc').value;
+					money = document.getElementsByClassName('pricenum')[0].innerText;
+					if(myname==''||myname2==''||othername==''||mycall==''||mydesc==''||bzdesc==''||money==''||options.type==''||options.yid==''){
+						mui.toast('请完善律师函内容');
+						return false;
+					}
 					this.setAttribute('disabled','disabled');
 					for(var i=0;i<options.pubpath.length;i++){
 						upload(options.pubpath[i])
@@ -212,13 +230,6 @@
 			});
 			// 律师函发布
 			function publish(token) {
-				var myname = document.getElementById('myname').value;
-				var myname2 = document.getElementById('myname2').value;
-				var othername = document.getElementById('othername').value;
-				var mycall = document.getElementById('mycall').value;
-				var mydesc = document.getElementById('mydesc').value;
-				var bzdesc = document.getElementById('bzdesc').value;
-				var money = document.getElementsByClassName('pricenum')[0].innerText;
 				mui.ajax({
 					type: 'post',
 					async:true,
@@ -283,7 +294,8 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
-							plus.payment.request(channel, data.datas, function(result) {
+							plus.payment.request(channel, data.datas, function(result) {、
+							paybacklsh(token, num)
 							document.getElementById('gobuy').setAttribute('disabled','');
 								console.log(result)
 								mui.openWindow({

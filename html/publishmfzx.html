@@ -93,6 +93,7 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
+			var content='';
 			mui.plusReady(function() {
 				// 弹出系统选择按钮框
 				mui("body").on("tap", ".imageup", function() {
@@ -106,6 +107,14 @@
 				getnewtype(token);
 
 				mui("body").on("tap", "#publishbtn", function() {
+					content = document.getElementById('notedata1').value;
+					if(content==''){
+						mui.toast('请填写内容');
+						return false;
+					}else if(options.type==''){
+						mui.toast('请选择问题类别');
+						return false;
+					}
 					for (var i = 0; i < options.pubpath.length; i++) {
 						upload(options.pubpath[i], 0)
 					}
@@ -192,7 +201,7 @@
 
 			// 咨询发布
 			function publish(token) {
-				var content = document.getElementById('notedata1').value;
+				
 				var content2 = document.getElementById('notedata2').value;
 				var content3 = document.getElementById('notedata3').value;
 				mui.ajax({

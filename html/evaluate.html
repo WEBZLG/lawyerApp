@@ -103,14 +103,16 @@
 		<script type="text/javascript">
 			mui.init();
 			var rank;
+			var filestype;
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
 				var id = self.lshId;
 				console.log(id)
-				var filestype = self.filestype;
+				filestype = self.filestype;
 				mui('body').on('tap', '#submit', function() {
 					var con = document.getElementById('content').value;
+					console.log(id, filestype)
 					evalute(token, id, rank, con, filestype)
 				})
 
@@ -130,9 +132,19 @@
 				if (filestype == 0) {
 					var type = 'get'
 					var path = baseurl + "client/mfflLawyerletters/ConfirmCompletion"
+					var options = {
+						'lawyerletterId': lyid,
+						'rank': rank,
+						'comment': content
+					}
 				} else {
 					var type = 'post'
 					var path = baseurl + "client/mfflContracts/ConfirmCompletion"
+					var options = {
+						'id': lyid,
+						'rank': rank,
+						'comment': content
+					}
 				}
 				mui.ajax({
 					type: type,
@@ -147,15 +159,17 @@
 						'contentType': "application/x-www-form-urlencoded",
 						'token': token
 					},
-					data: {
-						'id': lyid,
-						'rank': rank,
-						'comment': content
-					},
+					data: options,
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							mui.openWindow('evaluatesuccess.html', 'evaluatesuccess.html', {})
+							mui.openWindow({
+								url: 'evaluatesuccess.html',
+								id: 'evaluatesuccess.html',
+								extras: {
+									filestype:filestype
+								}
+							})
 						} else {
 							mui.toast(data.message)
 						}

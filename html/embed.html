@@ -16,7 +16,9 @@
 		<script type="text/javascript">
 			mui.init()
 			mui.plusReady(function() {
-				var urls = "https://m.kuaidi100.com/app/query/?com=quanfengkuaidi&nu=123456&coname=meizu";
+				var self = plus.webview.currentWebview();
+				
+				var urls = "https://m.kuaidi100.com/app/query/?com="+self.name+"&nu="+self.couriernum+"&coname=meizu";
 				var embed = plus.webview.create(urls, 'embed', {
 					top: '45px',
 					bottom: '0px'
