@@ -191,12 +191,19 @@
 		<div class="mycollect" id="app">
 			<div class="mui-scroll-wrapper">
 				<div class="mui-scroll">
-					<ul class="mui-table-view mui-table-view-chevron"  v-if="datalist.length!=0">
-						<li class=" news-item one-img"  v-for="item in datalist" :key="item.id">
-							<h4 class="news-title" :id="item.id"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+					<ul class="mui-table-view mui-table-view-chevron" v-if="datalist.length!=0">
+						<li class=" news-item one-img" v-for="item in datalist" :key="item.id">
+							<h4 class="news-title" :id="item.id" style="width: 90%;"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+							<div class="menu">
+								<div class="menubtn" type='0'><img src="../images/menu.png"></div>
+								<ul class="meunlist">
+									<li class="changebtn" :id="item.id">修改</li>
+									<li class="deletebtn" :id="item.id">删除</li>
+								</ul>
+							</div>
 							<div class="news-show" v-if="item.imageUrl!=''">
 								<div class="news-img" v-for="imgitem in item.imageUrl.split(';')" :key="imgitem">
-									<img :src=imgurl+imgitem  data-preview-src="" data-preview-group="1">
+									<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
 								</div>
 							</div>
 							<div class="news-show">
@@ -216,14 +223,13 @@
 						</li>
 						<li></li>
 					</ul>
-					<div class="mui-text-center" v-if="datalist.length==0">
-						<p>暂无数据</p>
-					</div>
+					<div class="nodata" v-if="datalist.length==0">暂无数据</div>
 				</div>
 			</div>
 		</div>
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
@@ -232,17 +238,77 @@
 			mui.previewImage();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
+				options.token = token;
 				getdetails(token);
 				getans(token);
+				// 菜单
+				mui('.mycollect').on('tap', '.menubtn', function() {
+					var type = this.getAttribute('type');
+					var node = this.nextSibling;
+					while (node.nodeType == 3) {
+						node = node.nextSibling;
+					}
+					if (type == 1) {
+						node.style.display = "none"
+						this.setAttribute('type', '0');
+					} else {
+						node.style.display = "block"
+						this.setAttribute('type', '1');
+					}
+				});
+				// 修改
+				mui('.mycollect').on('tap', '.changebtn', function() {
+					var parentnode = this.parentNode;
+					parentnode.style.display = "none";
+					parentnode.previousElementSibling.setAttribute('type', '0');
+					var infoid = this.getAttribute('id');
+					mui.openWindowWithTitle({
+						url: "changepublishtalk.html",
+						id: "changepublishtalk.html",
+						styles: {},
+						extras: {
+							// 打开页面的同时，向新页面传递数据。
+							infoid: infoid
+						}
+					}, {
+						//标题栏的背景色和底边线配置
+						backgroundColor: "#ffffff",
+						//bottomBorderColor:"#00ff00",
+						title: {
+							//标题文字的内容和样式配置
+							text: "话题修改"
+						},
+						back: {
+							image: {
+								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+								imgSrc: "../images/left-icon.png"
+							}
+						}
+					})
+				})
+				// 删除
+				mui('.mycollect').on('tap', '.deletebtn', function() {
+					var parentnode = this.parentNode;
+					parentnode.style.display = "none";
+					parentnode.previousElementSibling.setAttribute('type', '0');
+					var infoid = this.getAttribute('id');
+					mui.confirm('删除该条发布？', '删除发布', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							delpublish(options.token, infoid)
+						}
+					}, 'div')
+				})
 			});
+
 			var options = new Vue({
 				el: '#app',
 				data: {
 					datalist: '',
-					datalistans:''
+					datalistans: '',
+					token: ''
 				},
 				methods: {
-	
+
 				}
 			});
 			mui(".mycollect").on("tap", "li h4", function() {
@@ -271,7 +337,36 @@
 					}
 				})
 			});
-			
+			// 删除发布
+			function delpublish(token, infoid) {
+				mui.ajax({
+					type: 'DELETE',
+					url: baseurl + "client/mfflInformations/delMyInformation?informationId=" + infoid,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							mui.toast('删除成功')
+							getdetails(options.token);
+						} else {
+							mui.toast(data.message);
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
 			// 获取我的发布
 			function getdetails(token) {
 				mui.ajax({
@@ -292,7 +387,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							options.datalist = data.datas;
-						}else{
+						} else {
 							mui.toast(data.message);
 						}
 					},
@@ -301,7 +396,7 @@
 					}
 				})
 			}
-			
+
 			// 获取我的回答
 			function getans(token) {
 				mui.ajax({
@@ -322,7 +417,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							options.datalistans = data.datas;
-						}else{
+						} else {
 							mui.toast(data.message);
 						}
 					},

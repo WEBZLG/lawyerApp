@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>发布话题</title>
+		<title>修改发布话题</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -16,17 +16,21 @@
 			<div class="talktitle">
 				<label>标题</label>
 				<div class="">
-					<input type="text" id="pubtitle" placeholder="请输入标题">
+					<input type="text" id="pubtitle" placeholder="请输入标题" :value="datadetails.title">
 				</div>
 			</div>
 			<div class="talktextarea">
 				<label>正文</label>
 				<div class="">
-					<textarea rows="6" id="pubtextarea" placeholder="请输入正文"></textarea>
+					<textarea rows="6" id="pubtextarea" placeholder="请输入正文" :value="datadetails.content"></textarea>
 				</div>
 			</div>
 			<div class="upimg clearfix">
 				<ul id="ulelem" class="clearfix">
+					<li v-for="imgitem in imgArray1" :key="imgitem">
+						<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+						<span class="closeicon mui-icon mui-icon-close"></span>
+					</li>
 					<li class="addimg imageup" id="addimg"><img src="../images/addpic.png"></li>
 				</ul>
 				<img src="" class="mui-hidden" id="headimg">
@@ -41,11 +45,16 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
-
+			var page = null;
+			var imgArray = [];
+			var imgstr = "";
 			// 弹出系统选择按钮框  
 			function plusReady() {
 				var token = plus.storage.getItem('token');
-				options.token=token;
+				options.token = token;
+				var self = plus.webview.currentWebview();
+				var infoid = self.infoid;
+				getdetails(token, infoid);
 				// 弹出系统选择按钮框  
 				mui("body").on("tap", ".imageup", function() {
 					page.imgUp();
@@ -60,9 +69,7 @@
 						}
 					}, 'div')
 				})
-				var page = null;
-				var imgArray = [];
-				var imgstr = "";
+
 				page = {
 					imgUp: function() {
 						var m = this;
@@ -153,7 +160,7 @@
 							method: 'POST'
 						},
 						function(t, status) { //上传完成
-						console.log(t)
+							console.log(t)
 							plus.nativeUI.closeWaiting();
 							if (status == 200) {
 								var imgUrl = JSON.parse(t.responseText).datas.max
@@ -161,7 +168,7 @@
 								imgArray.push(imgUrl);
 								imgstr = imgArray.join(';');
 								if (options.pubpath.length == imgArray.length) {
-									publish(options.token);
+									publish(options.token, infoid);
 								}
 							} else {
 								mui.toast('上传失败');
@@ -182,11 +189,14 @@
 				mui("body").on('tap', '#pubbtn', function() {
 					var title = document.getElementById('pubtitle').value;
 					var textarea = document.getElementById('pubtextarea').value;
-					if(title==''){
+					if (title == '') {
 						mui.toast('请输入标题');
 						return false;
-					}else if(textarea==''){
+					} else if (textarea == '') {
 						mui.toast('请输入内容');
+						return false;
+					} else if (imgArray.length == 0) {
+						mui.toast('请上传图片');
 						return false;
 					}
 					this.setAttribute('disabled', 'disabled')
@@ -195,12 +205,12 @@
 					}
 				});
 
-				function publish(token) {
+				function publish(token, infoid) {
 					var title = document.getElementById('pubtitle').value;
 					var textarea = document.getElementById('pubtextarea').value;
 					mui.ajax({
-						type: 'post',
-						url: baseurl + "client/mfflInformations/saveTopic",
+						type: 'put',
+						url: baseurl + "client/mfflInformations/updateMyInformation",
 						dataType: "json",
 						beforeSend: function(XMLHttpRequest) {
 							XMLHttpRequest.setRequestHeader(
@@ -212,6 +222,7 @@
 							'token': token
 						},
 						data: {
+							'informationId': infoid,
 							'title': title,
 							'content': textarea,
 							'imageUrl': imgstr
@@ -234,10 +245,47 @@
 			var options = new Vue({
 				el: '#app',
 				data: {
+					datadetails: '',
 					token: '',
-					pubpath: []
+					pubpath: [],
+					imgArray1: []
 				}
 			});
+			// 获取详情
+			function getdetails(token, infoid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflInformations/getInformation",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'informationId': infoid,
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datadetails = data.datas.issuer;
+							options.imgArray1 = data.datas.issuer.imageUrl.split(';');
+							imgArray = options.imgArray1;
+							options.pubpath = options.imgArray1;
+						} else {
+							mui.toast(data.message);
+							mui.back();
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
 			if (window.plus) {
 				plusReady();
 			} else {

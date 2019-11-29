@@ -17,43 +17,6 @@
 			<div class="mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<ul class="mui-table-view mui-table-view-chevron" >
-<!-- 						<li class="news-item">
-							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
-							<div class="news-show">
-								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
-								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
-								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
-							</div>
-							<div class="user-info">
-								<div class="user-box">
-									<div class="user-head"><img src="../images/touxiang.png"></div>
-									<div class="user-type user-type-laywer ">用户</div>
-									<div class="user-name">北京大兴张律师</div>
-								</div>
-								<div class="hot-box">
-									<div class="news-icon"><img src="../images/hot.png"></div>
-									<div class="hot-num">66666</div>
-								</div>
-							</div>
-						</li>
-						<li class=" news-item">
-							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
-							<div class="news-show">
-								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
-								<div class="news-img"><img src="../images/touxiang.png" data-preview-src="" data-preview-group="1"></div>
-							</div>
-							<div class="user-info">
-								<div class="user-box">
-									<div class="user-head"><img src="../images/touxiang.png"></div>
-									<div class="user-type">用户</div>
-									<div class="user-name">北京大兴张律师</div>
-								</div>
-								<div class="hot-box">
-									<div class="news-icon"><img src="../images/hot.png"></div>
-									<div class="hot-num">66666</div>
-								</div>
-							</div>
-						</li> -->
 						<li class=" news-item one-img"  v-for="item in mylist" :key="item.id">
 							<h4 class="news-title" :id='item.id'><em>#{{item.typeName}}#</em>{{item.title}}</h4>
 							<div class="news-show">
@@ -76,23 +39,7 @@
 								</div>
 							</div>
 						</li>
-<!-- 						<li class=" news-item">
-							<h4 class="news-title"><em>#普法知识#</em>国家正式出手！这部法律正式实施，代购微商要紧张了！</h4>
-							<div class="news-show">
-								<p class="news-content">2010年7月，任某入职某医疗中心从事化验工作，双方未签订书面劳动合同。2010年8月，该中心为任某缴纳养老保险费。2013年8月起缴纳医疗保险费、工伤保险费，未缴纳失业保险费和生育保险费。2016年7月，中心宣布对职工工...予以下调。2016年11月，任某申请辞职。任某要求医疗中心支付经济补偿金、失业赔偿金。</p>
-							</div>
-							<div class="user-info">
-								<div class="user-box">
-									<div class="user-head"><img src="../images/touxiang.png"></div>
-									<div class="user-type">用户</div>
-									<div class="user-name">北京大兴张律师</div>
-								</div>
-								<div class="hot-box">
-									<div class="news-icon"><img src="../images/hot.png"></div>
-									<div class="hot-num">66666</div>
-								</div>
-							</div>
-						</li> -->
+						<li class="nodata" v-if="mylist.length==0">暂无收藏</li>
 					</ul>
 				</div>
 			</div>

@@ -104,6 +104,7 @@ p {
 
 .nodata {
 	text-align: center;
+	padding: 15px;
 }
 
 .wlogo {
@@ -372,6 +373,24 @@ p {
 	line-height: 18px;
 }
 
+.menu {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.menubtn{
+	height: 15px;
+	width: 15px;
+	text-align: right;
+}
+.menubtn img{
+	width: 20%;
+}
+
+.mycollect ul {
+	padding-top: 15px;
+}
+
 .news-title em {
 	color: #2E82FF;
 	margin-right: 4px;
@@ -383,6 +402,7 @@ p {
 
 .news-item {
 	margin: 15px;
+	position: relative;
 	border-bottom: 1px solid #E1E1E1;
 }
 
@@ -404,8 +424,10 @@ p {
 	overflow: hidden;
 	margin: 0 2px;
 }
-.news-img img{
+
+.news-img img {
 	height: 100%;
+	width: 100%;
 }
 
 .news-content {
@@ -923,6 +945,12 @@ p {
 .answer-item {
 	margin-bottom: 15px;
 	background-color: #FFFFFF;
+	position: relative;
+}
+
+.answer-item .menu{
+	right: 15px;
+	top: 15px;
 }
 
 .add-answer {
@@ -1127,10 +1155,11 @@ p {
 }
 
 .publishtalk .dbbtn {
-	position: fixed;
+	position: absolute;
 	bottom: 15px;
 	left: 0;
 	right: 0;
+	z-index: -1;
 }
 
 .choosetalk {
@@ -1199,7 +1228,7 @@ label {
 	height: 100%;
 }
 
-.closeicon{
+.closeicon {
 	position: absolute;
 	right: -8px;
 	top: -8px;
@@ -1699,7 +1728,7 @@ input[type='text'] {
 	margin-bottom: 20px;
 }
 
-.answeritme p{
+.answeritme p {
 	font-size: 12px;
 }
 
@@ -1909,7 +1938,28 @@ textarea {
 	padding: 10px;
 	font-size: 12px;
 }
-.answersecond .hot-num{
+
+.answersecond .hot-num {
 	font-size: 12px;
 	color: #8f8f94;
+}
+
+.meunlist {
+	position: absolute;
+	top: 15px;
+	left: -35px;
+	width: 60px;
+	letter-spacing: 6px;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 30px;
+	z-index: 99;
+	text-align: center;
+	color: #2E82FF;
+	background-color: #FFFFFF;
+	display: none;
+}
+
+.meunlist li{
+	border-bottom: 1px solid #E1E1E1;
 }

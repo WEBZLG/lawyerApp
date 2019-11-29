@@ -154,11 +154,11 @@
 					mui('body').on('tap', '.tjbtn', function(e) {
 						tjlawyerlist(token);
 					});
-					mui('#sliderSegmentedControl').on('tap', 'a', function(e) {
-						var idx = e.target.attributes.idx.value;
-						options.currentLawyerType = idx;
-						lawyerlist(token, options.lawyertype[idx].id, 10)
-					});
+					// mui('#sliderSegmentedControl').on('tap', 'a', function(e) {
+					// 	var idx = e.target.attributes.idx.value;
+					// 	options.currentLawyerType = idx;
+					// 	lawyerlist(token, options.lawyertype[idx].id, 10)
+					// });
 					document.querySelector('#slider').addEventListener('slide', function(event) {
 						// console.log(event.detail.slideNumber);
 						var idx = event.detail.slideNumber;
