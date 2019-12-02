@@ -21,7 +21,16 @@
 							<div class="ordernum">订单编号：{{item.payMerchantNumber}}</div>
 							<em class="orangecolor">{{item.money}}元</em>
 							<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
-							<div class="orderstatus bluecolor" v-if="item.payState==1">已支付</div>
+							<div class="orderstatus bluecolor" v-if="item.payState==1">
+								<em v-if="item.state==0">发布成功</em>
+								<em v-if="item.state==1">已接单</em>
+								<em v-if="item.state==2">拒绝接单</em>
+								<em v-if="item.state==3">已发货</em>
+								<em v-if="item.state==4">完成交易</em>
+								<em v-if="item.state==5">已撤销订单</em>
+								<em v-if="item.state==6">超时接单撤销，自动退款</em>
+								<em v-if="item.state==7">已退款</em>
+							</div>
 							<div class="orderstatus redcolor" v-if="item.payState==2">已退款</div>
 							<div class="orderstatus" v-if="item.payState==3">申请退款</div>
 						</div>

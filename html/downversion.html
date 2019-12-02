@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>下载新版本</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				
+				var urls = self.urls;
+				var embed = plus.webview.create(urls, 'embed', {
+					top: '45px',
+					bottom: '0px'
+				}); //创建页面
+				var ws = plus.webview.currentWebview();
+				ws.append(embed);
+				embed.addEventListener('loaded', function() { //监听页面，当页面加载完成时
+					plus.nativeUI.closeWaiting();
+				}, false);
+				embed.addEventListener('loading', function() { //监听页面，当页面加载时
+					plus.nativeUI.showWaiting('', {
+						style: 'black',
+						modal: false,
+						background: 'rgba(0,0,0,0)'
+					});
+				}, false);
+			});
+	
+		</script>
+	</body>
+
+</html>
