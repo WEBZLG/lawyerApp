@@ -178,9 +178,7 @@
 					token: ''
 				},
 				methods: {
-					gohome: function() {
 
-					}
 				}
 			});
 
@@ -365,8 +363,11 @@
 			}
 			// 返回首页
 			mui(".news-nav").on("tap", ".gohome", function() {
-				var home = plus.webview.getLaunchWebview().getURL();
-				plus.webview.open(home)
+				var main = plus.webview.getLaunchWebview();
+				console.log(main)
+				mui.fire(main, 'gochat', {
+					type: 1
+				});
 			})
 			mui(".news-nav").on("tap", ".newssearch", function() {
 				mui.openWindowWithTitle({

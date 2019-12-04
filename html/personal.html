@@ -38,7 +38,16 @@
 	<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		mui.init();
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
 		// 监听ffn
 		window.addEventListener('ffn', function(event) {
 			console.log(event)

@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>用户协议</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div class="mui-content" id="app">
+			<h4 class="mui-text-center">{{datadetails.title}}</h4>
+			<div class="" v-html="datadetails.content"></div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function () {
+				var token = plus.storage.getItem('token');
+			    getdetails('', 1)
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: {},
+				},
+				methods: {
+					gohome: function() {
+			
+					}
+				}
+			});
+			function getdetails(token, id) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getArticle",
+					dataType: "json",
+					data: {
+						id:id
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+						options.datadetails = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+			
+		</script>
+	</body>
+
+</html>

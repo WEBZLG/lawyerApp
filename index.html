@@ -74,7 +74,6 @@
 					pageArr.push(page);
 					! function(i) {
 						arr[i].addEventListener("tap", function() {
-							console.log(this)
 							switch (i) {
 								case 0:
 									this.childNodes[1].childNodes[0].src = "images/home_2.png"
@@ -155,6 +154,11 @@
 				}
 				// 默认触发第0个选项卡的tap事件。
 				mui.trigger(arr[0], "tap");
+			});
+			document.addEventListener('gochat', function(e) {
+				var arr = document.getElementsByClassName("mui-tab-item");
+				//模拟首页点击
+				mui.trigger(arr[1], 'tap', {});
 			});
 		</script>
 	</body>

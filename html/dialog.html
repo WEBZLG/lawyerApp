@@ -193,7 +193,7 @@
 		<script type="text/javascript">
 			mui.init({
 				beforeback: function() {
-					closed(options.token, options.sendId)
+					// closed(options.token, options.sendId)
 				}
 			});
 			var channel = null;
@@ -218,7 +218,7 @@
 				options.userinfo = JSON.parse(userinfo);
 				options.sendId = sendId;
 				options.token = token;
-				startTime(token, sendId)
+				// startTime(token, sendId)
 				getlist(token, sendId, 0, 100);
 				mui("body").on("tap", "#user_add_icon", function() {
 					page.imgUp();
