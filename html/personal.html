@@ -48,26 +48,17 @@
 				return true;
 			}
 		});
-		// 监听ffn
-		window.addEventListener('ffn', function(event) {
-			console.log(event)
-			// 数据都在event.detail里面  
-			var val = event.detail.name;
-			var phone = event.detail.phone;
-			document.getElementById('myname').innerHTML=val;
-			document.getElementById('phonenum').innerHTML=phone;
-		})
+		(function($, doc) {
+			window.addEventListener('refresh', function(e) {
+				//执行刷新
+				console.log("刷新父页面")
+				location.reload();
+			});
+		})(mui, document);
 
 		mui.plusReady(function() {
 			var token = plus.storage.getItem('token');
-			var userinfo = plus.storage.getItem('userinfo');
-			var message = JSON.parse(userinfo);
-			// alert(userinfo)
-			
-			document.getElementById('head-img').src = imgurl+message.headImgUrl;
-			document.getElementById('myname').innerText = message.nickname;
-			document.getElementById('phonenum').innerText = message.phone;
-
+			details(token)
 			// 上传头像
 			mui("body").on("tap", "#headimg", function() {
 				page.imgUp();
@@ -146,9 +137,10 @@
 							plus.storage.setItem('uploader', t.responseText);
 							imgArray.push(imgUrl);
 							imgstr = imgArray.join(';');
-							changeinfo(token, imgstr, '', '', '',function(data){
+							changeinfo(token, imgstr, '', '', '', function(data) {
 								console.log(data)
 								plus.storage.setItem('userinfo', data.datas);
+								location.reload();
 							})
 						} else {
 							mui.toast('上传失败');
@@ -247,5 +239,37 @@
 				}
 			})
 		});
+		// 个人信息
+		function details(token) {
+			mui.ajax({
+				type: 'get',
+				url: baseurl + "mffl/getUserInfo",
+				dataType: "json",
+				beforeSend: function(XMLHttpRequest) {
+					XMLHttpRequest.setRequestHeader(
+						"token", token
+					);
+				},
+				headers: {
+					'contentType': "application/x-www-form-urlencoded",
+					'token': token
+				},
+				data: {},
+				success: function(data) {
+					console.log(data)
+					if (data.errCode == 200) {
+						document.getElementById('myname').innerHTML = data.datas.nickname;
+						document.getElementById('phonenum').innerHTML = data.datas.phone;
+						document.getElementById('head-img').src = imgurl + data.datas.headImgUrl;
+					} else {
+						mui.toast(data.message)
+					}
+				},
+				error: function(err) {
+					console.log(err)
+					mui.toast(err.response)
+				}
+			})
+		}
 	</script>
 </html>

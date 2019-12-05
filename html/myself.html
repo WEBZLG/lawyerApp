@@ -58,6 +58,13 @@
 					id: 'myself.html'
 				}]
 			});
+			(function($, doc) {
+				window.addEventListener('refresh', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
 			var options = new Vue({
 				el: '#app',
 				data: {
@@ -72,10 +79,7 @@
 			});
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
-				var userinfo = plus.storage.getItem('userinfo');
-				options.userinfo = JSON.parse(userinfo);
-				options.token = token;
-				console.log(options.userinfo)
+				details(token)
 				var self = plus.webview.currentWebview();
 				var id = self.id;
 			})
@@ -276,6 +280,35 @@
 					}
 				})
 			});
+			function details(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getUserInfo",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.userinfo = data.datas;
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+						mui.toast(err.response)
+					}
+				})
+			}
 		</script>
 	</body>
 </html>

@@ -106,7 +106,8 @@
 						<button type="button" v-if="datadetails.payState==1&&datadetails.state!=4" class="mui-btn refund" :id="datadetails.id">申请退款</button>
 						<button type="button" v-if="datadetails.payState==3" class="mui-btn disrefund" :id="datadetails.id">取消退款</button>
 						<button type="button" class="mui-btn logistics" v-if="datadetails.state==3" :id="datadetails.id">查看物流</button>
-						<button type="button" v-if="datadetails.payState==1&&datadetails.state!=4" class="mui-btn finish" :id="datadetails.id">完成服务</button>
+						<button type="button" v-if="datadetails.payState==1&&datadetails.state!=4&&datadetails.state!=0" class="mui-btn finish"
+						 :id="datadetails.id">完成服务</button>
 						<button type="button" :id="datadetails.id" class="mui-btn changeaddr" v-if="datadetails.payState==1&&datadetails.state==0||datadetails.payState==1&&datadetails.state==1">修改邮寄地址</button>
 						<button type="button" v-if="datadetails.payState==0&&datadetails.state==0" class="mui-btn gobuy" :id="datadetails.id">去支付</button>
 					</div>
@@ -218,7 +219,14 @@
 					})
 				});
 
-			})
+			});
+			(function($, doc) {
+				window.addEventListener('refresh', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
 			var options = new Vue({
 				el: '#app',
 				data: {
@@ -493,7 +501,7 @@
 								extras: {
 									// 打开页面的同时，向新页面传递数据。
 									couriernum: datadetails.courierNumber,
-									name:datadetails.mfflCourierServicesCompany.name
+									name: datadetails.mfflCourierServicesCompany.name
 								}
 							}, {
 								//标题栏的背景色和底边线配置

@@ -222,7 +222,14 @@
 					var num = this.getAttribute("num");
 					copy_fun(num)
 				})
-			})
+			});
+			(function($, doc) {
+				window.addEventListener('refresh', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
 
 			// 支付
 			mui("body").on("tap", ".gobuy", function() {

@@ -87,7 +87,7 @@
 					<select name="time" onchange="timeselected()">
 						<option value="0">选择时间</option>
 						<option value="1">1天</option>
-						<option value="2">2天</option>
+						<option value="2">2天</option> 
 						<option value="3">3天</option>
 					</select>
 					<span class="mui-icon mui-icon-arrowdown"></span>
@@ -124,26 +124,38 @@
 		<script type="text/javascript">
 			mui.init();
 			var channel = null;
-			var content="";
+			var content = "";
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
 				getnewtype(token);
 				mui("body").on("tap", ".payforbtn", function() {
 					content = document.getElementById('notedata1').value;
-					if(content==''){
+					var money = document.getElementsByClassName('pricenum')[0].innerText;
+					if (content == '') {
 						mui.toast('请填写内容');
 						return false;
-					}else if(options.type==''){
+					} else if (options.type == '') {
 						mui.toast('请选择问题类别');
 						return false;
+					} else if (options.time == '') {
+						mui.toast('请设置悬赏时间');
+						return false;
+					} else if (money == '0') {
+						mui.toast('请设置悬赏金额');
+						return false;
 					}
-					this.setAttribute('disabled','disabled')
-					for (var i = 0; i < options.pubpath.length; i++) {
-						upload(options.pubpath[i], 0)
-					}
-					for (var j = 0; j < options.pubpaths.length; j++) {
-						upload(options.pubpaths[j], 1)
+					this.setAttribute('disabled', 'disabled')
+					if (options.pubpath.length == 0 && options.pubpaths.length == 0) {
+						publish(options.token);
+						return false;
+					} else {
+						for (var i = 0; i < options.pubpath.length; i++) {
+							upload(options.pubpath[i], 0)
+						}
+						for (var j = 0; j < options.pubpaths.length; j++) {
+							upload(options.pubpaths[j], 1)
+						}
 					}
 				});
 				mui('#ulelem').on('tap', '.closeicon', function() {
@@ -283,7 +295,7 @@
 						if (data.errCode == 200) {
 							payfor(token, data.datas);
 						} else {
-							document.getElementById('payforbtn').setAttribute('disabled','');
+							document.getElementById('payforbtn').setAttribute('disabled', '');
 							mui.toast(data.message)
 						}
 					},
@@ -317,7 +329,7 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
-								document.getElementById('payforbtn').setAttribute('disabled','');
+								document.getElementById('payforbtn').setAttribute('disabled', '');
 								mui.openWindow({
 									url: 'publishsuccess.html',
 									id: 'publishsuccess.html',
@@ -327,12 +339,12 @@
 									}
 								})
 							}, function(error) {
-								document.getElementById('payforbtn').setAttribute('disabled','');
+								document.getElementById('payforbtn').setAttribute('disabled', '');
 								console.log(error)
 							});
 
 						} else {
-							document.getElementById('payforbtn').setAttribute('disabled','');
+							document.getElementById('payforbtn').setAttribute('disabled', '');
 							mui.toast(data.message)
 						}
 					},
@@ -466,7 +478,8 @@
 						for (var i in path.files) {
 							var addli = document.getElementById("addimgs");
 							var li = document.createElement("li");
-							li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon closeicons mui-icon mui-icon-close"></span>';
+							li.innerHTML = '<img src="' + path.files[i] +
+								'"><span class="closeicon closeicons mui-icon mui-icon-close"></span>';
 							document.getElementById("ulelems").insertBefore(li, addli);
 						}
 						var closes = document.getElementsByClassName('closeicons');

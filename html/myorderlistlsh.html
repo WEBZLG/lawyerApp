@@ -17,31 +17,34 @@
 			<div class="mui-scroll-wrapper" id="pullrefresh">
 				<div class="mui-scroll">
 					<div class="orderlistitem" v-for="item in datalist" :key="item.id">
-						<div class="orderreference" :id="item.id">
-							<div class="ordernum">
-								<p>订单编号：</p>
-								<p>{{item.payMerchantNumber}}</p></div>
-							<em class="orangecolor">{{item.money}}元</em>
-							<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
-							<div class="orderstatus bluecolor" v-if="item.payState==1">
-								<em v-if="item.state==0">发布成功</em>
-								<em v-if="item.state==1">已接单</em>
-								<em v-if="item.state==2">拒绝接单</em>
-								<em v-if="item.state==3">已发货</em>
-								<em v-if="item.state==4">完成交易</em>
-								<em v-if="item.state==5">已撤销订单</em>
-								<em v-if="item.state==6">超时接单撤销，自动退款</em>
-								<em v-if="item.state==7">已退款</em>
+						<div class="clickbox" :id="item.id">
+							<div class="orderreference" :id="item.id">
+								<div class="ordernum">
+									<p>订单编号：</p>
+									<p>{{item.payMerchantNumber}}</p>
+								</div>
+								<em class="orangecolor">{{item.money}}元</em>
+								<div class="orderstatus orangecolor" v-if="item.payState==0">待支付</div>
+								<div class="orderstatus bluecolor" v-if="item.payState==1">
+									<em v-if="item.state==0">发布成功</em>
+									<em v-if="item.state==1">已接单</em>
+									<em v-if="item.state==2">拒绝接单</em>
+									<em v-if="item.state==3">已发货</em>
+									<em v-if="item.state==4">完成交易</em>
+									<em v-if="item.state==5">已撤销订单</em>
+									<em v-if="item.state==6">超时接单撤销，自动退款</em>
+									<em v-if="item.state==7">已退款</em>
+								</div>
+								<div class="orderstatus redcolor" v-if="item.payState==2">已退款</div>
+								<div class="orderstatus" v-if="item.payState==3">申请退款</div>
 							</div>
-							<div class="orderstatus redcolor" v-if="item.payState==2">已退款</div>
-							<div class="orderstatus" v-if="item.payState==3">申请退款</div>
-						</div>
-						<div class="orderquestion">
-							<label>问题内容</label>
-							<div class="ordercontent">{{item.describe}}</div>
-							<div class="news-show" v-if="item.imageUrl!=''">
-								<div class="news-img" v-for="imgitem in item.imageUrl.split(';')" :key="imgitem">
-									<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+							<div class="orderquestion">
+								<label>问题内容</label>
+								<div class="ordercontent">{{item.describe}}</div>
+								<div class="news-show" v-if="item.imageUrl!=''">
+									<div class="news-img" v-for="imgitem in item.imageUrl.split(';')" :key="imgitem">
+										<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+									</div>
 								</div>
 							</div>
 						</div>
@@ -106,7 +109,7 @@
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
-				letterlist(token,0,10);
+				letterlist(token, 0, 10);
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
 					for (var i in channels) {
@@ -137,8 +140,8 @@
 					datalist: [],
 					receiveid: '',
 					token: "",
-					offset:0,
-					limit:10
+					offset: 0,
+					limit: 10
 				},
 				methods: {
 					gohome: function() {
@@ -147,7 +150,7 @@
 				}
 			});
 			// 律师函列表
-			function letterlist(token,offset,limit) {
+			function letterlist(token, offset, limit) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflLawyerletters",
@@ -180,7 +183,7 @@
 			}
 
 			// 查看详情
-			mui("body").on("tap", ".orderlistitem .orderreference", function() {
+			mui("body").on("tap", ".clickbox", function() {
 				var lshid = this.getAttribute('id');
 				mui.openWindowWithTitle({
 					url: "myorderlistdetailslsh.html",
@@ -260,7 +263,7 @@
 					data: {},
 					success: function(data) {
 						console.log(data)
-							letterlist(options.token,options.offset,options.limit);
+						letterlist(options.token, options.offset, options.limit);
 						// if (data.errCode == 200) {
 						// 	mui.toast('取消成功！')
 						// } else {
@@ -275,7 +278,7 @@
 			// 支付
 			mui("body").on("tap", ".gobuy", function() {
 				var that = this;
-				this.setAttribute('disabled','disabled');
+				this.setAttribute('disabled', 'disabled');
 				var num = this.getAttribute("num");
 				var oid = this.getAttribute("yid");
 				mui.ajax({
@@ -295,7 +298,7 @@
 						'paymerchantnumber': num
 					},
 					success: function(data) {
-						that.setAttribute('disabled','');
+						that.setAttribute('disabled', '');
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
@@ -306,14 +309,14 @@
 									id: 'paysuccess.html',
 									extras: {
 										//自定义扩展参数，可以用来处理页面间传值  
-										oid:oid
+										oid: oid
 									}
 								})
 							}, function(error) {
 								console.log(error)
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
-						} else if(data.errCode==142){
+						} else if (data.errCode == 142) {
 							mui.ajax({
 								type: 'post',
 								url: baseurl + "client/mfflLawyerletters/pay",
@@ -331,7 +334,7 @@
 									'paymerchantnumber': data.datas.newpayMerchantNumber
 								},
 								success: function(data) {
-									that.setAttribute('disabled','');
+									that.setAttribute('disabled', '');
 									console.log(data)
 									if (data.errCode == 200) {
 										plus.payment.request(channel, data.datas, function(result) {
@@ -341,19 +344,19 @@
 												id: 'paysuccess.html',
 												extras: {
 													//自定义扩展参数，可以用来处理页面间传值  
-													oid:oid
+													oid: oid
 												}
 											})
 										}, function(error) {
 											console.log(error)
 											// plus.nativeUI.alert(JSON.stringify(error)); 
 										});
-									}  else {
+									} else {
 										mui.toast(data.message)
 									}
 								},
 								error: function(err) {
-									that.setAttribute('disabled','');
+									that.setAttribute('disabled', '');
 									console.log(err)
 								}
 							})
@@ -362,7 +365,7 @@
 						}
 					},
 					error: function(err) {
-						that.setAttribute('disabled','');
+						that.setAttribute('disabled', '');
 						console.log(err)
 					}
 				})

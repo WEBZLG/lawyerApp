@@ -82,10 +82,8 @@
 
 			.content li {
 				margin-top: 10px;
-				padding-left: 10px;
+				padding-right: 10px;
 				display: block;
-				clear: both;
-				overflow: hidden;
 			}
 
 			.content li img {
@@ -112,7 +110,6 @@
 			}
 
 			.content li img.imgright {
-				float: right;
 				float: right;
 				height: 50px;
 				width: 50px;
@@ -148,6 +145,7 @@
 			#actionbuy input {
 				margin: 0 auto;
 			}
+
 			#btnsay {
 				line-height: 21px;
 				width: 100%;
@@ -161,24 +159,32 @@
 				background-color: #fff;
 				-webkit-appearance: none;
 			}
+			.mui-scroll{
+				position: relative;
+				display: block;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div id="app">
 			<div id="container">
-				<ul class="content mui-scroll">
-					<li v-for="item in datalist" :key="item.id">
-					<div v-if="item.identity==0&&item.state==0"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
-					<div v-if="item.identity==0&&item.state==1"><img :src=imgurl+item.headImgUrl class="imgright"><span class="imgright"> <img :src=imgurl+item.content ></span></div>
-					<div v-if="item.identity==1&&item.state==0"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
-					<div v-if="item.identity==1&&item.state==1"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="imgleft"><img :src=imgurl+item.content ></span></div>
-					</li>
-				</ul>
+				<div id="wordlist" class="content">
+					<ul class="mui-scroll clearfix" id="ul">
+						<li v-for="item in datalist" :key="item.id">
+							<div v-if="item.identity==0&&item.state==0"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
+							<div v-if="item.identity==0&&item.state==1"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span class="imgright">
+									<img :src=imgurl+item.content></span></div>
+							<div v-if="item.identity==1&&item.state==0"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
+							<div v-if="item.identity==1&&item.state==1"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="imgleft"><img
+									 :src=imgurl+item.content></span></div>
+						</li>
+					</ul>
+				</div>
 				<div class="footer" id="action">
 					<div id="user_face_icon" onclick="btn_toggle();"><img src="../images/yuyin1.png" alt=""></div>
 					<input id="text" type="text" placeholder="说点什么吧...">
-					<button  id="btnsay" class="mui-hidden" type="button" ontouchstart="return false;">按住说话</button>
+					<button id="btnsay" class="mui-hidden" type="button" ontouchstart="return false;">按住说话</button>
 					<span id="btn" class="mui-hidden">发送</span>
 					<div id="user_add_icon"><img src="../images/+1.png" alt=""></div>
 				</div>
@@ -193,7 +199,7 @@
 		<script type="text/javascript">
 			mui.init({
 				beforeback: function() {
-					// closed(options.token, options.sendId)
+					closed(options.token, options.sendId)
 				}
 			});
 			var channel = null;
@@ -218,7 +224,7 @@
 				options.userinfo = JSON.parse(userinfo);
 				options.sendId = sendId;
 				options.token = token;
-				// startTime(token, sendId)
+				startTime(token, sendId)
 				getlist(token, sendId, 0, 100);
 				mui("body").on("tap", "#user_add_icon", function() {
 					page.imgUp();
@@ -251,7 +257,7 @@
 			//按住录音
 			document.getElementById("btnsay").addEventListener("hold", function() {
 				console.log(this)
-				this.innerHTML= '请说话'
+				this.innerHTML = '请说话'
 				r = plus.audio.getRecorder(); //录音对象
 				if (r == null) {
 					mui.alert("调用麦克风失败！", "提示信息", "关闭", null);
@@ -267,7 +273,7 @@
 					// mui.showLoading("正在提交..","div");
 					plus.io.resolveLocalFileSystemURL(path, function(entry) {
 						console.log(entry)
-			
+
 						// var url = jsonp_url + "sys/MobileWays/recVoice?&mobileLogin=true";
 						// var task=plus.uploader.createUpload(url,{method:"POST"},function(t,status){
 						// 	mui.hideLoading();
@@ -276,7 +282,7 @@
 						// 		//语音解析成功
 						// 		if(dataJson.result == "1"){
 						// 			mui.alert("识别结果:" + dataJson.data,"信息提示","关闭",function(){
-			
+
 						// 			});
 						// 		}else{
 						// 			mui.alert("语音解析失败:" + dataJson.data,"系统错误","关闭",false);
@@ -288,17 +294,17 @@
 						// task.addFile(path,{key:"file"});
 						// task.start();
 					});
-			
+
 				}, function(e) {
 					//录音错误回调
 					mui.alert("录音失败！" + e.message, "提示信息", "关闭", null);
 					return;
 				});
 			})
-			
+
 			//释放
 			document.getElementById("btnsay").addEventListener("release", function() {
-				this.innerHTML= '按住说话'
+				this.innerHTML = '按住说话'
 				var timeNow = (new Date()).valueOf();
 				if ((parseInt(timeNow) - parseInt(voiceTime)) >= 2000) {
 					//停止录音
@@ -309,7 +315,7 @@
 					mui.toast('录音不足2秒，请重新录入！');
 				}
 			})
-			
+
 			function btn_toggle() {
 				var sh = document.getElementById('btnsay').classList.contains('mui-hidden');
 				if (sh) {
@@ -447,8 +453,7 @@
 					},
 					success: function(data) {
 						console.log(data)
-						if (data.errCode == 200) {
-						} else {
+						if (data.errCode == 200) {} else {
 							mui.toast(data.message)
 						}
 					},
@@ -565,7 +570,7 @@
 								mui.toast('发送成功');
 								var contentbox = document.getElementsByTagName('ul')[0];
 								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
-									'" class="imgright"><span class="imgright"><img src='+imgurl+imgUrl+'></span></li>';
+									'" class="imgright"><span class="imgright"><img src=' + imgurl + imgUrl + '></span></li>';
 							} else {
 								mui.toast(data.message)
 							}
@@ -678,7 +683,7 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-			
+
 						} else {
 							mui.toast(data.message);
 							// mui.back();

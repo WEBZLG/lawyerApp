@@ -15,9 +15,7 @@
 			<div class="banner">
 				<div class="mui-slider banner-slider">
 					<div class="mui-slider-group mui-slider-loop">
-						<div class="mui-slider-item"><a href="#"><img src="../images/banner1.png" /></a></div>
-						<div class="mui-slider-item"><a href="#"><img src="../images/banner1.png" /></a></div>
-						<div class="mui-slider-item"><a href="#"><img src="../images/banner1.png" /></a></div>
+						<div class="mui-slider-item" v-for="item in bannerlist" :key="item"><a href="#"><img :src=imgurl+item.url /></a></div>
 					</div>
 				</div>
 			</div>
@@ -134,6 +132,7 @@
 					data: {
 						lawyerlist: [],
 						lawyertype: {},
+						bannerlist:[]
 					},
 					methods: {
 
@@ -143,6 +142,7 @@
 					var token = plus.storage.getItem('token');
 					console.log(token)
 					options.token = token;
+					banner(token);
 					lawyerlist(token, 0, 10);
 					tjlawyerlist(token);
 					// document.querySelector('.mui-sliders').addEventListener('slide', function(event) {
@@ -243,7 +243,35 @@
 						})
 					})
 				});
-
+				// banner推荐
+				function banner(token) {
+					mui.ajax({
+						type: 'get',
+						url: baseurl + "mffl/getAdvertising",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': token
+						},
+						data: {},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								options.bannerlist = data.datas;
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				}
 
 				// 律师推荐
 				function lawyerlist(token, type, num) {

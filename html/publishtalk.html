@@ -45,194 +45,195 @@
 			// 弹出系统选择按钮框  
 			function plusReady() {
 				var token = plus.storage.getItem('token');
-				options.token=token;
+				options.token = token;
 				// 弹出系统选择按钮框  
-				mui("body").on("tap", ".imageup", function() {
-					page.imgUp();
-				})
-				mui('body').on('tap', '.closeicon', function() {
-					var idx = this.index;
-					var list = document.getElementById('ulelem');
-					mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
-						if (e.index == 1) {
-							list.removeChild(list.childNodes[idx]);
-							options.pubpath = options.pubpath.splice(idx, 1)
-						}
-					}, 'div')
-				})
-				var page = null;
-				var imgArray = [];
-				var imgstr = "";
-				page = {
-					imgUp: function() {
-						var m = this;
-						plus.nativeUI.actionSheet({
-							cancel: "取消",
-							buttons: [{
-									title: "拍照"
-								},
-								{
-									title: "从相册中选择"
-								}
-							]
-						}, function(e) { //1 是拍照  2 从相册中选择  
-							switch (e.index) {
-								case 1:
-									appendByCamera();
-									break;
-								case 2:
-									appendByGallery();
-									break;
-							}
-						});
+				
+			mui("body").on("tap", ".imageup", function() {
+				page.imgUp();
+			})
+			mui('body').on('tap', '.closeicon', function() {
+				var idx = this.index;
+				var list = document.getElementById('ulelem');
+				mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
+					if (e.index == 1) {
+						list.removeChild(list.childNodes[idx]);
+						options.pubpath = options.pubpath.splice(idx, 1)
 					}
-					//摄像头  
-				}
-				// 拍照添加文件
-				function appendByCamera() {
-					plus.camera.getCamera().captureImage(function(e) {
-						console.log(e);
-						plus.io.resolveLocalFileSystemURL(e, function(entry) {
-							var path = entry.toLocalURL();
-							options.pubpath = new Array(path);
-							console.log(options.pubpath)
-							var addli = document.getElementById("addimg");
-							var li = document.createElement("li");
-							li.innerHTML = '<img src="' + path + '"><span class="closeicon mui-icon mui-icon-close"></span>';
-							document.getElementById("ulelem").insertBefore(li, addli);
-							var closes = document.getElementsByClassName('closeicon');
-							for (var j = 0; j < closes.length; j++) {
-								closes[j].index = j;
+				}, 'div')
+			})
+			var page = null;
+			var imgArray = [];
+			var imgstr = "";
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
 							}
-						}, function(e) {
-							mui.toast("读取拍照文件错误：" + e.message);
-						});
-
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
 					});
 				}
-				// 从相册添加文件
-				function appendByGallery() {
-					plus.gallery.pick(function(path) {
-						options.pubpath = path.files;
-						for (var i in path.files) {
-							var addli = document.getElementById("addimg");
-							var li = document.createElement("li");
-							li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon mui-icon mui-icon-close"></span>';
-							document.getElementById("ulelem").insertBefore(li, addli);
-						}
+				//摄像头  
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						options.pubpath = new Array(path);
+						console.log(options.pubpath)
+						var addli = document.getElementById("addimg");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path + '"><span class="closeicon mui-icon mui-icon-close"></span>';
+						document.getElementById("ulelem").insertBefore(li, addli);
 						var closes = document.getElementsByClassName('closeicon');
 						for (var j = 0; j < closes.length; j++) {
 							closes[j].index = j;
 						}
 					}, function(e) {
-						console.log("取消选择图片");
-					}, {
-						filter: "image",
-						multiple: true,
-						maximum: 4,
-						system: false,
-						onmaxed: function() {
-							plus.nativeUI.alert('最多只能选择4张图片');
-						}
+						mui.toast("读取拍照文件错误：" + e.message);
 					});
-				}
-				//服务端接口路径
-				var server = baseurl + "mffl/uploadimagefile";
-				// 上传文件
-				function upload(files) {
-					var files = [{
-						path: files
-					}];
-					if (files.length <= 0) {
-						plus.nativeUI.alert('没有添加上传文件！');
-						return;
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					options.pubpath = path.files;
+					for (var i in path.files) {
+						var addli = document.getElementById("addimg");
+						var li = document.createElement("li");
+						li.innerHTML = '<img src="' + path.files[i] + '"><span class="closeicon mui-icon mui-icon-close"></span>';
+						document.getElementById("ulelem").insertBefore(li, addli);
 					}
-					// mui.toast('开始上传');
-					var wt = plus.nativeUI.showWaiting();
-					var task = plus.uploader.createUpload(server, {
-							method: 'POST'
-						},
-						function(t, status) { //上传完成
-						console.log(t.responseText)
-							plus.nativeUI.closeWaiting();
-							if (status == 200) {
-								var imgUrl = JSON.parse(t.responseText).datas.max
-								plus.storage.setItem('uploader', t.responseText);
-								imgArray.push(imgUrl);
-								imgstr = imgArray.join(';');
-								if (options.pubpath.length == imgArray.length) {
-									publish(options.token);
-								}
-							} else {
-								mui.toast('上传失败');
-								wt.close();
-							}
-						}
-					);
-					task.setRequestHeader('token', options.token);
-					for (var i = 0; i < files.length; i++) {
-						var f = files[i];
-						task.addFile(f.path, {
-							key: 'file'
-						});
+					var closes = document.getElementsByClassName('closeicon');
+					for (var j = 0; j < closes.length; j++) {
+						closes[j].index = j;
 					}
-					task.start();
-				}
-				// 发布
-				mui("body").on('tap', '#pubbtn', function() {
-					var title = document.getElementById('pubtitle').value;
-					var textarea = document.getElementById('pubtextarea').value;
-					if(title==''){
-						mui.toast('请输入标题');
-						return false;
-					}else if(textarea==''){
-						mui.toast('请输入内容');
-						return false;
-					}else if(options.pubpath.length==0){
-						mui.toast('请上传图片');
-						return false;
-					}
-					this.setAttribute('disabled', 'disabled')
-					for (var i = 0; i < options.pubpath.length; i++) {
-						upload(options.pubpath[i])
+				}, function(e) {
+					console.log("取消选择图片");
+				}, {
+					filter: "image",
+					multiple: true,
+					maximum: 4,
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择4张图片');
 					}
 				});
-
-				function publish(token) {
-					var title = document.getElementById('pubtitle').value;
-					var textarea = document.getElementById('pubtextarea').value;
-					mui.ajax({
-						type: 'post',
-						url: baseurl + "client/mfflInformations/saveTopic",
-						dataType: "json",
-						beforeSend: function(XMLHttpRequest) {
-							XMLHttpRequest.setRequestHeader(
-								"token", token
-							);
-						},
-						header: {
-							'contentType': "application/x-www-form-urlencoded",
-							'token': token
-						},
-						data: {
-							'title': title,
-							'content': textarea,
-							'imageUrl': imgstr
-						},
-						success: function(data) {
-							console.log(data);
-							if (data.errCode == 200) {
-								mui.toast("发布成功！")
-								mui.back();
-							} else {
-								mui.toast("data.message")
+			}
+			//服务端接口路径
+			var server = baseurl + "mffl/uploadimagefile";
+			// 上传文件
+			function upload(files) {
+				var files = [{
+					path: files
+				}];
+				if (files.length <= 0) {
+					plus.nativeUI.alert('没有添加上传文件！');
+					return;
+				}
+				// mui.toast('开始上传');
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(server, {
+						method: 'POST'
+					},
+					function(t, status) { //上传完成
+						console.log(t.responseText)
+						plus.nativeUI.closeWaiting();
+						if (status == 200) {
+							var imgUrl = JSON.parse(t.responseText).datas.max
+							plus.storage.setItem('uploader', t.responseText);
+							imgArray.push(imgUrl);
+							imgstr = imgArray.join(';');
+							if (options.pubpath.length == imgArray.length) {
+								publish(options.token);
 							}
-						},
-						error: function(err) {
-							console.log(err)
+						} else {
+							mui.toast('上传失败');
+							wt.close();
 						}
+					}
+				);
+				task.setRequestHeader('token', options.token);
+				for (var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: 'file'
 					});
 				}
+				task.start();
+			}
+			// 发布
+			mui("body").on('tap', '#pubbtn', function() {
+				var title = document.getElementById('pubtitle').value;
+				var textarea = document.getElementById('pubtextarea').value;
+				if (title == '') {
+					mui.toast('请输入标题');
+					return false;
+				} else if (textarea == '') {
+					mui.toast('请输入内容');
+					return false;
+				} else if (options.pubpath.length == 0) {
+					mui.toast('请上传图片');
+					return false;
+				}
+				this.setAttribute('disabled', 'disabled')
+				for (var i = 0; i < options.pubpath.length; i++) {
+					upload(options.pubpath[i])
+				}
+			});
+
+			function publish(token) {
+				var title = document.getElementById('pubtitle').value;
+				var textarea = document.getElementById('pubtextarea').value;
+				mui.ajax({
+					type: 'post',
+					url: baseurl + "client/mfflInformations/saveTopic",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					header: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'title': title,
+						'content': textarea,
+						'imageUrl': imgstr
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							mui.toast("发布成功！")
+							mui.back();
+						} else {
+							mui.toast("data.message")
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
 			}
 			var options = new Vue({
 				el: '#app',

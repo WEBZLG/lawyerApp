@@ -13,7 +13,7 @@
 
 	<body>
 		<div class="mailingfinfor">
-<!-- 			<div class="choosetalk">
+			<!-- 			<div class="choosetalk">
 				<label>退款原因</label>
 				<div class="talktype">
 					<select name="type">
@@ -34,7 +34,7 @@
 					<textarea rows="6" placeholder="请输入退款说明" maxlength="1000" id="data"></textarea>
 				</div>
 			</div>
-<!-- 			<div class="talktextarea">
+			<!-- 			<div class="talktextarea">
 				<label>上传凭证(选填)</label>
 				<div class="upimg ">
 					<ul id="ulelemss" class="clearfix">
@@ -42,7 +42,7 @@
 					</ul>
 				</div>
 			</div> -->
-			
+
 			<div class="paysuccess">
 				<div class="dbbtn">
 					<button type="button" class="mui-btn" onclick="mui.back();">取消</button>
@@ -53,24 +53,33 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			mui.init()
-			mui.plusReady(function () {
-			    var token = plus.storage.getItem('token');
-			    var self = plus.webview.currentWebview();
-			    var id = self.hid;
+			mui.init({
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var id = self.hid;
 				console.log(id)
 				mui("body").on('tap', '.refund', function() {
 					var reason = document.getElementById('data').value;
-					if(reason==""){
+					if (reason == "") {
 						mui.toast('请填写退款原因')
-					}else{
-						refund(token, id,reason)
+					} else {
+						refund(token, id, reason)
 					}
 				})
 			})
-			
+
 			//申请退款
-			function refund(token, id,reason) {
+			function refund(token, id, reason) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflContracts/refund",
@@ -86,7 +95,7 @@
 					},
 					data: {
 						'id': id,
-						'refundreason':reason
+						'refundreason': reason
 					},
 					success: function(data) {
 						console.log(data);

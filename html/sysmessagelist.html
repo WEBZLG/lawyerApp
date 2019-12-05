@@ -11,12 +11,14 @@
 	</head>
 	<body>
 		<div class="sysmessagelist" id="app">
-			<ul>
-				<li v-for="item in datadetails" :key='item.id' :mid="item.messageId" :id="item.id" :type="item.type">
-					<p><span class="dot"  v-if="item.status==1"></span>{{item.updateTime}}</p>
-					<p class="sysdesc">{{item.content}}</p>
-				</li>
-			</ul>
+			<div class="mui-scroll-wrapper" id="pullrefresh">
+				<ul class="mui-scroll">
+					<li v-for="item in datadetails" :key='item.id' :mid="item.messageId" :id="item.id" :type="item.type">
+						<p><span class="dot" v-if="item.status==1"></span>{{item.updateTime}}</p>
+						<p class="sysdesc">{{item.content}}</p>
+					</li>
+				</ul>
+			</div>
 			<div v-if="datadetails.length==0">
 				<p class="nodata">暂无系统消息</p>
 			</div>
@@ -26,50 +28,60 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			mui.init({
-				swipeBack: false //启用右滑关闭功能
-			}); 
+				swipeBack: false, //启用右滑关闭功能
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflChatContents/getSystemMessages",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					header: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-							options.datadetails = data.datas
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
+				getlist(token, 0, 10)
 			});
 			var options = new Vue({
 				el: '#app',
 				data: {
 					datadetails: [],
-					token: ''
+					token: '',
+					offset: 0,
+					limit: 10
 				}
 			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log('下')
+				setTimeout(function() {
+					getlist(options.token, 0, 10)
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				console.log('上')
+				options.limit = options.limit * 1 + 10;
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					getlist(options.token, options.offset, options.limit)
+				}, 1500);
+			}
 			mui('.sysmessagelist').on('tap', 'li', function() {
 				var mid = this.getAttribute('mid');
 				var type = this.getAttribute('type');
-				var  kid = this.getAttribute('id');
-				updatemes(options.token,kid)
+				var kid = this.getAttribute('id');
+				updatemes(options.token, kid)
 				console.log(mid, type)
 				switch (type) {
 					case "1":
@@ -236,7 +248,40 @@
 						break;
 				}
 			});
-			function updatemes(token,kid) {
+
+			function getlist(token, offset, limit) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflChatContents/getSystemMessagesLimit",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					header: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'offset': offset,
+						'limit': limit
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.datadetails = data.datas.data
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
+
+			function updatemes(token, kid) {
 				mui.ajax({
 					type: 'get',
 					url: baseurl + "client/mfflChatContents/updateMessageStatus",
@@ -251,12 +296,11 @@
 						'token': token
 					},
 					data: {
-						'id':kid
+						'id': kid
 					},
 					success: function(data) {
 						console.log(data);
-						if (data.errCode == 200) {
-						} else {
+						if (data.errCode == 200) {} else {
 							mui.toast(data.message)
 						}
 					},
