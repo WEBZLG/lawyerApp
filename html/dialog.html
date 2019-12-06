@@ -606,7 +606,7 @@
 						console.log(t);
 						if (status == 200) {
 							if (data.errCode == 200) {
-								var imgUrl = data.datas.med;
+								var imgUrl = data.datas;
 								mui.toast('发送成功');
 								var contentbox = document.getElementsByTagName('ul')[0];
 								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
