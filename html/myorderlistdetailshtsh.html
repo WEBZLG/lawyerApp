@@ -91,7 +91,10 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			mui.previewImage();
 			mui.init();
 			var channel = null;
 			mui.plusReady(function() {
@@ -224,7 +227,7 @@
 				})
 			});
 			(function($, doc) {
-				window.addEventListener('refresh', function(e) {
+				window.addEventListener('refreshes', function(e) {
 					//执行刷新
 					console.log("刷新父页面")
 					location.reload();

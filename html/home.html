@@ -14,7 +14,7 @@
 			<!-- 轮播 -->
 			<div class="banner">
 				<div class="mui-slider banner-slider">
-					<div class="mui-slider-group mui-slider-loop">
+					<div class="mui-slider-group">
 						<div class="mui-slider-item" v-for="item in bannerlist" :key="item"><a href="#"><img :src=imgurl+item.url /></a></div>
 					</div>
 				</div>
@@ -90,7 +90,7 @@
 					<div id="slider" class="mui-slider mui-sliders">
 						<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 							<div class="mui-scroll">
-								<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00" >
+								<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00">
 									推荐
 								</a>
 								<a class="mui-control-item navitem" :href="'#mm'+index" v-for="(item,index) in lawyertype" :key="item.id" :type='item.id'
@@ -132,12 +132,13 @@
 					data: {
 						lawyerlist: [],
 						lawyertype: {},
-						bannerlist:[]
+						bannerlist: []
 					},
 					methods: {
 
 					}
 				});
+				
 				mui.plusReady(function() {
 					var token = plus.storage.getItem('token');
 					console.log(token)
@@ -165,9 +166,9 @@
 						options.currentLawyerType = idx;
 						lawyerlist(token, options.lawyertype[idx].id, 10)
 					});
-					document.querySelector('.banner .mui-slider').addEventListener('slide', function(event) {
-						console.log(event.detail.slideNumber);
-					});
+					// document.querySelector('.banner .mui-slider').addEventListener('slide', function(event) {
+					// 	console.log(event.detail.slideNumber);
+					// });
 
 					mui('#sliderSegmentedControl').on('tap', 'a', function(e) {
 						var idx = e.target.attributes.idx.value;
@@ -263,6 +264,10 @@
 							console.log(data)
 							if (data.errCode == 200) {
 								options.bannerlist = data.datas;
+								var galleryban = mui('.banner-slider');
+								galleryban.slider({
+									interval: 2000 //自动轮播周期，若为0则不自动播放，默认为0；
+								});
 							} else {
 								mui.toast(data.message)
 							}

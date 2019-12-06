@@ -59,7 +59,7 @@
 				}]
 			});
 			(function($, doc) {
-				window.addEventListener('refresh', function(e) {
+				window.addEventListener('refreshes', function(e) {
 					//执行刷新
 					console.log("刷新父页面")
 					location.reload();
@@ -305,7 +305,7 @@
 					},
 					error: function(err) {
 						console.log(err)
-						mui.toast(err.response)
+						// mui.toast(err.response)
 					}
 				})
 			}

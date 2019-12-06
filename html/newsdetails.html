@@ -12,6 +12,22 @@
 			.mui-popover .mui-popover-arrow:after {
 				width: 0px;
 			}
+
+			.news-nav {
+				position: fixed;
+				left: 0;
+				right: 0;
+				top: 0;
+			}
+
+			.news-nav ul {
+				margin-top: 0;
+			}
+
+			#pullrefresh {
+				margin-top: 70px;
+				margin-bottom: 55px;
+			}
 		</style>
 	</head>
 	<body>
@@ -27,59 +43,63 @@
 					<li class="mytalks"><i class="n-iocn"><img src="../images/wdht.png"></i>我的话题</li>
 				</ul>
 			</div>
-			<div class="details-con">
-				<div class="mui-content promulgator">
-					<div class="user-info">
-						<div class="user-box">
-							<div class="user-head"><img :src=imgurl+datadetails.headImgUrl></div>
-							<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
-							<div class="user-name">{{datadetails.nickname}}</div>
-						</div>
-						<div class="hot-box">
-							<div class="hot-num">{{datadetails.updateTime}}</div>
-						</div>
-					</div>
-					<h4 class="news-title"><em>#{{datadetails.typeName}}#</em>{{datadetails.title}}</h4>
-					<div class="news-con">
-						<div class="news-text" dir="newcontent" v-html="datadetails.content"></div>
-					</div>
-					<div class="news-show" v-if="datadetails.imageUrl">
-						<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
-							<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
-						</div>
-					</div>
-				</div>
-				<div class="br">—— 用户回答 ——</div>
-				<div class="answer">
-					<div class="mui-content answer-item" v-for="(item,index) in otherdetails" :key="item.id">
-						<div class="user-info">
-							<div class="user-box">
-								<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
-								<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
-								<div class="user-name">{{item.nickname}}</div>
+			<div class="mui-scroll-wrapper" id="pullrefresh">
+				<div class="mui-scroll">
+					<div class="">
+						<div class="mui-content promulgator">
+							<div class="user-info">
+								<div class="user-box">
+									<div class="user-head"><img :src=imgurl+datadetails.headImgUrl></div>
+									<div class="user-type">{{datadetails.identity==0?"用户":"律师"}}</div>
+									<div class="user-name">{{datadetails.nickname}}</div>
+								</div>
+								<div class="hot-box">
+									<div class="hot-num">{{datadetails.updateTime}}</div>
+								</div>
 							</div>
-							<div class="hot-box">
-								<div class="hot-num">{{item.updateTime}}</div>
+							<h4 class="news-title"><em>#{{datadetails.typeName}}#</em>{{datadetails.title}}</h4>
+							<div class="news-con">
+								<div class="news-text" dir="newcontent" v-html="datadetails.content"></div>
+							</div>
+							<div class="news-show" v-if="datadetails.imageUrl">
+								<div class="news-img" v-for="imgitem in datadetails.imageUrl.split(';')" :key="imgitem">
+									<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+								</div>
 							</div>
 						</div>
-						<p class="answer-con" v-html="item.content"></p>
-						<div class="ans-action">
-							<div class="likebtn" :uid="item.id" :idx="index">
-								<div class="zan-icon" :class="[item.praiseType==1?'active':'']"></div>
-								<div class="hot-num">{{item.praise}}</div>
+						<div class="br">—— 用户回答 ——</div>
+						<div class="answer">
+							<div class="mui-content answer-item" v-for="(item,index) in otherdetails" :key="item.id">
+								<div class="user-info">
+									<div class="user-box">
+										<div class="user-head"><img :src=imgurl+item.headImgUrl></div>
+										<div class="user-type">{{item.identity==0?"用户":"律师"}}</div>
+										<div class="user-name">{{item.nickname}}</div>
+									</div>
+									<div class="hot-box">
+										<div class="hot-num">{{item.updateTime}}</div>
+									</div>
+								</div>
+								<p class="answer-con" v-html="item.content"></p>
+								<div class="ans-action">
+									<div class="likebtn" :uid="item.id" :idx="index">
+										<div class="zan-icon" :class="[item.praiseType==1?'active':'']"></div>
+										<div class="hot-num">{{item.praise}}</div>
+									</div>
+									<div class="dislikebtn" :uid="item.id" :idx="index">
+										<div class="low-icon" :class="[item.treadType==1?'active':'']"></div>
+										<div class="hot-num">{{item.tread}}</div>
+									</div>
+									<div class="addtalk" :uid="item.id" :idx="index">
+										<div class="talk-icon"></div>
+										<div class="hot-num">{{item.number}}</div>
+									</div>
+								</div>
 							</div>
-							<div class="dislikebtn" :uid="item.id"  :idx="index">
-								<div class="low-icon" :class="[item.treadType==1?'active':'']"></div>
-								<div class="hot-num">{{item.tread}}</div>
-							</div>
-							<div class="addtalk" :uid="item.id"  :idx="index">
-								<div class="talk-icon"></div>
-								<div class="hot-num">{{item.number}}</div>
+							<div class="nodata" v-if="otherdetails.length==0">
+								<p>暂无用户回答</p>
 							</div>
 						</div>
-					</div>
-					<div class="nodata" v-if="otherdetails.length==0">
-						<p>暂无用户回答</p>
 					</div>
 				</div>
 			</div>
@@ -101,12 +121,32 @@
 
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script>
+			mui.previewImage();
 			mui.init({
 				swipeBack: false,
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					}
+				}
 			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log('下')
+				setTimeout(function() {
+					getdetails(options.token, options.infoid);
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
 			// 获取传参
 			window.onload = function() {
 				mui.plusReady(function() {
@@ -129,13 +169,13 @@
 					mui("body").on("tap", ".likebtn", function() {
 						var uid = this.getAttribute("uid");
 						var idx = this.getAttribute("idx");
-						like(token, uid ,idx)
+						like(token, uid, idx)
 					})
 					//踩
 					mui("body").on("tap", ".dislikebtn", function() {
 						var uid = this.getAttribute("uid");
 						var idx = this.getAttribute("idx");
-						dislike(token, uid ,idx)
+						dislike(token, uid, idx)
 					})
 					mui("body").on('tap', '.addtalk', function() {
 						console.log("评论")
@@ -194,8 +234,8 @@
 					extras: {
 						// 打开页面的同时，向新页面传递数据。
 						informationId: options.infoid,
-						typeName:options.datadetails.typeName,
-						title:options.datadetails.title
+						typeName: options.datadetails.typeName,
+						title: options.datadetails.title
 					}
 				}, {
 					//标题栏的背景色和底边线配置
@@ -238,7 +278,7 @@
 							options.datadetails = data.datas.issuer;
 							options.otherdetails = data.datas.reply;
 
-						}else{
+						} else {
 							mui.toast(data.message);
 							mui.back();
 						}
@@ -270,11 +310,11 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							if(data.datas==1){
-								options.datadetails.collect=1;
+							if (data.datas == 1) {
+								options.datadetails.collect = 1;
 								mui.toast('收藏成功!')
-							}else{
-								options.datadetails.collect=0;
+							} else {
+								options.datadetails.collect = 0;
 								mui.toast('取消收藏!')
 							}
 						} else {
@@ -287,7 +327,7 @@
 				})
 			}
 			// 点赞
-			function like(token,uid,idx) {
+			function like(token, uid, idx) {
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflInformations/addCommend",
@@ -307,11 +347,11 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							if(data.datas==1){
-								options.otherdetails[idx].praise = options.otherdetails[idx].praise +1;
+							if (data.datas == 1) {
+								options.otherdetails[idx].praise = options.otherdetails[idx].praise + 1;
 								options.otherdetails[idx].praiseType = 1;
-							}else{
-								options.otherdetails[idx].praise = options.otherdetails[idx].praise -1;
+							} else {
+								options.otherdetails[idx].praise = options.otherdetails[idx].praise - 1;
 								options.otherdetails[idx].praiseType = 0;
 							}
 						} else {
@@ -325,7 +365,7 @@
 			}
 
 			// 踩
-			function dislike(token,uid,idx) {
+			function dislike(token, uid, idx) {
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflInformations/addTread",
@@ -345,11 +385,11 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							if(data.datas==1){
-								options.otherdetails[idx].tread = options.otherdetails[idx].tread +1;
+							if (data.datas == 1) {
+								options.otherdetails[idx].tread = options.otherdetails[idx].tread + 1;
 								options.otherdetails[idx].treadType = 1;
-							}else{
-								options.otherdetails[idx].tread = options.otherdetails[idx].tread -1;
+							} else {
+								options.otherdetails[idx].tread = options.otherdetails[idx].tread - 1;
 								options.otherdetails[idx].treadType = 0;
 							}
 						} else {
@@ -448,7 +488,7 @@
 			});
 
 
-			window.addEventListener('refresh', function(e) { //执行刷新
+			window.addEventListener('refreshes', function(e) { //执行刷新
 				location.reload();
 			});
 		</script>

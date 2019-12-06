@@ -136,7 +136,7 @@
 					</div>
 				</div>
 			</div>
-<!-- 			<div class="actionbox">
+			<!-- 			<div class="actionbox">
 				<div></div>
 				<div class="orderaction ">
 					<button type="button" class="mui-btn changebtn" :id='datadetails.id'>修改内容</button>
@@ -165,7 +165,10 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			mui.previewImage();
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');

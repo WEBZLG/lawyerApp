@@ -188,28 +188,14 @@
 		mui(".user-message").on("tap", "li", function() {
 			var sendId = this.getAttribute("sendId");
 			var newname = this.getAttribute("name");
-			mui.openWindowWithTitle({
+			mui.openWindow({
 				url: "dialog.html",
 				id: "dialog.html",
 				styles: {},
 				extras: {
 					// 打开页面的同时，向新页面传递数据。
 					sendId: sendId,
-				}
-			}, {
-				//标题栏的背景色和底边线配置
-				backgroundColor: "#ffffff",
-				//bottomBorderColor:"#00ff00",
-				title: {
-					//标题文字的内容和样式配置
-					text: newname,
-					whiteSpace: "normal"
-				},
-				back: {
-					image: {
-						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-						imgSrc: "../images/left-icon.png"
-					}
+					name:newname
 				}
 			})
 		});

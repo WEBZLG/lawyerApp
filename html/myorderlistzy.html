@@ -121,9 +121,9 @@
 				options.token = token;
 				datalist(token, 0, 10);
 				mui('body').on('tap', '.cancelbtn', function() {
+					var id = this.getAttribute('id');
 					var btnArray = ['是', '否'];
 					mui.confirm('确定取消发布?', '', btnArray, function(e) {
-						var id = this.getAttribute('id');
 						cancel(token, id);
 					})
 				});

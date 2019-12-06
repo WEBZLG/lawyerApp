@@ -121,7 +121,7 @@
 									<!-- <i>12</i> -->
 								</div>
 							</div>
-							<div class="databox dialog"  :sendId="item.userinfo.id" :name="item.userinfo.nickname">
+							<div class="databox dialog" :sendId="item.userinfo.id" :name="item.userinfo.nickname">
 								<div class="dataicon"><img src="../images/Consultation1.png"></div>
 								<div>咨询</div>
 							</div>
@@ -156,7 +156,10 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.zoom.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.previewimage.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
+			mui.previewImage();
 			mui.init();
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
@@ -230,7 +233,7 @@
 									//bottomBorderColor:"#00ff00",
 									title: {
 										//标题文字的内容和样式配置
-										text: newname + "("+data.datas.timeRemaining+")",
+										text: newname + "(" + data.datas.timeRemaining + ")",
 										whiteSpace: "normal"
 									},
 									back: {
@@ -388,7 +391,7 @@
 						// 打开页面的同时，向新页面传递数据。
 						qid: qid,
 						info: info,
-						ansid : ansid
+						ansid: ansid
 					}
 				}, {
 					//标题栏的背景色和底边线配置

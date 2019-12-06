@@ -12,7 +12,7 @@
 		<style type="text/css">
 			#container {
 				position: absolute;
-				top: 0;
+				top: 60px;
 				left: 0;
 				right: 0;
 				bottom: 0;
@@ -163,11 +163,36 @@
 				position: relative;
 				display: block;
 			}
+			.dialogback {
+				height: 24px;
+				width: 24px;
+				margin-left: 10px;
+			}
+			
+			.deleteword {
+				height: 18px;
+				width: 18px;
+				margin-right: 15px;
+			}
+			
+			#time {
+				margin-top: 4px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div id="app">
+			<div class="dialogtitle">
+				<div class="dialogback" onclick="mui.back();"><img src="../images/left-icon.png"></div>
+				<div>
+					<h4 id="title"></h4>
+					<p id="time" class="bluecolor"></p>
+				</div>
+				<div class="deleteword">
+					<!-- <img src="../images/del.png" > -->
+				</div>
+			</div>
 			<div id="container">
 				<div id="wordlist" class="content">
 					<ul class="mui-scroll clearfix" id="ul">
@@ -219,7 +244,8 @@
 				var token = plus.storage.getItem('token');
 				var self = plus.webview.currentWebview();
 				var sendId = self.sendId;
-				var usetime = self.usetime;
+				console.log(sendId)
+				var name = self.name;
 				var userinfo = plus.storage.getItem('userinfo');
 				options.userinfo = JSON.parse(userinfo);
 				options.sendId = sendId;
@@ -232,6 +258,7 @@
 				mui("body").on("tap", "#btnbuy", function() {
 					order(token, options.lawyerId)
 				});
+				document.getElementById('title').innerText = name;
 			});
 
 			var options = new Vue({
@@ -371,20 +398,24 @@
 						if (data.errCode == 200) {
 							options.showtime = data.datas.timeRemaining;
 							options.usetime = data.datas.firstTime;
+							console.log(data.datas.firstTime)
+							var firstTime = data.datas.firstTime;
 							options.lawyerId = data.datas.lawyerId;
-							var wv = plus.webview.currentWebview();
-							wv.setStyle({
-								titleNView: {
-									titleText: options.showtime,
-									titleColor: '#2E82FF',
-								}
-							})
 							if (data.datas.firstTime == 0) {
 								document.getElementById('actionbuy').classList.remove("mui-hidden");
 								document.getElementById('action').classList.add('mui-hidden')
 							} else {
 								document.getElementById('action').classList.remove("mui-hidden");
 								document.getElementById('actionbuy').classList.add('mui-hidden')
+								var timeset = setInterval(function() {
+									if (firstTime < 1) {
+										clearInterval(timeset)
+									} else {
+										formatTime(firstTime);
+										firstTime = firstTime - 1;
+										document.getElementById('time').innerText = formatTime(firstTime);
+									}
+								}, 1000)
 							}
 						} else {
 							mui.toast(data.message)
@@ -394,6 +425,15 @@
 						console.log(err)
 					}
 				})
+			}
+			
+			
+			function formatTime(msTime) {
+				let day = Math.floor(msTime / 60 / 60 / 24);
+				let hour = Math.floor(msTime / 60 / 60) % 24;
+				let minute = Math.floor(msTime / 60) % 60;
+				let second = Math.floor(msTime) % 60;
+				return `${day}天${hour}时${minute}分${second}秒`
 			}
 			// 发送信息
 			function sendmsg(token, rid, content) {
@@ -563,10 +603,10 @@
 					function(t, status) { //上传完成
 						plus.nativeUI.closeWaiting();
 						var data = JSON.parse(t.responseText);
-						console.log(data);
+						console.log(t);
 						if (status == 200) {
 							if (data.errCode == 200) {
-								var imgUrl = data.datas.max;
+								var imgUrl = data.datas.med;
 								mui.toast('发送成功');
 								var contentbox = document.getElementsByTagName('ul')[0];
 								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
