@@ -27,6 +27,13 @@
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script>
+			(function($, doc) {
+				window.addEventListener('refreshes', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
 			mui.init({
 				swipeBack: false, //启用右滑关闭功能
 				pullRefresh: {

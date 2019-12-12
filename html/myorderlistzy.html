@@ -24,14 +24,10 @@
 									<p>{{item.payMerchantNumber}}</p>
 								</div>
 								<em class="orangecolor">悬赏{{item.money}}元</em>
-								<div class="orderstatus orangecolor" v-if="item.state==0">发布成功</div>
-								<div class="orderstatus orangecolor" v-if="item.state==1">已接单</div>
-								<div class="orderstatus orangecolor" v-if="item.state==2">拒绝接单</div>
-								<div class="orderstatus orangecolor" v-if="item.state==3">已发货</div>
-								<div class="orderstatus orangecolor" v-if="item.state==4">完成交易</div>
-								<div class="orderstatus orangecolor" v-if="item.state==5">已撤销订单</div>
-								<div class="orderstatus orangecolor" v-if="item.state==6">超时接单撤销,自动退款</div>
-								<div class="orderstatus orangecolor" v-if="item.state==7">已退款</div>
+								<div class="orderstatus orangecolor" v-if="item.tradingState==0">未完成</div>
+								<div class="orderstatus orangecolor" v-if="item.tradingState==1">完成</div>
+								<div class="orderstatus orangecolor" v-if="item.tradingState==3">取消发布</div>
+								<div class="orderstatus orangecolor" v-if="item.tradingState==4">超时退款</div>
 							</div>
 							<div class="orderquestion">
 								<label>问题内容</label>

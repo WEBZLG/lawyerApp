@@ -163,6 +163,7 @@
 							if (data.errCode == 200) {
 								mui.toast('登录成功!')
 								plus.storage.setItem('token', data.datas.token);
+								plus.storage.setItem('loginTime', data.datas.loginTime);
 								var userinfo = JSON.stringify(data.datas.userInfo)
 								plus.storage.setItem('userinfo', userinfo);
 								plus.Push.getRegistrationID(function(res) {

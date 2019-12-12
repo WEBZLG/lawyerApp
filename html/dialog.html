@@ -10,13 +10,13 @@
 		<link rel="stylesheet" href="../css/mui.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
 		<style type="text/css">
-			#container {
+			/* 			#container {
 				position: absolute;
 				top: 60px;
 				left: 0;
 				right: 0;
 				bottom: 0;
-			}
+			} */
 
 			.header {
 				background: #000;
@@ -37,6 +37,7 @@
 				align-items: center;
 				padding: 10px 15px;
 				background-color: #F0F0F0;
+				z-index: 999;
 			}
 
 
@@ -70,14 +71,9 @@
 			}
 
 			.content {
-				font-size: 12px;
-				overflow: auto;
-				padding: 5px;
-				position: absolute !important;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 82px;
+				margin-top: 65px;
+				margin-bottom: 65px;
+				padding: 10px;
 			}
 
 			.content li {
@@ -87,7 +83,7 @@
 			}
 
 			.content li img {
-				float: left;
+				/* float: left; */
 			}
 
 			.content li span {
@@ -96,8 +92,8 @@
 				float: left;
 				margin: 6px 10px 0 10px;
 				max-width: 260px;
-				border: 1px solid #ccc;
-				box-shadow: 0 0 3px #ccc;
+				/* border: 1px solid #ccc; */
+				/* box-shadow: 0 0 3px #ccc; */
 				word-break: break-all;
 			}
 
@@ -159,24 +155,30 @@
 				background-color: #fff;
 				-webkit-appearance: none;
 			}
-			.mui-scroll{
+
+			.mui-scroll {
 				position: relative;
 				display: block;
 			}
+
 			.dialogback {
 				height: 24px;
 				width: 24px;
 				margin-left: 10px;
 			}
-			
+
 			.deleteword {
 				height: 18px;
 				width: 18px;
 				margin-right: 15px;
 			}
-			
+
 			#time {
 				margin-top: 4px;
+			}
+
+			.dialogimg {
+				width: 15%;
 			}
 		</style>
 	</head>
@@ -193,23 +195,30 @@
 					<!-- <img src="../images/del.png" > -->
 				</div>
 			</div>
-			<div id="container">
-				<div id="wordlist" class="content">
+
+			<div id="wordlist" class="content">
+				<div class="mui-scroll-wrapper" id="pullrefresh">
 					<ul class="mui-scroll clearfix" id="ul">
 						<li v-for="item in datalist" :key="item.id">
-							<div v-if="item.identity==0&&item.state==0"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span class="spanright">{{item.content}}</span></div>
-							<div v-if="item.identity==0&&item.state==1"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span class="imgright">
-									<img :src=imgurl+item.content></span></div>
-							<div v-if="item.identity==1&&item.state==0"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="spanleft">{{item.content}}</span></div>
-							<div v-if="item.identity==1&&item.state==1"  class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span class="imgleft"><img
-									 :src=imgurl+item.content></span></div>
+							<div v-if="item.identity==0&&item.state==0" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span
+								 class="spanright">{{item.content}}</span></div>
+							<div v-if="item.identity==0&&item.state==1" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span
+								 class="imgright"><img :src=imgurl+item.content></span></div>
+							<div v-if="item.identity==0&&item.state==2" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgright"><span
+								 class="imgright"><img class="dialogimg fr" src="../images/labaright.png" :url=imgurl+item.content></span></div>
+							<div v-if="item.identity==1&&item.state==0" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span
+								 class="spanleft">{{item.content}}</span></div>
+							<div v-if="item.identity==1&&item.state==1" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span
+								 class="imgleft"><img :src=imgurl+item.content></span></div>
+							<div v-if="item.identity==1&&item.state==2" class="clearfix"><img :src=imgurl+item.headImgUrl class="imgleft"><span
+								 class="imgleft"><img class="dialogimg" src="../images/labaleft.png" :url=imgurl+item.content></span></div>
 						</li>
 					</ul>
 				</div>
 				<div class="footer" id="action">
 					<div id="user_face_icon" onclick="btn_toggle();"><img src="../images/yuyin1.png" alt=""></div>
 					<input id="text" type="text" placeholder="说点什么吧...">
-					<button id="btnsay" class="mui-hidden" type="button" ontouchstart="return false;">按住说话</button>
+					<button id="btnsay" class="mui-hidden">按住说话</button>
 					<span id="btn" class="mui-hidden">发送</span>
 					<div id="user_add_icon"><img src="../images/+1.png" alt=""></div>
 				</div>
@@ -225,8 +234,30 @@
 			mui.init({
 				beforeback: function() {
 					closed(options.token, options.sendId)
+				},
+				gestureConfig: {
+					longtap: true,
+					hold: true,
+					releaase: true
+				},
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					}
 				}
 			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					getlist(options.token, 0, options.limit)
+					options.limit = options.limit + 20;
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
 			var channel = null;
 			mui.plusReady(function() {
 				// 获取支付通道
@@ -259,6 +290,85 @@
 					order(token, options.lawyerId)
 				});
 				document.getElementById('title').innerText = name;
+				//开启长按、释放功能
+				var r;
+				var voiceTime;
+				//按住录音
+				mui('body').on('hold', '#btnsay', function() {
+					this.innerHTML = '请说话'
+					r = plus.audio.getRecorder(); //录音对象
+					if (r == null) {
+						mui.alert("调用麦克风失败！", "提示信息", "关闭", null);
+						return;
+					}
+					voiceTime = (new Date()).valueOf();
+					var voicePath = "_doc/audio/";
+					r.record({
+						format: "amr",
+						filename: voicePath,
+						samplerate: 16000
+					}, function(path) {
+						//录音成功回调
+						plus.io.resolveLocalFileSystemURL(path, function(entry) {
+							var url = baseurl + "client/mfflChatContents/sendMessageMP3";
+							var task = plus.uploader.createUpload(url, {
+								method: "POST"
+							}, function(t, status) {
+								if (status == 200) {
+									var dataJson = JSON.parse(t.responseText);
+									console.log(dataJson)
+									//语音解析成功
+									if (dataJson.errCode == "200") {
+										var contentbox = document.getElementsByTagName('ul')[0];
+										contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
+											'" class="imgright"><span class="imgright"><img class="dialogimg fr" src="../images/labaright.png" url=' +
+											imgurl + dataJson.datas + '></span></li>';
+									} else {
+										mui.alert("语音解析失败:" + dataJson.data, "系统错误", "关闭", false);
+									}
+								} else {
+									mui.alert(status + ":语音解析失败！", "系统错误", "关闭", false);
+								}
+							});
+							task.setRequestHeader('token', options.token);
+							task.addData('receiveId', options.sendId)
+							task.addFile(path, {
+								key: "file"
+							});
+							task.start();
+						});
+
+					}, function(e) {
+						//录音错误回调
+						console.log(e)
+						mui.alert("录音失败！", "提示信息", "关闭", null);
+						return;
+					});
+				})
+
+				mui('body').on('tap', '.dialogimg', function() {
+					var url = this.getAttribute('url');
+					console.log(url)
+					s = plus.audio.createPlayer(url);
+					s.play(function(msg) { //播放完成回调 
+					}, function(e) { //失败回调 
+						console.log(e)
+						alert("Audio play error: " + e.message);
+					});
+				})
+				//释放
+				mui('body').on('release', '#btnsay', function(e) {
+					this.innerHTML = '按住说话'
+					var timeNow = (new Date()).valueOf();
+					if ((parseInt(timeNow) - parseInt(voiceTime)) >= 2000) {
+						//停止录音
+						if (r != null) {
+							r.stop();
+						}
+					} else {
+						mui.toast('录音不足2秒，请重新录入！');
+					}
+				});
 			});
 
 			var options = new Vue({
@@ -270,78 +380,13 @@
 					userinfo: '',
 					usetime: '',
 					showtime: '',
-					lawyerId: ''
-				},
-				methods: {
-					gohome: function() {
-
-					}
+					lawyerId: '',
+					offset: 0,
+					limit: 20
 				}
+	
 			});
-			//开启长按、释放功能
-			var r;
-			var voiceTime;
-			//按住录音
-			document.getElementById("btnsay").addEventListener("hold", function() {
-				console.log(this)
-				this.innerHTML = '请说话'
-				r = plus.audio.getRecorder(); //录音对象
-				if (r == null) {
-					mui.alert("调用麦克风失败！", "提示信息", "关闭", null);
-					return;
-				}
-				voiceTime = (new Date()).valueOf();
-				var voicePath = "_doc/audio/";
-				r.record({
-					filename: voicePath,
-					samplerate: 16000
-				}, function(path) {
-					//录音成功回调
-					// mui.showLoading("正在提交..","div");
-					plus.io.resolveLocalFileSystemURL(path, function(entry) {
-						console.log(entry)
 
-						// var url = jsonp_url + "sys/MobileWays/recVoice?&mobileLogin=true";
-						// var task=plus.uploader.createUpload(url,{method:"POST"},function(t,status){
-						// 	mui.hideLoading();
-						// 	if(status == 200){
-						// 		var dataJson=JSON.parse(t.responseText);
-						// 		//语音解析成功
-						// 		if(dataJson.result == "1"){
-						// 			mui.alert("识别结果:" + dataJson.data,"信息提示","关闭",function(){
-
-						// 			});
-						// 		}else{
-						// 			mui.alert("语音解析失败:" + dataJson.data,"系统错误","关闭",false);
-						// 		}
-						// 	}else{
-						// 		mui.alert(status + ":语音解析失败！","系统错误","关闭",false); 
-						// 	}
-						// });
-						// task.addFile(path,{key:"file"});
-						// task.start();
-					});
-
-				}, function(e) {
-					//录音错误回调
-					mui.alert("录音失败！" + e.message, "提示信息", "关闭", null);
-					return;
-				});
-			})
-
-			//释放
-			document.getElementById("btnsay").addEventListener("release", function() {
-				this.innerHTML = '按住说话'
-				var timeNow = (new Date()).valueOf();
-				if ((parseInt(timeNow) - parseInt(voiceTime)) >= 2000) {
-					//停止录音
-					if (r != null) {
-						r.stop();
-					}
-				} else {
-					mui.toast('录音不足2秒，请重新录入！');
-				}
-			})
 
 			function btn_toggle() {
 				var sh = document.getElementById('btnsay').classList.contains('mui-hidden');
@@ -426,8 +471,18 @@
 					}
 				})
 			}
-			
-			
+			// 极光推送监听
+			var receiveNotification = function(event) {
+				var content;
+				if (plus.os.name == 'iOS') {
+					content = window.plus.Push.receiveNotification.aps.alert;
+				} else {
+					content = window.plus.Push.receiveNotification.alert;
+				}
+				getlist(options.token, options.id)
+				console.log(content)
+			}
+
 			function formatTime(msTime) {
 				let day = Math.floor(msTime / 60 / 60 / 24);
 				let hour = Math.floor(msTime / 60 / 60) % 24;
@@ -525,7 +580,8 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							options.datalist = data.datas.data
+							options.datalist = data.datas.data;
+							// mui('#ul').scroll().scrollToBottom(500);
 						} else {
 							mui.toast(data.message)
 						}

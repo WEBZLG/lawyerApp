@@ -221,13 +221,14 @@
 				var timestamp = (new Date()).getTime();
 				console.log(timestamp); //打印当前时间戳
 				var time = document.getElementsByName("time")[0];
-				if (time.value == '1') {
-					options.time = timestamp * 1 + 24 * 60 * 60 * 1000
-				} else if (time.value == '2') {
-					options.time = timestamp * 1 + 48 * 60 * 60 * 1000
-				} else if (time.value == '3') {
-					options.time = timestamp * 1 + 72 * 60 * 60 * 1000
-				}
+				options.time = time.value;
+				// if (time.value == '1') {
+				// 	options.time = timestamp * 1 + 24 * 60 * 60 * 1000
+				// } else if (time.value == '2') {
+				// 	options.time = timestamp * 1 + 48 * 60 * 60 * 1000
+				// } else if (time.value == '3') {
+				// 	options.time = timestamp * 1 + 72 * 60 * 60 * 1000
+				// }
 			}
 			// 获取咨詢类型
 			function getnewtype(token) {
