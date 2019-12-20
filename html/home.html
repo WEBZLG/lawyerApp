@@ -10,109 +10,220 @@
 		<link rel="stylesheet" type="text/css" href="../css/style.css" />
 	</head>
 	<body>
-		<div class="mui-content" id="app">
+		<div class="" id="app">
 			<!-- 轮播 -->
 			<div class="banner">
-				<div class="mui-slider banner-slider">
-					<div class="mui-slider-group">
+				<div class="mui-slider banner-slider" id="ban">
+					<div class="mui-slider-group mui-slider-loop">
+						<div class="mui-slider-item mui-slider-item-duplicate" v-if="bannerlist!== undefined &&bannerlist.length>0"><a
+							 href="#"><img :src=imgurl+bannerlist[bannerlist.length-1].url /></a></div>
 						<div class="mui-slider-item" v-for="item in bannerlist" :key="item"><a href="#"><img :src=imgurl+item.url /></a></div>
+						<div class="mui-slider-item mui-slider-item-duplicate" v-if="bannerlist!== undefined &&bannerlist.length>0"><a
+							 href="#"><img :src=imgurl+bannerlist[0].url /></a></div>
 					</div>
 				</div>
 			</div>
-			<!-- 咨询律师 -->
-			<div class="lawyer-list">
-				<div class="pub-sm-title">
-					<div class="vertical-line">咨询律师</div>
-					<!-- <a href="#" class="view-more ">更多</a> -->
-				</div>
-				<div class="type-list">
-					<ul id="type-list">
-						<li>
-							<a href="javascript:void(0)" class="mfzx">
-								<div class="type-icon"><img src="../images/1.png"></div>
-								<h4 class="type-title">免费咨询</h4>
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<div class="type-icon"><img src="../images/2.png"></div>
-								<h4 class="type-title">专业咨询</h4>
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<div class="type-icon"><img src="../images/3.png"></div>
-								<h4 class="type-title">找律师</h4>
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<div class="type-icon"><img src="../images/4.png"></div>
-								<h4 class="type-title">律师函件</h4>
-						</li>
-						<li>
-							<a href="#">
-								<div class="type-icon"><img src="../images/5.png"></div>
-								<h4 class="type-title">合同审核</h4>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<!-- 热门咨询 -->
-			<div class="hot-list">
-				<div class="pub-sm-title">
-					<div class="vertical-line">热门咨询</div>
-					<a href="javascript:void(0)" class="view-more hot-more">更多</a>
-				</div>
-				<div class="hot-type">
-					<div class="type-box">
-						<a href="#" typeid="2" title='婚姻家庭'><img src="../images/hunyin.png"></a>
-						<a href="#" typeid="1" title='劳动人事'><img src="../images/laodong.png"></a>
+			<div class="mui-content">
+				<!-- 咨询律师 -->
+				<div class="lawyer-list">
+					<div class="pub-sm-title">
+						<div class="vertical-line">常用工具<span class="left-notice">(左滑更多)</span></div>
+						<!-- <a href="#" class="view-more ">更多</a> -->
 					</div>
-					<div class="type-box">
-						<a href="#" typeid="10" title='合同纠纷'><img src="../images/hetong.png"></a>
-						<a href="#" typeid="7" title='交通事故'><img src="../images/jiaotong.png"></a>
-					</div>
-					<div class="type-box">
-						<a href="#" typeid="4" title='房产土地'><img src="../images/fangchan.png"></a>
-						<a href="#" typeid="3" title='债券债务'><img src="../images/zhaiwu.png"></a>
-					</div>
-				</div>
-			</div>
-			<!-- 推荐律师 -->
-			<div class="recommend-list">
-				<div class="pub-sm-title">
-					<div class="vertical-line">推荐律师</div>
-					<a href="javascript:void(0)" class="view-more" id="tj-more">更多</a>
-				</div>
-				<div class="recom-tab">
-					<div id="slider" class="mui-slider mui-sliders">
-						<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-							<div class="mui-scroll">
-								<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00">
-									推荐
-								</a>
-								<a class="mui-control-item navitem" :href="'#mm'+index" v-for="(item,index) in lawyertype" :key="item.id" :type='item.id'
-								 :idx="index">
-									{{item.name}}
-								</a>
+					<div class="type-list">
+						<div class="mui-slider banner-slider" style="height: 96px;">
+							<div class="mui-slider-group">
+								<div class="mui-slider-item">
+									<ul id="type-list">
+										<li>
+											<a href="javascript:void(0)" class="mfzx">
+												<div class="type-icon"><img src="../images/1.png"></div>
+												<h4 class="type-title">免费咨询</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/2.png"></div>
+												<h4 class="type-title">专业咨询</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/3.png"></div>
+												<h4 class="type-title">找律师</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/4.png"></div>
+												<h4 class="type-title">律师函件</h4>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/5.png"></div>
+												<h4 class="type-title">合同审核</h4>
+											</a>
+										</li>
+									</ul>
+								</div>
+								<div class="mui-slider-item">
+									<ul id="type-list">
+										<li>
+											<a href="javascript:void(0)" class="mfzx">
+												<div class="type-icon"><img src="../images/6.png"></div>
+												<h4 class="type-title">司考在线</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/7.png"></div>
+												<h4 class="type-title">普法宣传</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/8.png"></div>
+												<h4 class="type-title">案例分析</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/9.png"></div>
+												<h4 class="type-title">法规法条</h4>
+										</li>
+										<li>
+											<a href="#">
+												<div class="type-icon"><img src="../images/10.png"></div>
+												<h4 class="type-title">学科建设</h4>
+											</a>
+										</li>
+									</ul>
+								</div>
+								<div class="mui-slider-item">
+									<ul id="type-list">
+										<li>
+											<a href="javascript:void(0)" class="mfzx">
+												<div class="type-icon"><img src="../images/11.png"></div>
+												<h4 class="type-title">法智工具</h4>
+											</a>
+										</li>
+										<li>
+											<a href="#"></a>
+										</li>
+										<li>
+											<a href="#"></a>
+										</li>
+										<li>
+											<a href="#"></a>
+										</li>
+										<li>
+											<a href="#"></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="mui-slider-indicator" id="sliin">
+								<div class="mui-indicator mui-active"></div>
+								<div class="mui-indicator"></div>
+								<div class="mui-indicator"></div>
 							</div>
 						</div>
 					</div>
-					<div class="recom-box">
-						<div class="recom-item" v-for="item in lawyerlist" :key="item.id" :id="item.id">
-							<div class="head-img">
-								<img :src=imgurl+item.headImgUrl>
-							</div>
-							<div class="infor">
-								<div class="intro">
-									<p class="intro-name">{{item.nickname}}</p>
-									<p class="intro-city">{{item.areaName}}</p>
-									<p class="intro-company">{{item.lawfirm}}</p>
+				</div>
+				<!-- 热门咨询 -->
+				<div class="hot-list">
+					<div class="pub-sm-title">
+						<div class="vertical-line">热门咨询</div>
+						<a href="javascript:void(0)" class="view-more hot-more">更多</a>
+					</div>
+					<div class="hot-type">
+						<div class="type-box">
+							<a href="#" typeid="2" title='婚姻家庭'><img src="../images/hunyin.png"></a>
+							<a href="#" typeid="1" title='劳动人事'><img src="../images/laodong.png"></a>
+						</div>
+						<div class="type-box">
+							<a href="#" typeid="10" title='合同纠纷'><img src="../images/hetong.png"></a>
+							<a href="#" typeid="7" title='交通事故'><img src="../images/jiaotong.png"></a>
+						</div>
+						<div class="type-box">
+							<a href="#" typeid="4" title='房产土地'><img src="../images/fangchan.png"></a>
+							<a href="#" typeid="3" title='债券债务'><img src="../images/zhaiwu.png"></a>
+						</div>
+					</div>
+				</div>
+				<!-- 推荐律师所 -->
+				<div class="bar-list">
+					<div class="pub-sm-title">
+						<div class="vertical-line">推荐律师所</div>
+						<a href="javascript:void(0)" class="view-more" id="tjs-more">更多</a>
+					</div>
+					<div class="recom-tab">
+						<div id="slider" class="mui-slider mui-sliders">
+							<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+								<div class="mui-scroll">
+									<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00">
+										推荐
+									</a>
+									<a class="mui-control-item navitem" :href="'#mm'+index" v-for="(item,index) in lawyertype" :key="item.id"
+									 :type='item.id' :idx="index">
+										{{item.name}}
+									</a>
 								</div>
-								<div class="tags">
-									<span class="tag" v-for="tag in item.fieldList" :key="tag">{{tag}}</span>
+							</div>
+						</div>
+						<div class="lawfirm">
+							<div class="recom-item" v-for="item in barlist" :key="item.id" :id="item.id">
+								<div class="head-img">
+									<img :src=imgurl+item.logo>
+								</div>
+								<div class="infor">
+									<div class="intro">
+										<p class="intro-name">{{item.name}}</p>
+										<p class="intro-city">{{item.areaname}}</p>
+										<p class="intro-company">{{item.lawfirm}}</p>
+									</div>
+									<div class="tags">
+										<span class="tag" v-for="tag in (item.field||'').split(',')" :key="tag">{{tag}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 推荐律师 -->
+				<div class="recommend-list">
+					<div class="pub-sm-title">
+						<div class="vertical-line">推荐律师</div>
+						<a href="javascript:void(0)" class="view-more" id="tj-more">更多</a>
+					</div>
+					<div class="recom-tab">
+						<div id="slider" class="mui-slider mui-sliders">
+							<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+								<div class="mui-scroll">
+									<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00">
+										推荐
+									</a>
+									<a class="mui-control-item navitem" :href="'#mm'+index" v-for="(item,index) in lawyertype" :key="item.id"
+									 :type='item.id' :idx="index">
+										{{item.name}}
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="recom-box">
+							<div class="recom-item" v-for="item in lawyerlist" :key="item.id" :id="item.id">
+								<div class="head-img">
+									<img :src=imgurl+item.headImgUrl>
+								</div>
+								<div class="infor">
+									<div class="intro">
+										<p class="intro-name">{{item.nickname}}</p>
+										<p class="intro-city">{{item.areaName}}</p>
+										<p class="intro-company">{{item.lawfirm}}</p>
+									</div>
+									<div class="tags">
+										<span class="tag" v-for="tag in item.fieldList" :key="tag">{{tag}}</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -132,13 +243,17 @@
 					data: {
 						lawyerlist: [],
 						lawyertype: {},
-						bannerlist: []
+						bannerlist: [],
+						barlist: []
 					},
-					methods: {
-
+					updated: function() {
+						var sliderMuiObj = mui("#ban"); //滑动科目 
+						sliderMuiObj.slider({
+							interval: 2000 //如果你想自动3000ms滑动一下就写上这个。
+						});
 					}
 				});
-				
+
 				mui.plusReady(function() {
 					var token = plus.storage.getItem('token');
 					console.log(token)
@@ -146,6 +261,7 @@
 					banner(token);
 					lawyerlist(token, 0, 10);
 					tjlawyerlist(token);
+					barlist(token);
 					// document.querySelector('.mui-sliders').addEventListener('slide', function(event) {
 					// 	var idx = event.detail.slideNumber;
 					// 	console.log(idx)
@@ -183,6 +299,7 @@
 							id: "lawyerlis.html",
 							styles: {
 								top: "-44px",
+								bottom: '0px',
 								titleNView: {
 									buttons: [{
 										autoBackButton: true,
@@ -259,15 +376,13 @@
 							'contentType': "application/x-www-form-urlencoded",
 							'token': token
 						},
-						data: {},
+						data: {
+							'advertisingType': 0
+						},
 						success: function(data) {
 							console.log(data)
 							if (data.errCode == 200) {
 								options.bannerlist = data.datas;
-								var galleryban = mui('.banner-slider');
-								galleryban.slider({
-									interval: 2000 //自动轮播周期，若为0则不自动播放，默认为0；
-								});
 							} else {
 								mui.toast(data.message)
 							}
@@ -332,12 +447,44 @@
 						data: {
 							'keyword': '',
 							'offset': 0,
-							'limit': 20,
+							'limit': 5,
 						},
 						success: function(data) {
 							console.log(data)
 							if (data.errCode == 200) {
 								options.lawyerlist = data.datas.data;
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				}
+				// 律所列表
+				function barlist(token) {
+					mui.ajax({
+						type: 'get',
+						url: baseurl + "client/mfflLawfirms",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': token
+						},
+						data: {
+							'offset': 0,
+							'limit': 5
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								options.barlist = data.datas.data;
 							} else {
 								mui.toast(data.message)
 							}
@@ -382,7 +529,6 @@
 				});
 				// 律师详情
 				mui(".recom-box").on("tap", ".recom-item", function() {
-					console.log(222)
 					var lawyerid = this.getAttribute('id');
 					mui.openWindowWithTitle({
 						url: "lawyerdetails.html",
@@ -399,6 +545,36 @@
 						title: {
 							//标题文字的内容和样式配置
 							text: "律师详情",
+							styles: {
+								color: "#fffff"
+							}
+						},
+						back: {
+							image: {
+								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+								imgSrc: "../images/wleft-icon.png"
+							}
+						}
+					})
+				});
+				// 律师所详情
+				mui(".lawfirm").on("tap", ".recom-item", function() {
+					var lawfirmrid = this.getAttribute('id');
+					mui.openWindowWithTitle({
+						url: "lawfirmdetails.html",
+						id: "lawfirmdetails.html",
+						styles: {},
+						extras: {
+							// 打开页面的同时，向新页面传递数据。
+							lawfirmrid: lawfirmrid
+						}
+					}, {
+						//标题栏的背景色和底边线配置
+						backgroundColor: "#267CFB",
+						bottomBorderColor: "#267CFB",
+						title: {
+							//标题文字的内容和样式配置
+							text: "律师所详情",
 							styles: {
 								color: "#fffff"
 							}

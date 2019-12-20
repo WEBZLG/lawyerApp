@@ -229,6 +229,7 @@
 		</div>
 		<script src="../js/mui.js"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init({
@@ -282,7 +283,7 @@
 				options.sendId = sendId;
 				options.token = token;
 				startTime(token, sendId)
-				getlist(token, sendId, 0, 100);
+				getlist(token, sendId, 0, 20);
 				mui("body").on("tap", "#user_add_icon", function() {
 					page.imgUp();
 				});
@@ -383,9 +384,29 @@
 					lawyerId: '',
 					offset: 0,
 					limit: 20
+				},
+				methods: {
+					keepMessageListOnButtom: function() {
+						var e = $('#ul');
+						e && (this.preScrollHeight - e[0].clientHeight - e[0].scrollTop < 20 ? (this.$nextTick(function() {
+							e.scrollTop(e[0].scrollHeight);
+							document.body.scrollTop = e[0].scrollHeight;
+						})) : this.preScrollHeight = e[0].scrollHeight)
+					}
+				},
+				updated: function() {
+					this.keepMessageListOnButtom();
+				},
+				mounted() {
+					// this.$nextTick(function() {
+					// 	var t = e.$refs["message-list"];
+					// 	t && (t.scrollTop = t.scrollHeight,
+					// 		e.preScrollHeight = t.scrollHeight,
+					// 		e.isShowScrollButtomTips = !1)
+					// })
 				}
-	
 			});
+
 
 
 			function btn_toggle() {
@@ -581,7 +602,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							options.datalist = data.datas.data;
-							// mui('#ul').scroll().scrollToBottom(500);
+							options.keepMessageListOnButtom();
 						} else {
 							mui.toast(data.message)
 						}

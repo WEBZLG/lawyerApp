@@ -27,6 +27,7 @@
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
 				var options = self.typeid;
+				console.log(self.typeid)
 				mui(".paysuccess").on("tap", ".vieworder", function() {
 					if (options == "0") {
 						mui.openWindowWithTitle({

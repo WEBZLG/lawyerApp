@@ -131,24 +131,29 @@
 					mydesc = document.getElementById('mydesc').value;
 					bzdesc = document.getElementById('bzdesc').value;
 					money = document.getElementsByClassName('pricenum')[0].innerText;
-					if(myname==''||myname2==''||othername==''||mycall==''||mydesc==''||money==''||options.type==''||options.yid==''){
+					if (myname == '' || myname2 == '' || othername == '' || mycall == '' || mydesc == '' || money == '' || options
+						.type == '' || options.yid == '' || options.yid == undefined) {
 						mui.toast('请完善律师函内容');
 						return false;
 					}
-					this.setAttribute('disabled','disabled');
-					for(var i=0;i<options.pubpath.length;i++){
-						upload(options.pubpath[i])
+					this.setAttribute('disabled', 'disabled');
+					if (options.pubpath.length == 0) {
+						publish(options.token);
+					} else {
+						for (var i = 0; i < options.pubpath.length; i++) {
+							upload(options.pubpath[i])
+						}
 					}
 				});
 				mui('body').on('tap', '.closeicon', function() {
 					var idx = this.index;
 					var list = document.getElementById('ulelem');
-					mui.confirm('确认删除此图片？','删除图片',['取消','确认'],function (e) {
-						if(e.index==1){
+					mui.confirm('确认删除此图片？', '删除图片', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
 							list.removeChild(list.childNodes[idx]);
 							options.pubpath = options.pubpath.splice(idx, 1)
 						}
-					},'div')
+					}, 'div')
 				})
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
@@ -232,7 +237,7 @@
 			function publish(token) {
 				mui.ajax({
 					type: 'post',
-					async:true,
+					async: true,
 					url: baseurl + "client/mfflLawyerletters",
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
@@ -262,7 +267,7 @@
 							// mui.back();
 							payfor(token, data.datas)
 						} else {
-						document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').removeAttribute('disabled');
 							mui.toast(data.message)
 						}
 					},
@@ -295,8 +300,8 @@
 						if (data.errCode == 200) {
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
-							paybacklsh(token, num)
-							document.getElementById('gobuy').setAttribute('disabled','');
+								paybacklsh(token, num)
+								document.getElementById('gobuy').removeAttribute('disabled');
 								console.log(result)
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -308,12 +313,12 @@
 								})
 							}, function(error) {
 								console.log(error)
-								document.getElementById('gobuy').setAttribute('disabled','');
+								document.getElementById('gobuy').removeAttribute('disabled');
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 
 						} else {
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').removeAttribute('disabled');
 							mui.toast(data.message)
 						}
 					},
@@ -480,7 +485,7 @@
 							}
 						} else {
 							mui.toast('上传失败');
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').removeAttribute('disabled');
 							wt.close();
 						}
 					}

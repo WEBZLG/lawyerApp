@@ -150,12 +150,10 @@
 					success: function(data) {
 						console.log(data)
 						if (data.errCode == 200) {
-							// mui.toast("评论成功！");
 							plus.payment.request(channel, data.datas, function(result) {
 								payback(token, ordernum)
-								mui.openWindow({
-									url: "paysuccess.html"
-								})
+								mui.toast('支付成功!')
+								mui.back();
 							}, function(error) {
 								console.log(error)
 								// plus.nativeUI.alert(JSON.stringify(error)); 

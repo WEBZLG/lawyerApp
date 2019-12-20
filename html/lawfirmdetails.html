@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>律师所详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="lawfirm-info" v-if="datalist">
+				<div class="circle-big">
+					<div class="circle-sm">
+						<div><img :src=imgurl+datalist.logo></div>
+					</div>
+				</div>
+				<h4>{{datalist.name}}</h4>
+			</div>
+			<div class="goodat detailsitem">
+				<div class="pubtitle-box">
+					<div class="pub-title">擅长领域</div>
+				</div>
+				<div class="tags mui-content">
+					<span class="tag" v-for="tag in (datalist.field||'').split(',')" :key="tag">{{tag}}</span>
+				</div>
+			</div>
+			<div class="normal-info">
+				<div class="pubtitle-box">
+					<div class="pub-title">基本信息</div>
+				</div>
+				<div class="list-info">
+					<div class="info-item">
+						<label>联系电话</label>
+						<span>{{datalist.phone}}</span>
+					</div>
+					<div class="info-item">
+						<label>联系地址</label>
+						<span>{{datalist.address}}</span>
+					</div>
+					<div class="info-item">
+						<label>执业证件号</label>
+						<span>{{datalist.licensenumber}}</span>
+					</div>
+					<div class="info-item">
+						<label>成立年限</label>
+						<span>{{datalist.yearsofestablishment}}</span>
+					</div>
+					<div class="info-item">
+						<label>主任律师</label>
+						<span>{{datalist.name}}</span>
+					</div>
+					<div class="info-item">
+						<label>注册资金</label>
+						<span>{{datalist.registeredcapital}}万</span>
+					</div>
+					<div class="info-item">
+						<label>入住律师人数</label>
+						<span class="bluecolor">{{datalist.numberoflawyers}}<i class="lawfirm-next"><img src="../images/next.png" ></i></span>
+					</div>
+					<div class="info-item">
+						<label>事务所简介</label>
+						<div class="lawfirm-desc">{{datalist.introduce}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="license">
+				<div class="pubtitle-box">
+					<div class="pub-title">营业执照</div>
+				</div>
+				<div class="">
+					<div class="zzimg" v-for="imgitem in (datalist.practisingcertificate||'').split(';')" :key="imgitem">
+						<img :src=imgurl+imgitem data-preview-src="" data-preview-group="1">
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var lawfirmrid = self.lawfirmrid;
+				lawfirmdetails(token, lawfirmrid);
+			});
+
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datalist: {},
+				},
+				methods: {
+
+				}
+			});
+			// 律师所详情
+			function lawfirmdetails(token, lawfirmrid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflLawfirms/"+lawfirmrid ,
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					// data:{
+					// 	'id':lawfirmrid
+					// },
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							options.datalist = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			};
+		</script>
+	</body>
+
+</html>

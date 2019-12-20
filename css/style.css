@@ -160,15 +160,15 @@ p {
 }
 
 /* 轮播 */
+.banner{
+	height: 165px;
+}
+
 .mui-content {
 	padding: 15px;
 	background-color: #FFFFFF;
 }
 
-.mui-slider {
-	border-radius: 10px;
-	overflow: hidden;
-}
 
 #__MUI_PREVIEWIMAGE.mui-slider {
 	border-radius: 0;
@@ -196,6 +196,9 @@ p {
 }
 
 /* 首页咨询律师 */
+.type-list {
+	position: relative;
+}
 .type-list ul {
 	display: flex;
 	align-items: center;
@@ -267,6 +270,11 @@ p {
 	width: 84px;
 	border-radius: 10px;
 	overflow: hidden;
+}
+
+.head-img img {
+	width: 100%;
+	height: 100%;
 }
 
 .infor {
@@ -1838,7 +1846,8 @@ input[type='text'] {
 	overflow: hidden;
 }
 
-.dot {
+.dot,
+.chatdot {
 	display: inline-block;
 	vertical-align: middle;
 	height: 5px;
@@ -1846,6 +1855,15 @@ input[type='text'] {
 	margin-right: 3px;
 	border-radius: 50%;
 	background-color: #DC4F51;
+}
+
+.chatdot {
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	z-index: 999;
+	top: 5px;
+	left: 5px;
 }
 
 .nickname input[type='text'] {
@@ -2160,4 +2178,85 @@ textarea {
 	right: 0;
 	z-index: 999;
 	background-color: #ffffff;
+}
+
+.left-notice {
+	color: #333333;
+	font-weight: 400;
+}
+
+.lawfirm-info {
+	height: 219px;
+	text-align: center;
+	color: #FFFFFF;
+	background: linear-gradient(180deg, rgba(38, 124, 251, 1), rgba(47, 172, 252, 1));
+}
+
+.lawfirm-info .circle-big {
+	margin-top: 50px;
+	background-color: #FFFFFF;
+}
+.lawfirm-info .circle-big img{
+	width: 100%;
+	height: 100%;
+}
+.normal-info {
+	background-color: #FFFFFF;
+	padding-bottom: 15px;
+}
+
+.list-info {
+	padding: 0 15px;
+}
+
+.info-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px 0;
+	border-bottom: 1px solid #dcdcdc;
+}
+
+.info-item:last-child {
+	border: none;
+	display: block;
+}
+
+.lawfirm-desc {
+	padding-top: 12px;
+	line-height: 22px;
+}
+
+.lawfirm-next {
+	width: 20%;
+	display: inline-block;
+	vertical-align: bottom;
+	margin-left: 10px;
+}
+
+.zzimg {
+	padding: 10px;
+	margin-bottom: 15px;
+}
+
+.license {
+	background-color: #FFFFFF;
+	margin-top: 15px;
+}
+
+.search-icon {
+	height: 18px;
+	width: 18px;
+	float: right;
+	margin-top: 12px;
+	margin-right: 12px;
+}
+.mui-slider-indicator{
+	bottom: 0;
+}
+.mui-slider-indicator .mui-indicator{
+	background-color: #ffffff;
+}
+.mui-slider-indicator .mui-active.mui-indicator{
+	background-color: #FBA222;
 }
