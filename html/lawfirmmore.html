@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>律师所更多</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<script src="../js/mui.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="filtrate">
+				<div class="">
+					<label id='showCityPicker'>所在地区</label>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+				<div class="">
+					<label id='showLikesPicker'>擅长领域</label>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+				<div class="">
+					<label id='showCapacityPicker'>智能排序</label>
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</div>
+			</div>
+			<div class="filtrate-con">
+				<div class="mui-content mui-scroll-wrapper" id="pullrefresh">
+					<div class="mui-scroll" v-if="barlist.length !=0">
+						<div class="lawfirm">
+							<div class="recom-item" v-for="item in barlist" :key="item.id" :id="item.id">
+								<div class="head-img">
+									<img :src=imgurl+item.logo>
+								</div>
+								<div class="infor">
+									<div class="intro">
+										<p class="intro-name">{{item.name}}</p>
+										<p class="intro-city">{{item.areaname}}</p>
+										<p class="intro-company">{{item.lawfirm}}</p>
+									</div>
+									<div class="tags">
+										<span class="tag" v-for="tag in (item.field||'').split(',')" :key="tag">{{tag}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="" v-if="barlist.length==0">
+						<p class="nodata">暂无数据</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.poppicker.js"></script>
+		<script src="../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.pullToRefresh.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.pullToRefresh.material.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				swipeBack: false, //启用右滑关闭功能
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log('下')
+				setTimeout(function() {
+					barlist(token,10,options.comid,options.order,options.field,options.name)
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				console.log('上')
+				options.limit = options.limit * 1 + 10;
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					barlist(options.token,options.limit,options.comid,options.order,options.field,options.name)
+				}, 1500);
+			}
+			var options = new Vue({
+				el: '#app',
+				data: {
+					barlist: [],
+					servicetype: [],
+					type: '',
+					comid: '',
+					order: '',
+					offset: 0,
+					limit: 10,
+					num:'',
+					name:'',
+					field:''
+				},
+				methods: {
+
+				}
+			});
+
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				var self = plus.webview.currentWebview();
+				var num = self.num;
+				options.token = token
+				options.num = num
+				servicetype(token);
+				barlist(token,10,'','','','')
+			});
+
+			// 律师所详情
+			mui("body").on("tap", ".recom-item", function() {
+				var lawfirmrid = this.getAttribute('id');
+				mui.openWindowWithTitle({
+					url: "lawfirmdetails.html",
+					id: "lawfirmdetails.html",
+					styles: {},
+					extras: {
+						// 打开页面的同时，向新页面传递数据。
+						lawfirmrid: lawfirmrid
+					}
+				}, {
+					//标题栏的背景色和底边线配置
+					backgroundColor: "#267CFB",
+					bottomBorderColor: "#267CFB",
+					title: {
+						//标题文字的内容和样式配置
+						text: "律师所详情",
+						styles: {
+							color: "#fffff"
+						}
+					},
+					back: {
+						image: {
+							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+							imgSrc: "../images/wleft-icon.png"
+						}
+					}
+				})
+			});
+			// 服务类型
+			function servicetype(token) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "mffl/getserviceidtype",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					headers: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'serviceid': 1
+					},
+					success: function(data) {
+						console.log(data)
+						if (data.errCode == 200) {
+							var res = data.datas;
+							var newdata = [];
+							for (var i = 0; i < res.length; i++) {
+								newdata.push({
+									value: res[i].id,
+									text: res[i].name
+								})
+							}
+							console.log(newdata)
+							options.servicetype = newdata;
+							(function($, doc) {
+								$.init();
+								$.ready(function() {
+									// 擅长领域
+									var likesPicker = new $.PopPicker();
+									likesPicker.setData(options.servicetype);
+									var showLikesPickerButton = doc.getElementById('showLikesPicker');
+									showLikesPickerButton.addEventListener('tap', function(event) {
+										likesPicker.show(function(items) {
+											showLikesPickerButton.innerText = items[0].text;
+											options.field = items[0].value
+											console.log(items[0].value)
+											barlist(options.token,options.limit,options.comid,options.order,options.field,options.name)
+											//返回 false 可以阻止选择框的关闭
+											//return false;
+										});
+									}, false);
+									// 智能排序
+									var showCapacityPicker = new $.PopPicker();
+									showCapacityPicker.setData([{
+										value: '1',
+										text: '智能排序'
+									}, {
+										value: '0',
+										text: '取消'
+									}]);
+									var showCapacityPickerButton = doc.getElementById('showCapacityPicker');
+									showCapacityPickerButton.addEventListener('tap', function(event) {
+										showCapacityPicker.show(function(items) {
+											showCapacityPickerButton.innerText = items[0].text;
+											options.order = items[0].value
+											barlist(options.token,options.limit,options.comid,options.order,options.field,options.name)
+											//返回 false 可以阻止选择框的关闭
+											//return false;
+										});
+									}, false);
+
+									//级联示例
+									var cityPicker = new $.PopPicker({
+										layer: 2
+									});
+									cityPicker.setData(cityData3);
+									var showCityPickerButton = doc.getElementById('showCityPicker');
+									showCityPickerButton.addEventListener('tap', function(event) {
+										cityPicker.show(function(items) {
+											console.log(items)
+											showCityPickerButton.innerText = items[1].text;
+											options.comid = items[1].value;
+											barlist(options.token,options.limit,options.comid,options.order,options.field,options.name)
+											//返回 false 可以阻止选择框的关闭
+											//return false;
+										});
+									}, false);
+								});
+							})(mui, document);
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				})
+			}
+				// 律所列表
+				function barlist(token,limit,comid,order,field,name) {
+					mui.ajax({
+						type: 'get',
+						url: baseurl + "client/mfflLawfirms",
+						dataType: "json",
+						beforeSend: function(XMLHttpRequest) {
+							XMLHttpRequest.setRequestHeader(
+								"token", token
+							);
+						},
+						headers: {
+							'contentType': "application/x-www-form-urlencoded",
+							'token': token
+						},
+						data: {
+							'offset': 0,
+							'limit': limit,
+							'comid':comid,
+							'order':order,
+							'field':field,
+							'name':name
+						},
+						success: function(data) {
+							console.log(data)
+							if (data.errCode == 200) {
+								options.barlist = data.datas.data;
+							} else {
+								mui.toast(data.message)
+							}
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					})
+				}
+		</script>
+
+	</body>
+</html>

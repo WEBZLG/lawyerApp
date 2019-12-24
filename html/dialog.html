@@ -234,7 +234,13 @@
 		<script type="text/javascript">
 			mui.init({
 				beforeback: function() {
-					closed(options.token, options.sendId)
+					closed(options.token, options.sendId);
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refreshes');
+					//返回true,继续页面关闭逻辑
+					return true;
 				},
 				gestureConfig: {
 					longtap: true,
@@ -254,8 +260,8 @@
 			 */
 			function pulldownRefresh() {
 				setTimeout(function() {
-					getlist(options.token, 0, options.limit)
 					options.limit = options.limit + 20;
+					getlist(options.token,options.sendId, 0, options.limit)
 					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				}, 1500);
 			}
@@ -388,6 +394,7 @@
 				methods: {
 					keepMessageListOnButtom: function() {
 						var e = $('#ul');
+						console.log(this.preScrollHeight)
 						e && (this.preScrollHeight - e[0].clientHeight - e[0].scrollTop < 20 ? (this.$nextTick(function() {
 							e.scrollTop(e[0].scrollHeight);
 							document.body.scrollTop = e[0].scrollHeight;
@@ -395,15 +402,9 @@
 					}
 				},
 				updated: function() {
-					this.keepMessageListOnButtom();
 				},
 				mounted() {
-					// this.$nextTick(function() {
-					// 	var t = e.$refs["message-list"];
-					// 	t && (t.scrollTop = t.scrollHeight,
-					// 		e.preScrollHeight = t.scrollHeight,
-					// 		e.isShowScrollButtomTips = !1)
-					// })
+					this.keepMessageListOnButtom();
 				}
 			});
 
@@ -500,7 +501,7 @@
 				} else {
 					content = window.plus.Push.receiveNotification.alert;
 				}
-				getlist(options.token, options.id)
+				getlist(options.token, options.sendId,0,20)
 				console.log(content)
 			}
 

@@ -58,9 +58,9 @@
 						<label>注册资金</label>
 						<span>{{datalist.registeredcapital}}万</span>
 					</div>
-					<div class="info-item">
+					<div class="info-item peoplenumber" :num="datalist.licensenumber">
 						<label>入住律师人数</label>
-						<span class="bluecolor">{{datalist.numberoflawyers}}<i class="lawfirm-next"><img src="../images/next.png" ></i></span>
+						<span class="bluecolor">{{datalist.numberoflawyers}}<i class="lawfirm-next"><img src="../images/next.png"></i></span>
 					</div>
 					<div class="info-item">
 						<label>事务所简介</label>
@@ -91,6 +91,32 @@
 				var self = plus.webview.currentWebview();
 				var lawfirmrid = self.lawfirmrid;
 				lawfirmdetails(token, lawfirmrid);
+				mui('body').on('tap', '.peoplenumber', function() {
+					var num = this.getAttribute('num');
+					mui.openWindowWithTitle({
+						url: "lawfirmlawterlist.html",
+						id: "lawfirmlawterlist.html",
+						styles: {},
+						extras: {
+							// 打开页面的同时，向新页面传递数据。
+							num: num
+						}
+					}, {
+						//标题栏的背景色和底边线配置
+						backgroundColor: "#ffffff",
+						//bottomBorderColor:"#00ff00",
+						title: {
+							//标题文字的内容和样式配置
+							text: "律师列表"
+						},
+						back: {
+							image: {
+								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
+								imgSrc: "../images/left-icon.png"
+							}
+						}
+					})
+				})
 			});
 
 			var options = new Vue({
@@ -106,7 +132,7 @@
 			function lawfirmdetails(token, lawfirmrid) {
 				mui.ajax({
 					type: 'get',
-					url: baseurl + "client/mfflLawfirms/"+lawfirmrid ,
+					url: baseurl + "client/mfflLawfirms/" + lawfirmrid,
 					dataType: "json",
 					beforeSend: function(XMLHttpRequest) {
 						XMLHttpRequest.setRequestHeader(

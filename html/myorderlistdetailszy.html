@@ -380,7 +380,7 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							mui.toast("评论成功！");
-							getdetails(options.token, options.infoid)；
+							getdetails(options.token, options.infoid);
 							mui("#sendword").popover('toggle', document.getElementById("div"));
 						} else {
 							mui.toast(data.message);

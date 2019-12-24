@@ -52,6 +52,13 @@
 		mui.init({
 			swipeBack: false //启用右滑关闭功能
 		});
+		(function($, doc) {
+			window.addEventListener('refreshes', function(e) {
+				//执行刷新
+				console.log("刷新父页面")
+				location.reload();
+			});
+		})(mui, document);
 		mui.plusReady(function() {
 			var token = plus.storage.getItem('token');
 			options.token = token;
@@ -75,18 +82,18 @@
 					console.log(msg)
 					//根据需要填写
 					// plus.webview.open("word.html");
-			
+
 				}, false);
 			}, false);
 		})
 		mui.plusReady(function() {
-		//推送消息监听
-		plus.push.addEventListener( "click", function(msg) {
-		alert("9999999");
-		alert(msg.content);
-		alert(msg.title);
-		alert(msg.payload);//获取透传消息，不知道对不对？
-		});
+			//推送消息监听
+			plus.push.addEventListener("click", function(msg) {
+				alert("9999999");
+				alert(msg.content);
+				alert(msg.title);
+				alert(msg.payload); //获取透传消息，不知道对不对？
+			});
 		});
 		var options = new Vue({
 			el: '#app',
@@ -94,7 +101,7 @@
 				datalist: [],
 				token: "",
 				systermnum: '',
-				systermstatus:''
+				systermstatus: ''
 			},
 			methods: {
 
@@ -199,7 +206,7 @@
 				extras: {
 					// 打开页面的同时，向新页面传递数据。
 					sendId: sendId,
-					name:newname
+					name: newname
 				}
 			})
 		});
