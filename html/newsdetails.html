@@ -181,30 +181,33 @@
 						console.log("评论")
 						var uid = this.getAttribute("uid");
 						var idx = this.getAttribute("idx");
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "useranswer.html",
 							id: "useranswer.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "用户回答",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								uid: uid
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "用户回答"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
-
+						});
 					})
 				});
 			}
@@ -227,31 +230,35 @@
 
 			// 添加回答
 			mui(".add-answer").on("tap", ".exit-btn", function() {
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "addanswer.html",
 					id: "addanswer.html",
-					styles: {},
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "添加回答",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
+						}
+					},
 					extras: {
-						// 打开页面的同时，向新页面传递数据。
 						informationId: options.infoid,
 						typeName: options.datadetails.typeName,
 						title: options.datadetails.title
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					//bottomBorderColor:"#00ff00",
-					title: {
-						//标题文字的内容和样式配置
-						text: "添加回答"
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
-					}
-				})
+				});
 			});
 
 			// 获取详情
@@ -410,81 +417,93 @@
 				});
 			})
 			mui(".news-nav").on("tap", ".newssearch", function() {
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "newssearch.html",
 					id: "newssearch.html",
-					styles: {},
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "资讯搜索",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
+						}
+					},
 					extras: {
-						// 打开页面的同时，向新页面传递数据。
 						newsId: "0"
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					//bottomBorderColor:"#00ff00",
-					title: {
-						//标题文字的内容和样式配置
-						text: "资讯搜索"
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
-					}
-				})
+				});
 			});
 			// 发布话题
 			mui(".news-nav").on("tap", ".publishtalk", function() {
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "publishtalk.html",
 					id: "publishtalk.html",
-					styles: {},
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "发布话题",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
+						}
+					},
 					extras: {
-						// 打开页面的同时，向新页面传递数据。
 						newsId: "0"
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					//bottomBorderColor:"#00ff00",
-					title: {
-						//标题文字的内容和样式配置
-						text: "发布话题"
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
-					}
-				})
+				});
 			});
 			// 我的话题
 			mui(".news-nav").on("tap", ".mytalks", function() {
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "mytalk.html",
 					id: "mytalk.html",
-					styles: {},
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "我的话题",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
+						}
+					},
 					extras: {
-						// 打开页面的同时，向新页面传递数据。
 						newsId: "0"
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					//bottomBorderColor:"#00ff00",
-					title: {
-						//标题文字的内容和样式配置
-						text: "我的话题"
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
-					}
-				})
+				});
 			});
 
 

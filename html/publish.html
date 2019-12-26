@@ -62,125 +62,145 @@
 				aLi[i].onclick = function() {
 					console.log(this.index);
 					if (this.index == 0) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "publishmfzx.html",
 							id: "publishmfzx.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "免费咨询",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "免费咨询"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					} else if (this.index == 1) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "publishzyzx.html",
 							id: "publishzyzx.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "专业咨询",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "专业咨询"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					} else if (this.index == 2) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "publishlsh.html",
 							id: "publishlsh.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "律师函发布",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "律师函发布"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					} else if (this.index == 3) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "publishht.html",
 							id: "publishht.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "合同审核发布",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "合同审核发布"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					}else if (this.index == 4) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "publishhtdz.html",
 							id: "publishhtdz.html",
-							styles: {},
+							show: {
+								// // autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "合同定制发布",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "合同定制发布"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					}
 
 				}

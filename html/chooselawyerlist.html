@@ -170,32 +170,33 @@
 			// 律师详情
 			mui(".filtrate-con").on("tap", ".intro-name", function() {
 				var lawyerid = this.getAttribute('id');
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "lawyerdetails.html",
 					id: "lawyerdetails.html",
-					styles: {},
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						lawyerid: lawyerid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#267CFB",
-					bottomBorderColor: "#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "律师详情",
-						styles: {
-							color: "#fffff"
+					show: {
+						// autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "律师详情",
+							titleColor: "#ffffff",
+							titleSize: "16px",
+							backgroundColor: "#267CFB",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
 						}
 					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/wleft-icon.png"
-						}
+					extras: {
+						lawyerid: lawyerid
 					}
-				})
+				});
 			});
 
 			// 律师列表

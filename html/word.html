@@ -73,6 +73,8 @@
 					content = window.plus.Push.receiveNotification.alert;
 				}
 				getlist(options.token)
+				var xunguan=plus.webview.getWebviewById("dialog.html");
+				mui.fire(xunguan,'listenerWorkState')    //事件名称
 				console.log(content)
 			}
 			document.addEventListener("jpush.receiveNotification", receiveNotification, false);
@@ -171,29 +173,33 @@
 		mui("body").on("tap", ".systerm-message", function() {
 			// console.log(this.getAttribute("name"))
 			// var newname = this.getAttribute("name");
-			mui.openWindowWithTitle({
+			mui.openWindow({
 				url: "sysmessagelist.html",
 				id: "sysmessagelist.html",
-				styles: {},
+				show: {
+					//autoShow: false
+				},
+				styles: {
+					titleNView: { // 窗口的标题栏控件
+						autoBackButton: true,
+						titleText: "系统消息",
+						titleColor: "#ffffff",
+						titleSize: "16px",
+						backgroundColor: "#267CFB",
+						progress: { // 标题栏控件的进度条样式
+							color: "#2E82FF",
+							height: "2px"
+						},
+						// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+						// 	color: "#CCCCCC",
+						// 	height: "1px"
+						// }
+					}
+				},
 				extras: {
-					// 打开页面的同时，向新页面传递数据。
 					newsId: "0"
 				}
-			}, {
-				//标题栏的背景色和底边线配置
-				backgroundColor: "#ffffff",
-				//bottomBorderColor:"#00ff00",
-				title: {
-					//标题文字的内容和样式配置
-					text: "系统消息"
-				},
-				back: {
-					image: {
-						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-						imgSrc: "../images/left-icon.png"
-					}
-				}
-			})
+			});
 		});
 
 		mui(".user-message").on("tap", "li", function() {

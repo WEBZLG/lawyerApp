@@ -398,34 +398,35 @@
 				var qid = this.getAttribute('qid');
 				var info = this.getAttribute('info');
 				var ansid = this.getAttribute('ansid');
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "myorderdetailsds.html",
 					id: "myorderdetailsds.html",
-					styles: {},
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "打赏",
+							titleColor: "#ffffff",
+							titleSize: "16px",
+							backgroundColor: "#267CFB",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
+						}
+					},
 					extras: {
-						// 打开页面的同时，向新页面传递数据。
 						qid: qid,
 						info: info,
 						ansid: ansid
 					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#267CFB",
-					bottomBorderColor: "#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "打赏",
-						styles: {
-							color: "#fffff"
-						}
-					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/wleft-icon.png"
-						}
-					}
-				})
+				});
 			});
 			// 取消发布
 			function cancel(token, id) {
@@ -460,31 +461,33 @@
 			// 修改内容
 			mui('body').on('tap', '.changebtn', function() {
 				var yid = this.getAttribute('id');
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "mychangezyzx.html",
 					id: "mychangezyzx.html",
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						yid: yid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					// bottomBorderColor:"#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "专业咨询修改",
-						styles: {
-							color: "#333333"
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "专业咨询修改",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
 						}
 					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
+					extras: {
+						yid: yid
 					}
-				})
+				});
 			});
 		</script>
 	</body>

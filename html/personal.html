@@ -188,56 +188,64 @@
 
 		// 修改号码
 		mui("body").on("tap", ".changephone", function() {
-			mui.openWindowWithTitle({
+			mui.openWindow({
 				url: "changephone.html",
 				id: "changephone.html",
-				styles: {},
+				show: {
+					// // autoShow: false
+				},
+				styles: {
+					titleNView: { // 窗口的标题栏控件
+						autoBackButton: true,
+						titleText: "修改手机号",
+						titleColor: "#000000",
+						titleSize: "16px",
+						backgroundColor: "#ffffff",
+						progress: { // 标题栏控件的进度条样式
+							color: "#2E82FF",
+							height: "2px"
+						},
+						// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+						// 	color: "#CCCCCC",
+						// 	height: "1px"
+						// }
+					}
+				},
 				extras: {
-					// 打开页面的同时，向新页面传递数据。
 					newsId: "0"
 				}
-			}, {
-				//标题栏的背景色和底边线配置
-				backgroundColor: "#ffffff",
-				//bottomBorderColor:"#00ff00",
-				title: {
-					//标题文字的内容和样式配置
-					text: "修改手机号"
-				},
-				back: {
-					image: {
-						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-						imgSrc: "../images/left-icon.png"
-					}
-				}
-			})
+			});
 		});
 		// 修改名字
 		mui("body").on("tap", ".changename", function() {
-			var nick = document.getElementsByClassName("per-text")[0].innerHTML
-			mui.openWindowWithTitle({
+			var nick = document.getElementsByClassName("per-text")[0].innerHTML;
+			mui.openWindow({
 				url: "changename.html",
 				id: "changename.html",
-				styles: {},
+				show: {
+					// // autoShow: false
+				},
+				styles: {
+					titleNView: { // 窗口的标题栏控件
+						autoBackButton: true,
+						titleText: "修改昵称",
+						titleColor: "#000000",
+						titleSize: "16px",
+						backgroundColor: "#ffffff",
+						progress: { // 标题栏控件的进度条样式
+							color: "#2E82FF",
+							height: "2px"
+						},
+						// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+						// 	color: "#CCCCCC",
+						// 	height: "1px"
+						// }
+					}
+				},
 				extras: {
-					// 打开页面的同时，向新页面传递数据。
 					newsId: nick
 				}
-			}, {
-				//标题栏的背景色和底边线配置
-				backgroundColor: "#ffffff",
-				//bottomBorderColor:"#00ff00",
-				title: {
-					//标题文字的内容和样式配置
-					text: "修改昵称"
-				},
-				back: {
-					image: {
-						/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-						imgSrc: "../images/left-icon.png"
-					}
-				}
-			})
+			});
 		});
 		// 个人信息
 		function details(token) {

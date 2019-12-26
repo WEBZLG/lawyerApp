@@ -16,7 +16,7 @@
 		<div class="myorderlist" id="app">
 			<div class="mui-scroll-wrapper" id="pullrefresh">
 				<div class="mui-scroll">
-					<div class="orderlistitem" v-for="item in datalist" :key="item.id" >
+					<div class="orderlistitem" v-for="item in datalist" :key="item.id">
 						<div class="clickbox" :id="item.id">
 							<div class="orderreference" :id="item.id">
 								<div class="ordernum">订单编号：{{item.payMerchantNumber}}</div>
@@ -190,80 +190,64 @@
 			}
 			mui("body").on("tap", ".clickbox", function() {
 				var yid = this.getAttribute("id");
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "myorderlistdetails.html",
 					id: "myorderlistdetails.html",
-					// styles: {
-					// 	top: "-44px",
-					// 	bottom: "0",
-					// 	titleNView: { 
-					// 		buttons: [ 
-					// 			{
-					// 				color: '', 
-					// 				colorPressed: '',
-					// 				float: '', 
-					// 				fontWeight: 'bold',
-					// 				fontSize: '14px', 
-					// 				fontSrc: 'fonts/iconfont.ttf', 
-					// 				onclick: function() {
-					// 					alert("需要微信公众平台支持")
-					// 				},
-					// 				text: '\ue618'
-					// 			}
-					// 		],
-					// 	},
-					// },
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						yid: yid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					// bottomBorderColor:"#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "免费咨询详情",
-						styles: {
-							color: "#333333"
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "免费咨询详情",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
 						}
 					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
+					extras: {
+						yid: yid
 					}
-				})
+				});
 			});
 
 			mui('body').on('tap', '.changebtn', function() {
 				var yid = this.getAttribute('id');
-				mui.openWindowWithTitle({
+				mui.openWindow({
 					url: "mychangemfzx.html",
 					id: "mychangemfzx.html",
-					extras: {
-						// 打开页面的同时，向新页面传递数据。
-						yid: yid
-					}
-				}, {
-					//标题栏的背景色和底边线配置
-					backgroundColor: "#ffffff",
-					// bottomBorderColor:"#267CFB",
-					title: {
-						//标题文字的内容和样式配置
-						text: "免费咨询修改",
-						styles: {
-							color: "#333333"
+					show: {
+						// // autoShow: false
+					},
+					styles: {
+						titleNView: { // 窗口的标题栏控件
+							autoBackButton: true,
+							titleText: "免费咨询修改",
+							titleColor: "#000000",
+							titleSize: "16px",
+							backgroundColor: "#ffffff",
+							progress: { // 标题栏控件的进度条样式
+								color: "#2E82FF",
+								height: "2px"
+							},
+							// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+							// 	color: "#CCCCCC",
+							// 	height: "1px"
+							// }
 						}
 					},
-					back: {
-						image: {
-							/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-							imgSrc: "../images/left-icon.png"
-						}
+					extras: {
+						yid: yid
 					}
-				})
+				});
 			})
 		</script>
 	</body>

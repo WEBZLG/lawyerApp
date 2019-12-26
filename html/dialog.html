@@ -261,7 +261,7 @@
 			function pulldownRefresh() {
 				setTimeout(function() {
 					options.limit = options.limit + 20;
-					getlist(options.token,options.sendId, 0, options.limit)
+					getlist(options.token, options.sendId, 0, options.limit)
 					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
 				}, 1500);
 			}
@@ -327,9 +327,9 @@
 									//语音解析成功
 									if (dataJson.errCode == "200") {
 										var contentbox = document.getElementsByTagName('ul')[0];
-										contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
+										contentbox.innerHTML += '<li><div class="clearfix"><img  src="' + imgurl + options.userinfo.headImgUrl +
 											'" class="imgright"><span class="imgright"><img class="dialogimg fr" src="../images/labaright.png" url=' +
-											imgurl + dataJson.datas + '></span></li>';
+											imgurl + dataJson.datas + '></span></div></li>';
 									} else {
 										mui.alert("语音解析失败:" + dataJson.data, "系统错误", "关闭", false);
 									}
@@ -401,8 +401,7 @@
 						})) : this.preScrollHeight = e[0].scrollHeight)
 					}
 				},
-				updated: function() {
-				},
+				updated: function() {},
 				mounted() {
 					this.keepMessageListOnButtom();
 				}
@@ -493,17 +492,20 @@
 					}
 				})
 			}
-			// 极光推送监听
-			var receiveNotification = function(event) {
-				var content;
-				if (plus.os.name == 'iOS') {
-					content = window.plus.Push.receiveNotification.aps.alert;
-				} else {
-					content = window.plus.Push.receiveNotification.alert;
-				}
-				getlist(options.token, options.sendId,0,20)
-				console.log(content)
-			}
+			// // 极光推送监听
+			// var receiveNotification = function(event) {
+			// 	var content;
+			// 	if (plus.os.name == 'iOS') {
+			// 		content = window.plus.Push.receiveNotification.aps.alert;
+			// 	} else {
+			// 		content = window.plus.Push.receiveNotification.alert;
+			// 	}
+			// 	getlist(options.token, options.sendId,0,20)
+			// 	console.log(content)
+			// }
+			window.addEventListener('listenerWorkState', function(e) {
+				getlist(options.token, options.sendId, 0, 20)
+			});
 
 			function formatTime(msTime) {
 				let day = Math.floor(msTime / 60 / 60 / 24);
@@ -535,8 +537,8 @@
 						console.log(data)
 						if (data.errCode == 200) {
 							var contentbox = document.getElementsByTagName('ul')[0];
-							contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
-								'" class="imgright"><span class="spanright">' + text.value + '</span></li>';
+							contentbox.innerHTML += '<li><div class="clearfix"><img  src="' + imgurl + options.userinfo.headImgUrl +
+								'" class="imgright"><span class="spanright">' + text.value + '</span></div></li>';
 							text.value = '';
 							document.getElementById('user_add_icon').classList.remove('mui-hidden')
 							document.getElementById('btn').classList.add('mui-hidden')
@@ -687,8 +689,8 @@
 								var imgUrl = data.datas;
 								mui.toast('发送成功');
 								var contentbox = document.getElementsByTagName('ul')[0];
-								contentbox.innerHTML += '<li><img  src="' + imgurl + options.userinfo.headImgUrl +
-									'" class="imgright"><span class="imgright"><img src=' + imgurl + imgUrl + '></span></li>';
+								contentbox.innerHTML += '<li><div class="clearfix"><img  src="' + imgurl + options.userinfo.headImgUrl +
+									'" class="imgright"><span class="imgright"><img src=' + imgurl + imgUrl + '></span></div></li>';
 							} else {
 								mui.toast(data.message)
 							}

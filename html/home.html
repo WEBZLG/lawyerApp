@@ -154,14 +154,14 @@
 				<!-- 推荐律师所 -->
 				<div class="bar-list">
 					<div class="pub-sm-title">
-						<div class="vertical-line">推荐律师所</div>
+						<div class="vertical-line">推荐事务所</div>
 						<a href="javascript:void(0)" class="view-more" id="tjs-more">更多</a>
 					</div>
 					<div class="recom-tab">
 						<div id="slider" class="mui-slider mui-sliders">
-							<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<div id="sliderSegmentedControls" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 								<div class="mui-scroll">
-									<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00">
+									<a class="mui-control-item navitem mui-active tjbtn" href="'#mm00" type=''>
 										推荐
 									</a>
 									<a class="mui-control-item navitem" :href="'#mm'+index" v-for="(item,index) in lawyertype" :key="item.id"
@@ -261,7 +261,7 @@
 					banner(token);
 					lawyerlist(token, 0, 10);
 					tjlawyerlist(token);
-					barlist(token);
+					barlist(token, '');
 					// document.querySelector('.mui-sliders').addEventListener('slide', function(event) {
 					// 	var idx = event.detail.slideNumber;
 					// 	console.log(idx)
@@ -271,11 +271,10 @@
 					mui('body').on('tap', '.tjbtn', function(e) {
 						tjlawyerlist(token);
 					});
-					// mui('#sliderSegmentedControl').on('tap', 'a', function(e) {
-					// 	var idx = e.target.attributes.idx.value;
-					// 	options.currentLawyerType = idx;
-					// 	lawyerlist(token, options.lawyertype[idx].id, 10)
-					// });
+					mui('#sliderSegmentedControls').on('tap', 'a', function(e) {
+						var filed = this.getAttribute('type');
+						barlist(token, filed, 0, 5)
+					});
 					document.querySelector('#slider').addEventListener('slide', function(event) {
 						// console.log(event.detail.slideNumber);
 						var idx = event.detail.slideNumber;
@@ -294,13 +293,23 @@
 
 					var tjbtn = document.getElementById("tj-more");
 					tjbtn.addEventListener("tap", function() {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "lawyerlist.html",
-							id: "lawyerlis.html",
+							id: "lawyerlist.html",
+							show: {
+								// autoShow: false
+							},
 							styles: {
-								top: "-44px",
-								bottom: '0px',
-								titleNView: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "律师列表",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
 									buttons: [{
 										autoBackButton: true,
 										fontSize: '14px',
@@ -310,38 +319,36 @@
 										},
 										text: '\ue724'
 									}],
-									// titleText:"律师列表"
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "律师列表"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
 							}
 						});
 					});
 					var tjsbtn = document.getElementById("tjs-more");
 					tjsbtn.addEventListener("tap", function() {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "lawfirmmore.html",
 							id: "lawfirmmore.html",
+							show: {
+								// autoShow: false
+							},
 							styles: {
-								top: "-44px",
-								bottom: '0px',
-								titleNView: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "事务所列表",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
 									buttons: [{
 										autoBackButton: true,
 										fontSize: '14px',
@@ -351,55 +358,48 @@
 										},
 										text: '\ue724'
 									}],
-									// titleText:"律师列表"
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "律所列表"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
 						});
+
 					});
 
 					var hotBtn = document.getElementsByClassName("hot-more")[0];
 					hotBtn.addEventListener("tap", function() {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "hotconsult.html",
 							id: "hotconsult.html",
-							styles: {},
+							show: {
+								// autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "热门咨询",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								newsId: "0"
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							//bottomBorderColor:"#00ff00",
-							title: {
-								//标题文字的内容和样式配置
-								text: "热门咨询"
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 					})
 				});
 				// banner推荐
@@ -504,7 +504,7 @@
 					})
 				}
 				// 律所列表
-				function barlist(token) {
+				function barlist(token, filed) {
 					mui.ajax({
 						type: 'get',
 						url: baseurl + "client/mfflLawfirms",
@@ -520,7 +520,8 @@
 						},
 						data: {
 							'offset': 0,
-							'limit': 5
+							'limit': 5,
+							'field': filed
 						},
 						success: function(data) {
 							console.log(data)
@@ -540,120 +541,127 @@
 				mui(".hot-type").on("tap", "a", function() {
 					var type = this.getAttribute('typeid');
 					var title = this.getAttribute('title');
-					mui.openWindowWithTitle({
+					mui.openWindow({
 						url: "hotzx.html",
 						id: "hotzx.html",
-						styles: {},
+						show: {
+							// autoShow: false
+						},
+						styles: {
+							titleNView: { // 窗口的标题栏控件
+								autoBackButton: true,
+								titleText: "热门咨询",
+								titleColor: "#000000",
+								titleSize: "16px",
+								backgroundColor: "#ffffff",
+								progress: { // 标题栏控件的进度条样式
+									color: "#2E82FF",
+									height: "2px"
+								},
+								// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								// 	color: "#CCCCCC",
+								// 	height: "1px"
+								// }
+							}
+						},
 						extras: {
-							// 打开页面的同时，向新页面传递数据。
 							type: type,
 							title: title
 						}
-					}, {
-						//标题栏的背景色和底边线配置
-						// backgroundColor: "#267CFB",
-						// bottomBorderColor:"#267CFB",
-						title: {
-							//标题文字的内容和样式配置
-							text: "热门咨询",
-							// styles:{
-							// 	color:"#fffff"
-							// }
-						},
-						back: {
-							image: {
-								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-								imgSrc: "../images/left-icon.png"
-							}
-						}
-					})
+					});
 				});
 				// 律师详情
 				mui(".recom-box").on("tap", ".recom-item", function() {
 					var lawyerid = this.getAttribute('id');
-					mui.openWindowWithTitle({
+					mui.openWindow({
 						url: "lawyerdetails.html",
 						id: "lawyerdetails.html",
-						styles: {},
-						extras: {
-							// 打开页面的同时，向新页面传递数据。
-							lawyerid: lawyerid
-						}
-					}, {
-						//标题栏的背景色和底边线配置
-						backgroundColor: "#267CFB",
-						bottomBorderColor: "#267CFB",
-						title: {
-							//标题文字的内容和样式配置
-							text: "律师详情",
-							styles: {
-								color: "#fffff"
+						show: {
+							// autoShow: false
+						},
+						styles: {
+							titleNView: { // 窗口的标题栏控件
+								autoBackButton: true,
+								titleText: "律师详情",
+								titleColor: "#ffffff",
+								titleSize: "16px",
+								backgroundColor: "#267CFB",
+								progress: { // 标题栏控件的进度条样式
+									color: "#2E82FF",
+									height: "2px"
+								},
+								// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								// 	color: "#CCCCCC",
+								// 	height: "1px"
+								// }
 							}
 						},
-						back: {
-							image: {
-								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-								imgSrc: "../images/wleft-icon.png"
-							}
+						extras: {
+							lawyerid: lawyerid
 						}
-					})
+					});
 				});
 				// 律师所详情
 				mui(".lawfirm").on("tap", ".recom-item", function() {
 					var lawfirmrid = this.getAttribute('id');
-					mui.openWindowWithTitle({
+					mui.openWindow({
 						url: "lawfirmdetails.html",
 						id: "lawfirmdetails.html",
-						styles: {},
-						extras: {
-							// 打开页面的同时，向新页面传递数据。
-							lawfirmrid: lawfirmrid
-						}
-					}, {
-						//标题栏的背景色和底边线配置
-						backgroundColor: "#267CFB",
-						bottomBorderColor: "#267CFB",
-						title: {
-							//标题文字的内容和样式配置
-							text: "律师所详情",
-							styles: {
-								color: "#fffff"
+						show: {
+							// autoShow: false
+						},
+						styles: {
+							titleNView: { // 窗口的标题栏控件
+								autoBackButton: true,
+								titleText: "律师所详情",
+								titleColor: "#ffffff",
+								titleSize: "16px",
+								backgroundColor: "#267CFB",
+								progress: { // 标题栏控件的进度条样式
+									color: "#2E82FF",
+									height: "2px"
+								},
+								// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								// 	color: "#CCCCCC",
+								// 	height: "1px"
+								// }
 							}
 						},
-						back: {
-							image: {
-								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-								imgSrc: "../images/wleft-icon.png"
-							}
+						extras: {
+							lawfirmrid: lawfirmrid
 						}
-					})
+					});
 				});
 
 				// 搜索
 				function opensearch() {
-					mui.openWindowWithTitle({
+					mui.openWindow({
 						url: "lawyersearch.html",
 						id: "lawyersearch.html",
-						styles: {},
+						show: {
+							// autoShow: false
+						},
+						styles: {
+							titleNView: { // 窗口的标题栏控件
+								autoBackButton: true,
+								titleText: "律师搜索",
+								titleColor: "#000000",
+								titleSize: "16px",
+								backgroundColor: "#ffffff",
+								progress: { // 标题栏控件的进度条样式
+									color: "#2E82FF",
+									height: "2px"
+								},
+								// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+								// 	color: "#CCCCCC",
+								// 	height: "1px"
+								// }
+							}
+						},
 						extras: {
-							// 打开页面的同时，向新页面传递数据。
 							newsId: "0"
 						}
-					}, {
-						//标题栏的背景色和底边线配置
-						backgroundColor: "#ffffff",
-						//bottomBorderColor:"#00ff00",
-						title: {
-							//标题文字的内容和样式配置
-							text: "律师搜索"
-						},
-						back: {
-							image: {
-								/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-								imgSrc: "../images/left-icon.png"
-							}
-						}
-					})
+					});
 				}
 				// 免费咨询
 				var oList = document.getElementById("type-list");
@@ -663,125 +671,145 @@
 					aLi[i].onclick = function() {
 						console.log(this.index);
 						if (this.index == 0) {
-							mui.openWindowWithTitle({
+							mui.openWindow({
 								url: "publishmfzx.html",
 								id: "publishmfzx.html",
-								styles: {},
+								show: {
+									// autoShow: false
+								},
+								styles: {
+									titleNView: { // 窗口的标题栏控件
+										autoBackButton: true,
+										titleText: "免费咨询",
+										titleColor: "#000000",
+										titleSize: "16px",
+										backgroundColor: "#ffffff",
+										progress: { // 标题栏控件的进度条样式
+											color: "#2E82FF",
+											height: "2px"
+										},
+										// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+										// 	color: "#CCCCCC",
+										// 	height: "1px"
+										// }
+									}
+								},
 								extras: {
-									// 打开页面的同时，向新页面传递数据。
 									newsId: "0"
 								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#ffffff",
-								//bottomBorderColor:"#00ff00",
-								title: {
-									//标题文字的内容和样式配置
-									text: "免费咨询"
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/left-icon.png"
-									}
-								}
-							})
+							});
 						} else if (this.index == 1) {
-							mui.openWindowWithTitle({
+							mui.openWindow({
 								url: "publishzyzx.html",
 								id: "publishzyzx.html",
-								styles: {},
+								show: {
+									// autoShow: false
+								},
+								styles: {
+									titleNView: { // 窗口的标题栏控件
+										autoBackButton: true,
+										titleText: "专业咨询",
+										titleColor: "#000000",
+										titleSize: "16px",
+										backgroundColor: "#ffffff",
+										progress: { // 标题栏控件的进度条样式
+											color: "#2E82FF",
+											height: "2px"
+										},
+										// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+										// 	color: "#CCCCCC",
+										// 	height: "1px"
+										// }
+									}
+								},
 								extras: {
-									// 打开页面的同时，向新页面传递数据。
 									newsId: "0"
 								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#ffffff",
-								//bottomBorderColor:"#00ff00",
-								title: {
-									//标题文字的内容和样式配置
-									text: "专业咨询"
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/left-icon.png"
-									}
-								}
-							})
+							});
 						} else if (this.index == 3) {
-							mui.openWindowWithTitle({
+							mui.openWindow({
 								url: "publishlsh.html",
 								id: "publishlsh.html",
-								styles: {},
+								show: {
+									// autoShow: false
+								},
+								styles: {
+									titleNView: { // 窗口的标题栏控件
+										autoBackButton: true,
+										titleText: "律师函发布",
+										titleColor: "#000000",
+										titleSize: "16px",
+										backgroundColor: "#ffffff",
+										progress: { // 标题栏控件的进度条样式
+											color: "#2E82FF",
+											height: "2px"
+										},
+										// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+										// 	color: "#CCCCCC",
+										// 	height: "1px"
+										// }
+									}
+								},
 								extras: {
-									// 打开页面的同时，向新页面传递数据。
 									newsId: "0"
 								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#ffffff",
-								//bottomBorderColor:"#00ff00",
-								title: {
-									//标题文字的内容和样式配置
-									text: "律师函发布"
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/left-icon.png"
-									}
-								}
-							})
+							});
 						} else if (this.index == 5) {
-							mui.openWindowWithTitle({
+							mui.openWindow({
 								url: "publishht.html",
 								id: "publishht.html",
-								styles: {},
+								show: {
+									// autoShow: false
+								},
+								styles: {
+									titleNView: { // 窗口的标题栏控件
+										autoBackButton: true,
+										titleText: "合同审核发布",
+										titleColor: "#000000",
+										titleSize: "16px",
+										backgroundColor: "#ffffff",
+										progress: { // 标题栏控件的进度条样式
+											color: "#2E82FF",
+											height: "2px"
+										},
+										// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+										// 	color: "#CCCCCC",
+										// 	height: "1px"
+										// }
+									}
+								},
 								extras: {
-									// 打开页面的同时，向新页面传递数据。
 									newsId: "0"
 								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#ffffff",
-								//bottomBorderColor:"#00ff00",
-								title: {
-									//标题文字的内容和样式配置
-									text: "合同审核发布"
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/left-icon.png"
-									}
-								}
-							})
+							});
 						} else if (this.index == 2) {
-							mui.openWindowWithTitle({
+							mui.openWindow({
 								url: "lawyerlist.html",
 								id: "lawyerlist.html",
-								styles: {},
+								show: {
+									// autoShow: false
+								},
+								styles: {
+									titleNView: { // 窗口的标题栏控件
+										autoBackButton: true,
+										titleText: "找律师",
+										titleColor: "#000000",
+										titleSize: "16px",
+										backgroundColor: "#ffffff",
+										progress: { // 标题栏控件的进度条样式
+											color: "#2E82FF",
+											height: "2px"
+										},
+										// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+										// 	color: "#CCCCCC",
+										// 	height: "1px"
+										// }
+									}
+								},
 								extras: {
-									// 打开页面的同时，向新页面传递数据。
 									newsId: "0"
 								}
-							}, {
-								//标题栏的背景色和底边线配置
-								backgroundColor: "#ffffff",
-								//bottomBorderColor:"#00ff00",
-								title: {
-									//标题文字的内容和样式配置
-									text: "找律师"
-								},
-								back: {
-									image: {
-										/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-										imgSrc: "../images/left-icon.png"
-									}
-								}
-							})
+							});
 						}
 
 					}

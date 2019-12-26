@@ -37,37 +37,39 @@
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
-			var newversion,versionurl;
+			var newversion, versionurl;
 			mui("body").on("tap", ".checkversion", function() {
 				var btnArray = ['关闭', '更新'];
 				mui.confirm(newversion, '发现新版本', btnArray, function(e) {
 					console.log(e.index)
 					if (e.index) {
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "downversion.html",
 							id: "downversion.html",
-							extras: {
-								// 打开页面的同时，向新页面传递数据。
-								urls:versionurl,
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "升级版本",
-								styles: {
-									color: "#333333"
+							show: {
+								// autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "升级版本",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
+							extras: {
+								urls: versionurl
 							}
-						})
+						});
 					}
 				}, 'div')
 			});
@@ -113,7 +115,7 @@
 								} else {
 									newversion = data.datas.Android_version;
 									versionurl = data.datas.Android_downloadurl;
-									plus.storage.setItem('versionnum',data.datas.Android_code)
+									plus.storage.setItem('versionnum', data.datas.Android_code)
 								}
 							} else {
 								if (data.datas == null) {
@@ -121,7 +123,7 @@
 								} else {
 									newversion = data.datas.IOS_version;
 									versionurl = data.datas.IOS_downloadurl;
-									plus.storage.setItem('versionnum',data.datas.IOS_code)
+									plus.storage.setItem('versionnum', data.datas.IOS_code)
 								}
 							}
 						} else {

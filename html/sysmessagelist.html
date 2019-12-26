@@ -27,13 +27,6 @@
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/script.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			(function($, doc) {
-				window.addEventListener('refreshes', function(e) {
-					//执行刷新
-					console.log("刷新父页面")
-					location.reload();
-				});
-			})(mui, document);
 			mui.init({
 				swipeBack: false, //启用右滑关闭功能
 				pullRefresh: {
@@ -54,20 +47,6 @@
 					mui.fire(list, 'refreshes');
 					//返回true,继续页面关闭逻辑
 					return true;
-				}
-			});
-			mui.plusReady(function() {
-				var token = plus.storage.getItem('token');
-				options.token = token;
-				getlist(token, 0, 10)
-			});
-			var options = new Vue({
-				el: '#app',
-				data: {
-					datadetails: [],
-					token: '',
-					offset: 0,
-					limit: 10
 				}
 			});
 			/**
@@ -92,177 +71,233 @@
 					getlist(options.token, options.offset, options.limit)
 				}, 1500);
 			}
+			(function($, doc) {
+				window.addEventListener('refreshes', function(e) {
+					//执行刷新
+					console.log("刷新父页面")
+					location.reload();
+				});
+			})(mui, document);
+			mui.plusReady(function() {
+				var token = plus.storage.getItem('token');
+				options.token = token;
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflChatContents/getSystemMessages",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					header: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {
+							options.datadetails = data.datas
+						} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			});
+			var options = new Vue({
+				el: '#app',
+				data: {
+					datadetails: [],
+					token: ''
+				}
+			});
 			mui('.sysmessagelist').on('tap', 'li', function() {
 				var mid = this.getAttribute('mid');
-				var type = this.getAttribute('type');
 				var kid = this.getAttribute('id');
-				updatemes(options.token, kid)
+				var type = this.getAttribute('type');
 				console.log(mid, type)
+				updatemes(options.token, kid)
 				switch (type) {
 					case "1":
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "myorderlistdetails.html",
 							id: "myorderlistdetails.html",
-							extras: {
-								// 打开页面的同时，向新页面传递数据。
-								yid: mid
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "免费咨询",
-								styles: {
-									color: "#333333"
+							show: {
+								//autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "免费咨询",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
+							extras: {
+								yid: mid
 							}
-						})
+						});
 						break;
 					case "2":
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "myorderlistdetailszy.html",
 							id: "myorderlistdetailszy.html",
+							show: {
+								//autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "专业咨询",
+									titleColor: "#000000",
+									titleSize: "16px",
+									backgroundColor: "#ffffff",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								yid: mid
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "专业咨询",
-								styles: {
-									color: "#333333"
-								}
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 						break;
 					case '3':
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "myorderlistdetailslsh.html",
 							id: "myorderlistdetailslsh.html",
-							extras: {
-								// 打开页面的同时，向新页面传递数据。
-								lshid: mid
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "律师函",
-								styles: {
-									color: "#333333"
+							show: {
+								//autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "律师函",
+									titleColor: "#ffffff",
+									titleSize: "16px",
+									backgroundColor: "#267CFB",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
+							extras: {
+								lshid: mid
 							}
-						})
+						});
 						break;
 					case '4':
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "myorderlistdetailshtsh.html",
 							id: "myorderlistdetailshtsh.html",
-							extras: {
-								// 打开页面的同时，向新页面传递数据。
-								lshid: mid
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "合同审核",
-								styles: {
-									color: "#333333"
+							show: {
+								//autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "合同审核",
+									titleColor: "#ffffff",
+									titleSize: "16px",
+									backgroundColor: "#267CFB",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
 								}
 							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
+							extras: {
+								lshid: mid
 							}
-						})
+						});
 						break;
 					case '5':
-						mui.openWindowWithTitle({
+						mui.openWindow({
 							url: "myorderlistdetailshtdz.html",
 							id: "myorderlistdetailshtdz.html",
+							show: {
+								//autoShow: false
+							},
+							styles: {
+								titleNView: { // 窗口的标题栏控件
+									autoBackButton: true,
+									titleText: "免费咨询",
+									titleColor: "#ffffff",
+									titleSize: "16px",
+									backgroundColor: "#267CFB",
+									progress: { // 标题栏控件的进度条样式
+										color: "#2E82FF",
+										height: "2px"
+									},
+									// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+									// 	color: "#CCCCCC",
+									// 	height: "1px"
+									// }
+								}
+							},
 							extras: {
-								// 打开页面的同时，向新页面传递数据。
 								lshid: mid
 							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "合同定制",
-								styles: {
-									color: "#333333"
-								}
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
-						break;
-					case '6':
-						mui.openWindowWithTitle({
-							url: "dialog.html",
-							id: "dialog.html",
-							extras: {
-								// 打开页面的同时，向新页面传递数据。
-								yid: 0
-							}
-						}, {
-							//标题栏的背景色和底边线配置
-							backgroundColor: "#ffffff",
-							// bottomBorderColor:"#267CFB",
-							title: {
-								//标题文字的内容和样式配置
-								text: "合同定制",
-								styles: {
-									color: "#333333"
-								}
-							},
-							back: {
-								image: {
-									/*返回箭头图片可以使用imgSrc，也可以使用base64编码*/
-									imgSrc: "../images/left-icon.png"
-								}
-							}
-						})
+						});
 						break;
 				}
 			});
+
+			function updatemes(token, kid) {
+				mui.ajax({
+					type: 'get',
+					url: baseurl + "client/mfflChatContents/updateMessageStatus",
+					dataType: "json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader(
+							"token", token
+						);
+					},
+					header: {
+						'contentType': "application/x-www-form-urlencoded",
+						'token': token
+					},
+					data: {
+						'id': kid
+					},
+					success: function(data) {
+						console.log(data);
+						if (data.errCode == 200) {} else {
+							mui.toast(data.message)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+			}
 
 			function getlist(token, offset, limit) {
 				mui.ajax({
@@ -287,35 +322,6 @@
 						if (data.errCode == 200) {
 							options.datadetails = data.datas.data
 						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
-			}
-
-			function updatemes(token, kid) {
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflChatContents/updateMessageStatus",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					header: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {
-						'id': kid
-					},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {} else {
 							mui.toast(data.message)
 						}
 					},
