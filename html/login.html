@@ -163,7 +163,7 @@
 							if (data.errCode == 200) {
 								mui.toast('登录成功!')
 								plus.storage.setItem('token', data.datas.token);
-								plus.storage.setItem('loginTime', data.datas.loginTime);
+								plus.storage.setItem('logintime', ''+data.datas.loginTime);
 								var userinfo = JSON.stringify(data.datas.userInfo)
 								plus.storage.setItem('userinfo', userinfo);
 								plus.Push.getRegistrationID(function(res) {
@@ -215,6 +215,8 @@
 							console.log(auth)
 							var openid = auth.authResult.openid;
 							var access = auth.authResult.access_token;
+							console.log(openid)
+							console.log(access)
 							wechatlogin(openid, access)
 
 						}, function(e) {
@@ -286,6 +288,7 @@
 							mui.toast('登录成功!')
 							plus.storage.setItem('token', data.datas.token);
 							var userinfo = JSON.stringify(data.datas.userInfo)
+							plus.storage.setItem('logintime', ''+data.datas.loginTime);
 							plus.storage.setItem('userinfo', userinfo);
 							plus.Push.getRegistrationID(function(res) {
 								if (res.length != 0) {
@@ -311,6 +314,7 @@
 											if (res.errCode == 200) {
 												setTimeout(function() {
 													var home = plus.webview.getLaunchWebview().getURL();
+													console.log(home)
 													plus.webview.open(home);
 													plus.webview.currentWebview().close();
 												}, 1000)

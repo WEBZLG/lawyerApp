@@ -15,11 +15,13 @@
 			<div class="banner">
 				<div class="mui-slider banner-slider" id="ban">
 					<div class="mui-slider-group mui-slider-loop">
-						<div class="mui-slider-item mui-slider-item-duplicate" v-if="bannerlist!== undefined &&bannerlist.length>0"><a
-							 href="#"><img :src=imgurl+bannerlist[bannerlist.length-1].url /></a></div>
-						<div class="mui-slider-item" v-for="item in bannerlist" :key="item"><a href="#"><img :src=imgurl+item.url /></a></div>
-						<div class="mui-slider-item mui-slider-item-duplicate" v-if="bannerlist!== undefined &&bannerlist.length>0"><a
-							 href="#"><img :src=imgurl+bannerlist[0].url /></a></div>
+						<div class="mui-slider-item mui-slider-item-duplicate advert" v-if="bannerlist!== undefined &&bannerlist.length>0"
+						 :type='bannerlist[bannerlist.length-1].serviceType' :skipurl='bannerlist[bannerlist.length-1].skipUrl'><a href="#"><img
+								 :src=imgurl+bannerlist[bannerlist.length-1].url /></a></div>
+						<div class="mui-slider-item advert" v-for="item in bannerlist" :key="item" :type='item.serviceType' :skipurl='item.skipUrl'><a
+							 href="#"><img :src=imgurl+item.url /></a></div>
+						<div class="mui-slider-item mui-slider-item-duplicate advert" v-if="bannerlist!== undefined &&bannerlist.length>0"
+						 :type='bannerlist[0].serviceType' :skipurl='bannerlist[0].skipUrl'><a href="#"><img :src=imgurl+bannerlist[0].url /></a></div>
 					</div>
 				</div>
 			</div>
@@ -814,6 +816,220 @@
 
 					}
 				}
+
+				mui('body').on('tap', '.advert', function() {
+							var type = this.getAttribute('type');
+							var url = this.getAttribute('skipurl');
+							// console.log(type, url)
+							if (type == 0) {
+								mui.openWindow(url, 'id', {})
+							} else if (type == 1) {
+								mui.openWindow(baseurl+url, 'id', {})
+							} else if (type == 2) {
+								var lawyerid = url
+								mui.openWindow({
+									url: "lawyerdetails.html",
+									id: "lawyerdetails.html",
+									show: {
+										// autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "律师详情",
+											titleColor: "#ffffff",
+											titleSize: "16px",
+											backgroundColor: "#267CFB",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										lawyerid: lawyerid
+									}
+								});
+							} else if (type == 3) {
+								var infoid = url
+								mui.openWindow({
+									url: "newsdetails.html",
+									id: "newsdetails.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "资讯详情",
+											titleColor: "#000000",
+											titleSize: "16px",
+											backgroundColor: "#ffffff",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										infoid: infoid
+									}
+								});
+							} else if (type == 4) {
+								var yid = url;
+								mui.openWindow({
+									url: "myorderlistdetails.html",
+									id: "myorderlistdetails.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "免费咨询详情",
+											titleColor: "#000000",
+											titleSize: "16px",
+											backgroundColor: "#ffffff",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										yid: yid
+									}
+								});
+							} else if (type == 5) {
+								var yid = url;
+								mui.openWindow({
+									url: "myorderlistdetailszy.html",
+									id: "myorderlistdetailszy.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "专业咨询详情",
+											titleColor: "#000000",
+											titleSize: "16px",
+											backgroundColor: "#ffffff",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										yid: yid
+									}
+								});
+							} else if (type == 6) {
+								var lshid = url;
+								mui.openWindow({
+									url: "myorderlistdetailslsh.html",
+									id: "myorderlistdetailslsh.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "律师函详情",
+											titleColor: "#ffffff",
+											titleSize: "16px",
+											backgroundColor: "#267CFB",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										lshid: lshid
+									}
+								});
+							} else if (type == 7) {
+								var lshid = url;
+								mui.openWindow({
+									url: "myorderlistdetailshtsh.html",
+									id: "myorderlistdetailshtsh.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "合同审核详情",
+											titleColor: "#ffffff",
+											titleSize: "16px",
+											backgroundColor: "#267CFB",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										lshid: lshid
+									}
+								});
+							} else if (type == 8) {
+								var lshid = url;
+								mui.openWindow({
+									url: "myorderlistdetailshtdz.html",
+									id: "myorderlistdetailshtdz.html",
+									show: {
+										// // autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "合同定制详情",
+											titleColor: "#ffffff",
+											titleSize: "16px",
+											backgroundColor: "#267CFB",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										lshid: lshid
+									}
+								});
+							}
+							});
 			</script>
 	</body>
 </html>
