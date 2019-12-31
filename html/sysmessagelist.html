@@ -81,38 +81,15 @@
 			mui.plusReady(function() {
 				var token = plus.storage.getItem('token');
 				options.token = token;
-				mui.ajax({
-					type: 'get',
-					url: baseurl + "client/mfflChatContents/getSystemMessages",
-					dataType: "json",
-					beforeSend: function(XMLHttpRequest) {
-						XMLHttpRequest.setRequestHeader(
-							"token", token
-						);
-					},
-					header: {
-						'contentType': "application/x-www-form-urlencoded",
-						'token': token
-					},
-					data: {},
-					success: function(data) {
-						console.log(data);
-						if (data.errCode == 200) {
-							options.datadetails = data.datas
-						} else {
-							mui.toast(data.message)
-						}
-					},
-					error: function(err) {
-						console.log(err)
-					}
-				});
+				getlist(token, 0, 10)
 			});
 			var options = new Vue({
 				el: '#app',
 				data: {
 					datadetails: [],
-					token: ''
+					token: '',
+					limit:10,
+					offset:0
 				}
 			});
 			mui('.sysmessagelist').on('tap', 'li', function() {

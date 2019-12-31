@@ -822,9 +822,61 @@
 							var url = this.getAttribute('skipurl');
 							// console.log(type, url)
 							if (type == 0) {
-								mui.openWindow(url, 'id', {})
+							mui.openWindow({
+									url: "advert.html",
+									id: "advert.html",
+									show: {
+										// autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "详情",
+											titleColor: "#000000",
+											titleSize: "16px",
+											backgroundColor: "#ffffff",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										url: url
+									}
+								});
 							} else if (type == 1) {
-								mui.openWindow(baseurl+url, 'id', {})
+								mui.openWindow({
+									url: "advert.html",
+									id: "advert.html",
+									show: {
+										// autoShow: false
+									},
+									styles: {
+										titleNView: { // 窗口的标题栏控件
+											autoBackButton: true,
+											titleText: "详情",
+											titleColor: "#000000",
+											titleSize: "16px",
+											backgroundColor: "#ffffff",
+											progress: { // 标题栏控件的进度条样式
+												color: "#2E82FF",
+												height: "2px"
+											},
+											// splitLine: { // 标题栏控件的底部分割线，类似borderBottom
+											// 	color: "#CCCCCC",
+											// 	height: "1px"
+											// }
+										}
+									},
+									extras: {
+										url:baseurl+ url
+									}
+								});
 							} else if (type == 2) {
 								var lawyerid = url
 								mui.openWindow({
