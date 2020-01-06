@@ -112,8 +112,8 @@
 							<div class="mui-scroll-wrapper  freshbox">
 								<div class="mui-scroll">
 									<ul class="mui-table-view mui-table-view-chevron datalist">
-										<li class=" news-item" v-for="item in datadetails" :key="item.id">
-											<h4 class="news-title" :id="item.id"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+										<li class=" news-item" v-for="item in datadetails" :key="item.id"  :id="item.id">
+											<h4 class="news-title"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
 											<div class="news-show">
 												<div class="news-content">{{item.partialContent}}</div>
 											</div>
@@ -148,8 +148,8 @@
 							<div class="mui-scroll-wrapper  freshbox">
 								<div class="mui-scroll">
 									<ul class="mui-table-view mui-table-view-chevron datalist">
-										<li class=" news-item" v-for="item in datadetails" :key="item.id">
-											<h4 class="news-title" :id="item.id"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
+										<li class=" news-item" v-for="item in datadetails" :key="item.id"  :id="item.id">
+											<h4 class="news-title"><em>#{{item.typeName}}#</em>{{item.title}}</h4>
 											<div class="news-show">
 												<div class="news-content">{{item.partialContent}}</div>
 											</div>
@@ -333,7 +333,7 @@
 					}
 				});
 			}
-			mui(".news-list").on("tap", "li h4", function() {
+			mui(".news-list").on("tap", ".news-item", function() {
 				var infoid = this.getAttribute("id");
 				mui.openWindow({
 					url: "newsdetails.html",

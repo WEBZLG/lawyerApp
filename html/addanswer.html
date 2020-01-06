@@ -21,7 +21,7 @@
 				</div>
 			</div>
 			<div class="dbbtn" id="dbbtn">
-				<button type="button" class="mui-btn " id="exit" onclick="mui.back();">取消</button>
+				<button type="button" class="mui-btn " id="exit">取消</button>
 				<button type="button" class="mui-btn" id="pub">发布</button>
 			</div>
 		</div>
@@ -51,6 +51,9 @@
 					var iptval = document.getElementById('ipt').value;
 					console.log(iptval)
 					addanswer(token, infoid, iptval)
+				})
+				mui("body").on('tap', '#exit', function() {
+					mui.back();
 				})
 
 			})

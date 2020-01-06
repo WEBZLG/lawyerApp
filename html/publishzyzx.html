@@ -296,7 +296,7 @@
 						if (data.errCode == 200) {
 							payfor(token, data.datas);
 						} else {
-							document.getElementById('payforbtn').setAttribute('disabled', '');
+							document.getElementById('payforbtn').setAttribute('disabled', ' ');
 							mui.toast(data.message)
 						}
 					},
@@ -350,6 +350,7 @@
 						}
 					},
 					error: function(err) {
+						document.getElementById('payforbtn').setAttribute('disabled', '');
 						console.log(err)
 					}
 				});
@@ -381,6 +382,7 @@
 				page.imgUp(id);
 			});
 			mui(".pricelist").on("tap", "li", function() {
+				document.activeElement.blur();
 				for (var i = 0; i < this.parentNode.children.length; i++) {
 					this.parentNode.children[i].classList.remove("active");
 				}
@@ -513,13 +515,14 @@
 					plus.nativeUI.alert('没有添加上传文件！');
 					return;
 				}
-				// mui.toast('开始上传');
+				mui.toast('开始上传');
 				var wt = plus.nativeUI.showWaiting();
 				var task = plus.uploader.createUpload(server, {
 						method: 'POST'
 					},
 					function(t, status) { //上传完成
 						plus.nativeUI.closeWaiting();
+						mui.toast('上传成功');
 						if (status == 200) {
 							var imgUrl = JSON.parse(t.responseText).datas.max
 							if (type == 0) {
