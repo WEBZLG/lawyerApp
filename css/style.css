@@ -1850,20 +1850,21 @@ input[type='text'] {
 .chatdot {
 	display: inline-block;
 	vertical-align: middle;
-	height: 5px;
-	width: 5px;
+/* 	height: 5px;
+	width: 5px; */
 	margin-right: 3px;
 	border-radius: 50%;
-	background-color: #DC4F51;
+	/* background-color: #DC4F51; */
 }
 
 .chatdot {
-	height: 8px;
-	width: 8px;
+/* 	height: 8px;
+	width: 8px; */
 	position: absolute;
 	z-index: 999;
 	top: 5px;
 	left: 5px;
+	background: #ffffff;
 }
 
 .nickname input[type='text'] {
