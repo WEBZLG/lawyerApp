@@ -30,7 +30,7 @@
 			<ul class="mui-content user-message">
 				<li :id="item.id" :sendId="item.sendId" :name="item.nickname" v-for="item in datalist" :key="item.id">
 					<div class="mes-head">
-						<span class="chatdot" v-if="systermstatus==1">{{item.chatCount}}</span>
+						<span class="chatdot" v-if="item.status==1">{{item.chatCount}}</span>
 						<div class="mes-img"><img :src=imgurl+item.headImgUrl></div><!-- <span class="mui-badge mui-badge-danger">1</span> -->
 					</div>
 					<div class="mes-item">

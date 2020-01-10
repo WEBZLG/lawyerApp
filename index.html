@@ -56,12 +56,20 @@
 					mui.openWindow({
 						'url': "html/login.html",
 						'id': "html/login.html"
-					})
+					});
+					setTimeout(function()
+					{
+					plus.webview.currentWebview().close();
+					},1000);
 				}else if (loginTime < timestamp){
 						mui.openWindow({
 							'url': "html/login.html",
 							'id': "html/login.html"
-						})
+						});
+						setTimeout(function()
+						{
+						plus.webview.currentWebview().close();
+						},1000);
 				}
 
 				floatw = plus.webview.create("html/publish.html", "publish.html", {

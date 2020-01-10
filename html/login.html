@@ -15,7 +15,7 @@
 				<img src="../images/denglu_bg.png">
 				<div class="logintitle">
 					<div class="wlogo"><img src="../images/logo1.png"></div>
-					<h4>慕法法律咨询</h4>
+					<h4>法智法律咨询</h4>
 				</div>
 			</div>
 			<div class="phonenum">
@@ -163,7 +163,7 @@
 							if (data.errCode == 200) {
 								mui.toast('登录成功!')
 								plus.storage.setItem('token', data.datas.token);
-								plus.storage.setItem('logintime', ''+data.datas.loginTime);
+								plus.storage.setItem('logintime', '' + data.datas.loginTime);
 								var userinfo = JSON.stringify(data.datas.userInfo)
 								plus.storage.setItem('userinfo', userinfo);
 								plus.Push.getRegistrationID(function(res) {
@@ -188,9 +188,14 @@
 											},
 											success: function(res) {
 												if (res.errCode == 200) {
+													mui.openWindow({
+														'url': "../index.html",
+														'id': "../index.html"
+													});
 													setTimeout(function() {
-														mui.back();
-													}, 1000)
+														plus.webview.hide(plus.webview.currentWebview());
+														plus.webview.currentWebview().close();
+													}, 1000);
 												}
 											},
 											error: function() {}
@@ -255,7 +260,7 @@
 					},
 					success: function(data) {
 						console.log(data)
-						if(data.errCode==130){
+						if (data.errCode == 130) {
 							mui.openWindow({
 								url: "wechatlogin.html",
 								id: "wechatlogin.html",
@@ -284,11 +289,11 @@
 									access: access,
 								}
 							});
-						}else if(data.errCode==200){
+						} else if (data.errCode == 200) {
 							mui.toast('登录成功!')
 							plus.storage.setItem('token', data.datas.token);
 							var userinfo = JSON.stringify(data.datas.userInfo)
-							plus.storage.setItem('logintime', ''+data.datas.loginTime);
+							plus.storage.setItem('logintime', '' + data.datas.loginTime);
 							plus.storage.setItem('userinfo', userinfo);
 							plus.Push.getRegistrationID(function(res) {
 								if (res.length != 0) {
@@ -312,19 +317,22 @@
 										},
 										success: function(res) {
 											if (res.errCode == 200) {
+												mui.openWindow({
+													'url': "../index.html",
+													'id': "../index.html"
+												});
 												setTimeout(function() {
-													var home = plus.webview.getLaunchWebview().getURL();
-													console.log(home)
-													plus.webview.open(home);
+													plus.webview.hide(plus.webview.currentWebview());
 													plus.webview.currentWebview().close();
-												}, 1000)
+												}, 1000);
+
 											}
 										},
 										error: function() {}
 									})
 								}
 							})
-						}else{
+						} else {
 							mui.toast(data.message)
 						}
 					},
