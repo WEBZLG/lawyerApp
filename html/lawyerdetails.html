@@ -68,7 +68,7 @@
 				<div class="mui-content" style="overflow: auto;">
 					<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height:90px">
 						<div class="mui-scroll" style="height:90px">
-							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id' :name="item.serviceName" :id="item.lawyerId">
+							<div class="mui-control-item" v-for="item in datalist.service" :key='item.id' :name="item.serviceName" :id="item.lawyerId" :status="item.serverIsOpen">
 								<div class="serviceicon"><img src="../images/twzx.png"></div>
 								<p>{{item.serviceName}}</p>
 								<p v-if="item.serviceName=='图文咨询'">{{item.money}}元/12小时</p>
@@ -159,7 +159,14 @@
 
 				mui('body').on('tap', '.mui-control-item', function() {
 					var servicename = this.getAttribute('name');
-					options.servicename = servicename;
+					var status = this.getAttribute('status');
+					if(status==0){
+						mui.toast('律师未开通此服务类型！');
+						options.servicename='';
+						return false;
+					}else{
+						options.servicename = servicename;
+					}
 				});
 				mui('body').on('tap', '.otherbtn', function() {
 					var name = options.servicename;

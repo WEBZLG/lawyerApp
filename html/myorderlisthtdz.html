@@ -339,7 +339,7 @@
 						'paymerchantnumber': num
 					},
 					success: function(data) {
-						that.setAttribute('disabled', '');
+						that.disabled='';
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
@@ -375,7 +375,7 @@
 									'paymerchantnumber': data.datas.newpayMerchantNumber
 								},
 								success: function(data) {
-									that.setAttribute('disabled', '');
+									that.disabled='';
 									console.log(data)
 									if (data.errCode == 200) {
 										plus.payment.request(channel, data.datas, function(result) {
@@ -397,7 +397,7 @@
 									}
 								},
 								error: function(err) {
-									that.setAttribute('disabled', '');
+									that.disabled='';
 									console.log(err)
 								}
 							})
@@ -406,7 +406,7 @@
 						}
 					},
 					error: function(err) {
-						that.setAttribute('disabled', '');
+						that.disabled='';
 						console.log(err)
 					}
 				})

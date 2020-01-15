@@ -55,8 +55,10 @@
 		(function($, doc) {
 			window.addEventListener('refreshes', function(e) {
 				//执行刷新
-				console.log("刷新父页面")
-				location.reload();
+				var token = options.token;
+				console.log(token)
+				getlist(token);
+				getsys(token);
 			});
 		})(mui, document);
 		mui.plusReady(function() {
@@ -73,8 +75,8 @@
 					content = window.plus.Push.receiveNotification.alert;
 				}
 				getlist(options.token)
-				var xunguan=plus.webview.getWebviewById("dialog.html");
-				mui.fire(xunguan,'listenerWorkState')    //事件名称
+				var xunguan = plus.webview.getWebviewById("dialog.html");
+				mui.fire(xunguan, 'listenerWorkState') //事件名称
 				console.log(content)
 			}
 			document.addEventListener("jpush.receiveNotification", receiveNotification, false);
@@ -91,24 +93,13 @@
 		mui.plusReady(function() {
 			//推送消息监听
 			plus.push.addEventListener("click", function(msg) {
-				alert("9999999");
-				alert(msg.content);
-				alert(msg.title);
-				alert(msg.payload); //获取透传消息，不知道对不对？
+				// alert("9999999");
+				// alert(msg.content);
+				// alert(msg.title);
+				// alert(msg.payload); //获取透传消息，不知道对不对？
 			});
 		});
-		var options = new Vue({
-			el: '#app',
-			data: {
-				datalist: [],
-				token: "",
-				systermnum: '',
-				systermstatus: ''
-			},
-			methods: {
 
-			}
-		});
 
 		// 获取系统消息
 		function getsys(token) {
@@ -169,7 +160,18 @@
 				}
 			})
 		}
+		var options = new Vue({
+			el: '#app',
+			data: {
+				datalist: [],
+				token: "",
+				systermnum: '',
+				systermstatus: ''
+			},
+			methods: {
 
+			}
+		});
 		mui("body").on("tap", ".systerm-message", function() {
 			// console.log(this.getAttribute("name"))
 			// var newname = this.getAttribute("name");

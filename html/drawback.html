@@ -69,6 +69,7 @@
 				var id = self.hid;
 				console.log(id)
 				mui("body").on('tap', '.refund', function() {
+					console.log(21222)
 					var reason = document.getElementById('data').value;
 					if (reason == "") {
 						mui.toast('请填写退款原因')

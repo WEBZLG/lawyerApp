@@ -267,7 +267,7 @@
 							// mui.back();
 							payfor(token, data.datas)
 						} else {
-							document.getElementById('gobuy').removeAttribute('disabled');
+							document.getElementById('gobuy').disabled='';
 							mui.toast(data.message)
 						}
 					},
@@ -301,7 +301,7 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								paybacklsh(token, num)
-								document.getElementById('gobuy').removeAttribute('disabled');
+								document.getElementById('gobuy').disabled='';
 								console.log(result)
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -313,12 +313,12 @@
 								})
 							}, function(error) {
 								console.log(error)
-								document.getElementById('gobuy').removeAttribute('disabled');
+								document.getElementById('gobuy').disabled='';
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 
 						} else {
-							document.getElementById('gobuy').removeAttribute('disabled');
+							document.getElementById('gobuy').disabled='';
 							mui.toast(data.message)
 						}
 					},
@@ -486,7 +486,7 @@
 							}
 						} else {
 							mui.toast('上传失败');
-							document.getElementById('gobuy').removeAttribute('disabled');
+							document.getElementById('gobuy').disabled='';
 							wt.close();
 						}
 					}

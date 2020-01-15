@@ -496,7 +496,16 @@
 							console.log(data)
 							if (data.errCode == 200) {
 								options.lawyerlist = data.datas.data;
-							} else {
+							} else if(data.errCode==401){
+								mui.openWindow({
+									'url': "html/login.html",
+									'id': "html/login.html"
+								});
+								setTimeout(function()
+								{
+								plus.webview.currentWebview().close();
+								},1000);
+							} else{
 								mui.toast(data.message)
 							}
 						},

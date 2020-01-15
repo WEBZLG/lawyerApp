@@ -119,8 +119,12 @@
 						return false;
 					}
 					this.setAttribute('disabled','disabled');
-					for (var i = 0; i < options.pubpath.length; i++) {
-						upload(options.pubpath[i])
+					if (options.pubpath.length == 0) {
+						publish(options.token);
+					} else {
+						for (var i = 0; i < options.pubpath.length; i++) {
+							upload(options.pubpath[i])
+						}
 					}
 				});
 				mui('body').on('tap', '.closeicon', function() {
@@ -285,7 +289,7 @@
 						if (data.errCode == 200) {
 							payfor(token, data.datas)
 						} else {
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').disabled='';
 							mui.toast(data.message)
 						}
 					},
@@ -317,7 +321,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').disabled='';
 							plus.payment.request(channel, data.datas, function(result) {
 								mui.openWindow({
 									url: 'publishsuccess.html',
@@ -329,7 +333,7 @@
 								})
 							}, function(error) {
 								console.log(error)
-								document.getElementById('gobuy').setAttribute('disabled','');
+								document.getElementById('gobuy').disabled='';
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 
@@ -500,7 +504,7 @@
 							}
 						} else {
 							mui.toast('上传失败');
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').disabled='';
 							wt.close();
 						}
 					}

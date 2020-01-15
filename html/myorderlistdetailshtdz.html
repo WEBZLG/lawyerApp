@@ -83,7 +83,8 @@
 						<button type="button" v-if="datadetails.payState==1" class="mui-btn finish" :id="datadetails.id">服务完成</button>
 					</div>
 					<div class="orderaction" v-if="datadetails.state==0">
-						<button type="button" v-if="datadetails.payState==0" class="mui-btn refund" :id="datadetails.id">去支付</button>
+						
+						<button type="button" v-if="datadetails.payState==0" class="mui-btn" :id="datadetails.id">去支付</button>
 					</div>
 				</div>
 			</div>
@@ -121,7 +122,13 @@
 				options.token = token;
 				getdetails(token, id)
 				mui("body").on('tap', '.disrefund', function() {
-					disrefund(token, id)
+					var btnArray = ['确认', '取消'];
+					mui.confirm('取消申请退款？', '提示', btnArray, function(e) {
+						if (e.index == 0) {
+							disrefund(token, id)
+						}
+					});
+					
 				});
 				// 获取支付通道
 				plus.payment.getChannels(function(channels) {
@@ -269,7 +276,7 @@
 						}
 					},
 					extras: {
-						id: hid
+						hid: hid
 					}
 				});
 			});

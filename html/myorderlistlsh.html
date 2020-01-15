@@ -52,7 +52,7 @@
 							<div class="ordertime">{{item.updateTime}}</div>
 							<div class="orderaction" v-if="item.payState==0">
 								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
-								<button type="button" class="mui-btn gobuy" :yid="item.id" :num="item.payMerchantNumber">去支付</button>
+								<button type="button" class="mui-btn gobuy"  :yid="item.id" :num="item.payMerchantNumber">去支付</button>
 							</div>
 							<div class="orderaction" v-if="item.payState==1&&item.state==0">
 								<button type="button" class="mui-btn cancel" :yid="item.id">取消发布</button>
@@ -298,7 +298,7 @@
 						'paymerchantnumber': num
 					},
 					success: function(data) {
-						that.setAttribute('disabled', '');
+						that.disabled='';
 						console.log(data)
 						if (data.errCode == 200) {
 							plus.payment.request(channel, data.datas, function(result) {
@@ -334,7 +334,7 @@
 									'paymerchantnumber': data.datas.newpayMerchantNumber
 								},
 								success: function(data) {
-									that.setAttribute('disabled', '');
+									that.disabled='';
 									console.log(data)
 									if (data.errCode == 200) {
 										plus.payment.request(channel, data.datas, function(result) {
@@ -356,7 +356,7 @@
 									}
 								},
 								error: function(err) {
-									that.setAttribute('disabled', '');
+									that.disabled='';
 									console.log(err)
 								}
 							})
@@ -365,7 +365,7 @@
 						}
 					},
 					error: function(err) {
-						that.setAttribute('disabled', '');
+						that.disabled='';
 						console.log(err)
 					}
 				})

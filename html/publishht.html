@@ -121,8 +121,12 @@
 						return false;
 					}
 					this.setAttribute('disabled','disabled')
-					for (var i = 0; i < options.pubpath.length; i++) {
-						upload(options.pubpath[i])
+					if (options.pubpath.length == 0) {
+						publish(options.token);
+					} else {
+						for (var i = 0; i < options.pubpath.length; i++) {
+							upload(options.pubpath[i])
+						}
 					}
 				});
 				mui('body').on('tap', '.closeicon', function() {
@@ -186,7 +190,7 @@
 							payfor(token, data.datas);
 						} else {
 							mui.toast(data.message);
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').disabled='';
 						}
 					},
 					error: function(err) {
@@ -197,7 +201,6 @@
 
 			// 支付
 			function payfor(token, num) {
-				document.getElementById('gobuy').setAttribute('disabled','disabled');
 				mui.ajax({
 					type: 'post',
 					url: baseurl + "client/mfflContracts/pay",
@@ -218,7 +221,7 @@
 						console.log(data);
 						if (data.errCode == 200) {
 							console.log(channel)
-							document.getElementById('gobuy').setAttribute('disabled','');
+							document.getElementById('gobuy').disabled='';
 							plus.payment.request(channel, data.datas, function(result) {
 								paybackht(token, num);
 								mui.openWindow({
@@ -231,7 +234,7 @@
 								})
 							}, function(error) {
 								console.log(error)
-								document.getElementById('gobuy').setAttribute('disabled','');
+								document.getElementById('gobuy').disabled='';
 								// plus.nativeUI.alert(JSON.stringify(error)); 
 							});
 

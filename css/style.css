@@ -661,6 +661,9 @@ p {
 	right: 0;
 }
 
+.user-message .mes-img{
+	background-color: inherit;
+}
 /* 我的 */
 .my-bg {
 	background-color: #FFFFFF;
@@ -1837,6 +1840,7 @@ input[type='text'] {
 	padding: 15px 0;
 	line-height: 24px;
 	border-bottom: 1px solid #E1E1E1;
+	position: relative;
 }
 
 .sysdesc {
@@ -1847,7 +1851,7 @@ input[type='text'] {
 }
 
 .chatdot {
-	display: inline-block;
+	display: block;
 	vertical-align: middle;
     height: 10px;
     min-width:10px;
@@ -1858,10 +1862,19 @@ input[type='text'] {
     z-index: 999;
     top: 5px;
     left: 5px;
-    color: #2E82FF;
-    background: #ffffff;
+    color: #ffffff;
+    background: #DC4F51;
 	margin-right: 3px;
 	border-radius: 10px;
+}
+
+.dot{
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    background: #DC4F51;
+    margin-right: 10px;
+	border-radius: 50%;
 }
 
 .nickname input[type='text'] {

@@ -169,9 +169,11 @@
 							plus.payment.request(channel, data.datas, function(result) {
 								payback(token, num);
 								console.log(result)
+								that.disabled='';
 								datalist(options.token, options.offset, options.limit);
 							}, function(error) {
 								console.log(error)
+								that.disabled='';
 							});
 
 						} else if (data.errCode == 142) {
@@ -198,9 +200,11 @@
 										console.log(channel)
 										plus.payment.request(channel, data.datas, function(result) {
 											console.log(result)
+											that.disabled='';
 											datalist(options.token, options.offset, options.limit);
 										}, function(error) {
 											console.log(error)
+											that.disabled='';
 										});
 
 									} else {
@@ -208,7 +212,7 @@
 									}
 								},
 								error: function(err) {
-									that.setAttribute('disabled', '');
+									that.disabled='';
 									console.log(err)
 								}
 							});
@@ -217,7 +221,7 @@
 						}
 					},
 					error: function(err) {
-						that.setAttribute('disabled', '');
+						that.disabled='';
 						console.log(err)
 					}
 				});

@@ -296,7 +296,7 @@
 						if (data.errCode == 200) {
 							payfor(token, data.datas);
 						} else {
-							document.getElementById('payforbtn').setAttribute('disabled', ' ');
+							document.getElementById("payforbtn").disabled=""
 							mui.toast(data.message)
 						}
 					},
@@ -330,7 +330,7 @@
 							console.log(channel)
 							plus.payment.request(channel, data.datas, function(result) {
 								console.log(result)
-								document.getElementById('payforbtn').setAttribute('disabled', '');
+								document.getElementById("payforbtn").disabled=""
 								mui.openWindow({
 									url: 'publishsuccess.html',
 									id: 'publishsuccess.html',
@@ -340,17 +340,18 @@
 									}
 								})
 							}, function(error) {
-								document.getElementById('payforbtn').setAttribute('disabled', '');
+								document.getElementById("payforbtn").disabled=""
 								console.log(error)
 							});
 
 						} else {
-							document.getElementById('payforbtn').setAttribute('disabled', '');
+							document.getElementById("payforbtn").disabled=""
 							mui.toast(data.message)
 						}
 					},
 					error: function(err) {
-						document.getElementById('payforbtn').setAttribute('disabled', '');
+						document.getElementById("payforbtn").disabled=""
+						document.getElementById("payforbtn").disabled=""
 						console.log(err)
 					}
 				});
