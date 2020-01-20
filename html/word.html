@@ -80,26 +80,38 @@
 				console.log(content)
 			}
 			document.addEventListener("jpush.receiveNotification", receiveNotification, false);
-			document.addEventListener("plusready", function() {
-				// 监听点击消息事件
-				plus.push.addEventListener("click", function(msg) {
-					console.log(msg)
-					//根据需要填写
-					// plus.webview.open("word.html");
-
-				}, false);
-			}, false);
+			
+			// 自定义消息
+			var onReceiveMessage = function(event) {
+			    try {
+			      var message;
+			      if(plus.os.name == "Android") {
+			        message = window.plus.Push.receiveMessage.message;
+			      } else {
+			        message = event.content;
+			      }
+				  console.log(message)
+			    } catch(exception) {
+			    }
+			}
+			document.addEventListener("jpush.receiveMessage", onReceiveMessage, false);
+			//点击通知栏消息
+			var onOpenNotification = function(event) {
+				var content;
+				if(plus.os.name == "Android") {
+				      content = window.plus.Push.openNotification.alert;
+				  } else {
+				      content = event.aps.alert;
+				  }
+				getlist(options.token)
+				var xunguan = plus.webview.getWebviewById("dialog.html");
+				mui.fire(xunguan, 'listenerWorkState') //事件名称
+				console.log(content)
+				mui.openWindow('word.html','id',{})
+			}
+			
+			document.addEventListener("jpush.openNotification", onOpenNotification, false);
 		})
-		mui.plusReady(function() {
-			//推送消息监听
-			plus.push.addEventListener("click", function(msg) {
-				// alert("9999999");
-				// alert(msg.content);
-				// alert(msg.title);
-				// alert(msg.payload); //获取透传消息，不知道对不对？
-			});
-		});
-
 
 		// 获取系统消息
 		function getsys(token) {

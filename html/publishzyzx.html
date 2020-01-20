@@ -522,9 +522,12 @@
 						method: 'POST'
 					},
 					function(t, status) { //上传完成
+					console.log(t)
+					console.log(status)
 						plus.nativeUI.closeWaiting();
-						mui.toast('上传成功');
 						if (status == 200) {
+							 imgArray = [];
+							 imgArray2 = [];
 							var imgUrl = JSON.parse(t.responseText).datas.max
 							if (type == 0) {
 								imgArray.push(imgUrl);
@@ -538,6 +541,7 @@
 							}
 						} else {
 							mui.toast('上传失败');
+							document.getElementById("payforbtn").disabled="";
 							wt.close();
 						}
 					}
